@@ -110,6 +110,6 @@ await writeFile(
 
 export const render: (elements: any[], eventMap: any) => void
 
-export const renderInto: ($Parent: HTMLElement, elements: any[], eventMap: any) => void
+export const renderInto: ($Parent: HTMLElement, elements: any[], eventMap?: any) => void
 `,
 )
