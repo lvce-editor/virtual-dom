@@ -2,6 +2,7 @@
   "name": "virtual-dom",
   "version": "0.0.0-dev",
   "main": "src/index.js",
+  "type": "module",
   "scripts": {
     "test": ""
   },
