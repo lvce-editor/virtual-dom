@@ -1,30 +1,9 @@
 import * as ClearNode from '../ClearNode/ClearNode.ts'
-import * as VirtualDomElement from '../VirtualDomElement/VirtualDomElement.ts'
-/**
- *
- * @param {any[]} elements
- * @returns
- */
-export const renderInternal = ($Parent, elements, eventMap) => {
-  const max = elements.length - 1
-  let stack = []
-  for (let i = max; i >= 0; i--) {
-    const element = elements[i]
-    const $Element = VirtualDomElement.render(element, eventMap)
-    if (element.childCount > 0) {
-      // @ts-expect-error
-      $Element.append(...stack.slice(0, element.childCount))
-      stack = stack.slice(element.childCount)
-    }
-    // @ts-expect-error
-    stack.unshift($Element)
-  }
-  $Parent.append(...stack)
-}
+import * as RenderInternal from '../RenderInternal/RenderInternal.ts'
 
 export const renderInto = ($Parent, dom, eventMap = {}) => {
   ClearNode.clearNode($Parent)
-  renderInternal($Parent, dom, eventMap)
+  RenderInternal.renderInternal($Parent, dom, eventMap)
 }
 
 export const renderIncremental = ($Parent, dom) => {
@@ -62,6 +41,6 @@ export const renderIncremental = ($Parent, dom) => {
  */
 export const render = (elements, eventMap = {}) => {
   const $Root = document.createElement('div')
-  renderInternal($Root, elements, eventMap)
+  RenderInternal.renderInternal($Root, elements, eventMap)
   return $Root
 }
