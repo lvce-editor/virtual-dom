@@ -1,0 +1,8 @@
+{
+  "files": [],
+  "include": [],
+  "references": [
+    { "path": "./packages/virtual-dom" },
+    { "path": "./packages/virtual-dom-worker" },
+  ]
+}
