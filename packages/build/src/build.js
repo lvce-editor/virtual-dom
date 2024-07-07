@@ -1,7 +1,7 @@
 import { cp, mkdir, readFile, rm, writeFile } from 'node:fs/promises'
 import path, { dirname, join } from 'node:path'
 import { fileURLToPath } from 'node:url'
-import { execa } from 'execa'
+import { execa, execaNode } from 'execa'
 
 const __dirname = dirname(fileURLToPath(import.meta.url))
 const root = path.join(__dirname, '..', '..', '..')
@@ -78,7 +78,28 @@ for (const packageName of ['virtual-dom', 'virtual-dom-worker']) {
   packageJson.types = 'dist/index.d.ts'
 
   await writeJson(join(dist, packageName, 'package.json'), packageJson)
+  await cp(join(root, 'README.md'), join(dist, packageName, 'README.md'))
+  await cp(join(root, 'LICENSE'), join(dist, packageName, 'LICENSE'))
+  await cp(
+    join(root, 'packages', packageName, 'src'),
+    join(root, 'dist', packageName, 'src'),
+    {
+      recursive: true,
+    },
+  )
+  const esbuildPath = join(
+    root,
+    'packages',
+    'build',
+    'node_modules',
+    '.bin',
+    'esbuild',
+  )
+  await execa(
+    esbuildPath,
+    ['src/index.ts', '--bundle', '--outdir=dist', '--platform=neutral'],
+    {
+      cwd: join(root, 'dist', packageName),
+    },
+  )
 }
-
-await cp(join(root, 'README.md'), join(dist, 'README.md'))
-await cp(join(root, 'LICENSE'), join(dist, 'LICENSE'))
