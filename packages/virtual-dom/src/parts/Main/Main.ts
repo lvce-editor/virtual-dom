@@ -1,1 +1,1 @@
-export { render } from '../VirtualDom/VirtualDom.ts'
+export { render, renderInto } from '../VirtualDom/VirtualDom.ts'
