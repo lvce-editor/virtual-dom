@@ -6,7 +6,8 @@
   "scripts": {
     "postinstall": "lerna bootstrap --ci",
     "test": "lerna run test",
-    "type-check": "tsc"
+    "type-check": "tsc",
+    "build": "node packages/build/src/build.js"
   },
   "keywords": [],
   "author": "",
