@@ -103,3 +103,13 @@ for (const packageName of ['virtual-dom', 'virtual-dom-worker']) {
     },
   )
 }
+
+await writeFile(
+  join(root, 'dist', 'virtual-dom', 'dist', 'index.d.ts'),
+  `
+
+export const render: (elements: any[], eventMap: any) => void
+
+export const renderInto: ($Parent: HTMLElement, elements: any[], eventMap: any) => void
+`,
+)
