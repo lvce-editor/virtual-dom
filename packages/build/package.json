@@ -1,0 +1,14 @@
+{
+  "name": "@lvce-editor/virtual-dom-build",
+  "version": "0.0.0-dev",
+  "description": "",
+  "type": "module",
+  "main": "src/build.js",
+  "scripts": {},
+  "keywords": [],
+  "author": "",
+  "license": "MIT",
+  "devDependencies": {
+    "@types/node": "^20.14.10"
+  }
+}

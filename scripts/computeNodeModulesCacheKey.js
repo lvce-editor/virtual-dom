@@ -10,6 +10,7 @@ const root = join(__dirname, '..')
 const locations = [
   'lerna.json',
   'package-lock.json',
+  'packages/build/package-lock.json',
   'packages/virtual-dom/package-lock.json',
   'packages/virtual-dom-worker/package-lock.json',
   '.github/workflows/pr.yml',
