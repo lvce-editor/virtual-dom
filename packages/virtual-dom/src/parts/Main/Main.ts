@@ -1,1 +1,1 @@
-export * as VirtualDomElement from '../VirtualDomElement/VirtualDomElement.ts'
+export { render } from '../VirtualDom/VirtualDom.ts'
