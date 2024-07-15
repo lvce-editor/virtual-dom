@@ -12,7 +12,7 @@ export const setComponentUid: ($Element: HTMLElement, uid: number) => void
 
 export const getComponentUid: ($Element: HTMLElement) => void
 
-export const getComponentFromEvent: (event: Event) => void
+export const getComponentUidFromEvent: (event: Event) => void
 
 export const rememberFocus: (
   $Viewlet: HTMLElement,
