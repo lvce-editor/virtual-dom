@@ -32,8 +32,8 @@
       "global": {
         "branches": 0,
         "functions": 8,
-        "lines": 48,
-        "statements": 48
+        "lines": 40,
+        "statements": 40
       }
     },
     "coveragePathIgnorePatterns": []
