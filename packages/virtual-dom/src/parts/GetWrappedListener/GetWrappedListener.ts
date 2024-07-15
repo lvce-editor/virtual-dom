@@ -10,7 +10,7 @@ export const getWrappedListener = (listener, returnValue) => {
   }
   if (!cache.has(listener)) {
     const wrapped = (event) => {
-      const uid = ComponentUid.fromEvent(event)
+      const uid = ComponentUid.getComponentUidFromEvent(event)
       const result = listener(event)
       // TODO check for empty array by value
       if (result.length === 0) {
