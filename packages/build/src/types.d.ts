@@ -8,7 +8,11 @@ export const renderInto: (
 
 export const setIpc: (ipc: any) => void
 
-export const setComponentUid: ($Element: HTMLElement) => void
+export const setComponentUid: ($Element: HTMLElement, uid: number) => void
+
+export const getComponentUid: ($Element: HTMLElement) => void
+
+export const getComponentFromEvent: (event: Event) => void
 
 export const rememberFocus: (
   $Viewlet: HTMLElement,

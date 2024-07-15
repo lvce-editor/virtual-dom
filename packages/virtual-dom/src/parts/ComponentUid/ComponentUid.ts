@@ -14,12 +14,12 @@ const getUidTarget = ($Element) => {
   return undefined
 }
 
-export const get = ($Element) => {
+export const getComponentUid = ($Element) => {
   const $Target = getUidTarget($Element)
   return $Target[uidSymbol]
 }
 
-export const fromEvent = (event) => {
+export const getComponentUidFromEvent = (event) => {
   const { target, currentTarget } = event
-  return get(currentTarget || target)
+  return getComponentUid(currentTarget || target)
 }
