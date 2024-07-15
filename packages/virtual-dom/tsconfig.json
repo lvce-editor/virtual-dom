@@ -1,6 +1,6 @@
 {
   "compilerOptions": {
-    "lib": ["esnext", "DOM"],
+    "lib": ["esnext", "DOM", "DOM.Iterable"],
     "checkJs": true,
     "target": "esnext",
     "types": [],
