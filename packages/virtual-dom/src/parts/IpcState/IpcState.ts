@@ -2,7 +2,7 @@ const state = {
   ipc: undefined,
 }
 
-export const getIpc = () => {
+export const getIpc = (): any => {
   return state.ipc
 }
 
