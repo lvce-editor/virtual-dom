@@ -1,6 +1,12 @@
 import * as AttachEvent from '../AttachEvent/AttachEvent.ts'
+import * as AttachPointerTrackEvent from '../AttachPointerTrackEvent/AttachPointerTrackEvent.ts'
 
-export const setProp = ($Element: HTMLElement, key: string, value: any, eventMap: any) => {
+export const setProp = (
+  $Element: HTMLElement,
+  key: string,
+  value: any,
+  eventMap: any,
+) => {
   switch (key) {
     case 'maskImage':
       $Element.style.maskImage = `url('${value}')`
@@ -66,6 +72,9 @@ export const setProp = ($Element: HTMLElement, key: string, value: any, eventMap
         return
       }
       AttachEvent.attachEvent($Element, eventMap, eventName, value)
+      break
+    case 'onPointerTrack':
+      AttachPointerTrackEvent.attachPointerTrackEvent($Element, value)
       break
     default:
       if (key.startsWith('data-')) {
