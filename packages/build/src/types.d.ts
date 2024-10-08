@@ -10,9 +10,9 @@ export const setIpc: (ipc: any) => void
 
 export const setComponentUid: ($Element: HTMLElement, uid: number) => void
 
-export const getComponentUid: ($Element: HTMLElement) => void
+export const getComponentUid: ($Element: HTMLElement) => number
 
-export const getComponentUidFromEvent: (event: Event) => void
+export const getComponentUidFromEvent: (event: Event) => number
 
 export const rememberFocus: (
   $Viewlet: HTMLElement,
