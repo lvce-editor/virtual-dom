@@ -16,6 +16,9 @@ const getUidTarget = ($Element) => {
 
 export const getComponentUid = ($Element) => {
   const $Target = getUidTarget($Element)
+  if (!$Target) {
+    return 0
+  }
   return $Target[uidSymbol]
 }
 
