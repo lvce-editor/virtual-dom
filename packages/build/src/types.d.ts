@@ -20,3 +20,5 @@ export const rememberFocus: (
   eventMap: any,
   uid: number,
 ) => void
+
+export const registerEventListeners: any

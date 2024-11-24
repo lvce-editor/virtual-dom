@@ -5,6 +5,7 @@ export const setProp = (
   key: string,
   value: any,
   eventMap: any,
+  newEventMap?: any,
 ) => {
   switch (key) {
     case 'maskImage':
@@ -70,7 +71,7 @@ export const setProp = (
       if (!eventMap || !value) {
         return
       }
-      AttachEvent.attachEvent($Element, eventMap, eventName, value)
+      AttachEvent.attachEvent($Element, eventMap, eventName, value, newEventMap)
       break
     default:
       if (key.startsWith('data-')) {

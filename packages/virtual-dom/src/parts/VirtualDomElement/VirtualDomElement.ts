@@ -6,18 +6,18 @@ const renderDomTextNode = (element) => {
   return document.createTextNode(element.text)
 }
 
-const renderDomElement = (element, eventMap) => {
+const renderDomElement = (element, eventMap, newEventMap) => {
   const tag = ElementTagMap.getElementTag(element.type)
   const $Element = document.createElement(tag)
-  VirtualDomElementProps.setProps($Element, element, eventMap)
+  VirtualDomElementProps.setProps($Element, element, eventMap, newEventMap)
   return $Element
 }
 
-export const render = (element, eventMap) => {
+export const render = (element, eventMap, newEventMap) => {
   switch (element.type) {
     case VirtualDomElements.Text:
       return renderDomTextNode(element)
     default:
-      return renderDomElement(element, eventMap)
+      return renderDomElement(element, eventMap, newEventMap)
   }
 }
