@@ -1,6 +1,11 @@
 import * as AttachEvent from '../AttachEvent/AttachEvent.ts'
 
-export const setProp = ($Element: HTMLElement, key: string, value: any, eventMap: any) => {
+export const setProp = (
+  $Element: HTMLElement,
+  key: string,
+  value: any,
+  eventMap: any,
+) => {
   switch (key) {
     case 'maskImage':
       $Element.style.maskImage = `url('${value}')`
