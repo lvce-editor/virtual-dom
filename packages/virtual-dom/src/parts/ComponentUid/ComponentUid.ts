@@ -1,18 +1,11 @@
-const uidSymbol = Symbol('uid')
+import { getUidTarget } from '../GetUidTarget/GetUidTarget.ts'
+import { uidSymbol } from '../UidSymbol/UidSymbol.ts'
 
 export const setComponentUid = ($Element, uid) => {
   $Element[uidSymbol] = uid
 }
 
-const getUidTarget = ($Element) => {
-  while ($Element) {
-    if ($Element[uidSymbol]) {
-      return $Element
-    }
-    $Element = $Element.parentNode
-  }
-  return undefined
-}
+
 
 export const getComponentUid = ($Element) => {
   const $Target = getUidTarget($Element)
