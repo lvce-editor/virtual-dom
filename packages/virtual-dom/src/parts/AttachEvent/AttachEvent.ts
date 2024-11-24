@@ -9,7 +9,8 @@ export const attachEvent = (
   newEventMap?: any,
 ) => {
   if (newEventMap && newEventMap[value]) {
-    console.log('new event map', newEventMap)
+    // TODO support event listener options
+    $Node.addEventListener(key, newEventMap[value])
     return
   }
   const listener = eventMap[value]
