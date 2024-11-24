@@ -1,10 +1,8 @@
 import { execa } from 'execa'
 import { cp, mkdir, readFile, rm, writeFile } from 'node:fs/promises'
-import path, { dirname, join } from 'node:path'
-import { fileURLToPath } from 'node:url'
+import { join } from 'node:path'
+import { root } from './root.js'
 
-const __dirname = dirname(fileURLToPath(import.meta.url))
-const root = path.join(__dirname, '..', '..', '..')
 const dist = join(root, 'dist')
 
 const readJson = async (path) => {
