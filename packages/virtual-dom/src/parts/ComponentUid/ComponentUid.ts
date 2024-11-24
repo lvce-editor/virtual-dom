@@ -5,8 +5,6 @@ export const setComponentUid = ($Element, uid) => {
   $Element[uidSymbol] = uid
 }
 
-
-
 export const getComponentUid = ($Element) => {
   const $Target = getUidTarget($Element)
   if (!$Target) {
