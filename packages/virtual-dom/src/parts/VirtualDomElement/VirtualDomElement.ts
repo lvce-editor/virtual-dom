@@ -13,7 +13,7 @@ const renderDomElement = (element, eventMap, newEventMap) => {
   return $Element
 }
 
-export const render = (element, eventMap, newEventMap) => {
+export const render = (element, eventMap, newEventMap?: any) => {
   switch (element.type) {
     case VirtualDomElements.Text:
       return renderDomTextNode(element)
