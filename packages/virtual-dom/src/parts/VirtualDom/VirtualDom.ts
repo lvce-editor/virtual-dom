@@ -39,8 +39,8 @@ export const renderIncremental = ($Parent, dom) => {
  * @param {any[]} elements
  * @returns
  */
-export const render = (elements, eventMap = {}) => {
+export const render = (elements, eventMap = {}, newEventMap = {}) => {
   const $Root = document.createElement('div')
-  RenderInternal.renderInternal($Root, elements, eventMap)
+  RenderInternal.renderInternal($Root, elements, eventMap, newEventMap)
   return $Root
 }

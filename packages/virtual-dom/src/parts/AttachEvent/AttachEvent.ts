@@ -6,7 +6,13 @@ export const attachEvent = (
   eventMap: any,
   key: string,
   value: string,
+  newEventMap?: any,
 ) => {
+  if (newEventMap && newEventMap[value]) {
+    // TODO support event listener options
+    $Node.addEventListener(key, newEventMap[value])
+    return
+  }
   const listener = eventMap[value]
   if (!listener) {
     console.warn('listener not found', value)

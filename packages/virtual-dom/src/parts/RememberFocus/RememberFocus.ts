@@ -1,5 +1,6 @@
 import * as ComponentUid from '../ComponentUid/ComponentUid.ts'
 import * as VirtualDom from '../VirtualDom/VirtualDom.ts'
+import * as RegisterEventListeners from '../RegisterEventListeners/RegisterEventListeners.ts'
 
 const queryInputs = ($Viewlet: HTMLElement) => {
   return [...$Viewlet.querySelectorAll('input, textarea')]
@@ -26,7 +27,8 @@ export const rememberFocus = (
     inputMap[$Input.name] = $Input.value
   }
   if (uid) {
-    const $New = VirtualDom.render(dom, eventMap).firstChild
+    const newEventMap = RegisterEventListeners.getEventListenerMap(uid)
+    const $New = VirtualDom.render(dom, eventMap, newEventMap).firstChild
     ComponentUid.setComponentUid($New, uid)
     // @ts-ignore
     $Viewlet.replaceWith($New)
