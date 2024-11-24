@@ -8,7 +8,7 @@ export const attachEvent = (
   value: string,
   newEventMap?: any,
 ) => {
-  if (newEventMap) {
+  if (newEventMap && newEventMap[value]) {
     console.log('new event map', newEventMap)
     return
   }
