@@ -2,7 +2,7 @@ import { expect, test } from '@jest/globals'
 import * as NameAnonymousFunction from '../src/parts/NameAnonymousFunction/NameAnonymousFunction.ts'
 
 test('nameAnonymousFunction - sets function name', () => {
-  const anonymousFunction = () => {
+  const anonymousFunction = (): string => {
     return 'test'
   }
   expect(anonymousFunction.name).toBe('anonymousFunction')
@@ -11,7 +11,7 @@ test('nameAnonymousFunction - sets function name', () => {
 })
 
 test('nameAnonymousFunction - can override existing function name', () => {
-  function namedFunction() {
+  function namedFunction(): string {
     return 'test'
   }
   expect(namedFunction.name).toBe('namedFunction')
@@ -20,7 +20,7 @@ test('nameAnonymousFunction - can override existing function name', () => {
 })
 
 test('nameAnonymousFunction - works with arrow functions', () => {
-  const arrowFunction = () => 'test'
+  const arrowFunction = (): string => 'test'
   expect(arrowFunction.name).toBe('arrowFunction')
   NameAnonymousFunction.nameAnonymousFunction(arrowFunction, 'arrowTest')
   expect(arrowFunction.name).toBe('arrowTest')
