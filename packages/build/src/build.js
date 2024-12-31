@@ -109,3 +109,8 @@ await cp(
   join(__dirname, 'types.d.ts'),
   join(root, 'dist', 'virtual-dom', 'dist', 'index.d.ts'),
 )
+
+await cp(
+  join(__dirname, 'types-worker.d.ts'),
+  join(root, 'dist', 'virtual-dom-worker', 'dist', 'index.d.ts'),
+)
