@@ -4,3 +4,5 @@ export interface VirtualDomNode {
 }
 
 export const text: (data: string) => VirtualDomNode
+
+export const mergeClassNames: (...classNames: readonly string[]) => string
