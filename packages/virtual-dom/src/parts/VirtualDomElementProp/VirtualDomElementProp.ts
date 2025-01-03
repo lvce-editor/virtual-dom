@@ -44,6 +44,9 @@ export const setProp = (
         $Element.removeAttribute('aria-owns')
       }
       break
+    case 'ariaControls':
+      $Element.setAttribute('aria-controls', value)
+      break
     case 'inputType':
       // @ts-ignore
       $Element.type = value
