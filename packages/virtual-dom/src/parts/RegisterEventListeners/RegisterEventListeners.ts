@@ -1,12 +1,9 @@
 import * as ComponentUid from '../ComponentUid/ComponentUid.ts'
+import * as GetListenerArgs from '../GetListenerArgs/GetListenerArgs.ts'
 import * as IpcState from '../IpcState/IpcState.ts'
 import * as NameAnonymousFunction from '../NameAnonymousFunction/NameAnonymousFunction.ts'
 
 const listeners = Object.create(null)
-
-const getArgs = (params, event) => {
-  return [...params]
-}
 
 const createFn = (info) => {
   const fn = (event) => {
@@ -14,7 +11,7 @@ const createFn = (info) => {
       event.preventDefault(event)
     }
     const uid = ComponentUid.getComponentUidFromEvent(event)
-    const args = getArgs(info.params, event)
+    const args = GetListenerArgs.getArgs(info.params, event)
     if (args.length === 0) {
       return
     }
