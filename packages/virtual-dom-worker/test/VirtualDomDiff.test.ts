@@ -67,7 +67,7 @@ test('diff - attribute removed', () => {
   ])
 })
 
-test.skip('diff - nested nodes', () => {
+test('diff - nested nodes', () => {
   const oldNodes = [
     {
       type: VirtualDomElements.Div,
@@ -377,7 +377,7 @@ test('diff - same text content should not generate patches', () => {
   expect(patches).toEqual([])
 })
 
-test.skip('diff - multiple text nodes in sequence', () => {
+test('diff - multiple text nodes in sequence', () => {
   const oldNodes = [
     {
       type: VirtualDomElements.Div,
@@ -409,7 +409,7 @@ test.skip('diff - multiple text nodes in sequence', () => {
   ])
 })
 
-test.skip('diff - table structure', () => {
+test('diff - table structure', () => {
   const oldNodes = [
     {
       type: VirtualDomElements.Table,
@@ -442,7 +442,7 @@ test.skip('diff - table structure', () => {
   ])
 })
 
-test.skip('diff - deep nested structure', () => {
+test('diff - deep nested structure', () => {
   const oldNodes = [
     {
       type: VirtualDomElements.Div,
@@ -483,7 +483,7 @@ test.skip('diff - deep nested structure', () => {
   ])
 })
 
-test.skip('diff - node with multiple children', () => {
+test('diff - node with multiple children', () => {
   const oldNodes = [
     {
       type: VirtualDomElements.Div,
