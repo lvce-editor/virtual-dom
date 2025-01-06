@@ -1,5 +1,7 @@
 import type { Patch } from '../Patch/Patch.ts'
 import type { VirtualDomNode } from '../VirtualDomNode/VirtualDomNode.ts'
+import * as PatchType from '../PatchType/PatchType.ts'
+import * as VirtualDomElements from '../VirtualDomElements/VirtualDomElements.ts'
 
 export const diff = (
   oldNode: VirtualDomNode,
@@ -10,7 +12,7 @@ export const diff = (
   // Different node types - complete replacement
   if (oldNode.type !== newNode.type) {
     patches.push({
-      type: 'replace',
+      type: PatchType.Replace,
       index: 0,
       node: newNode,
     })
@@ -18,11 +20,14 @@ export const diff = (
   }
 
   // Text node changes
-  if (oldNode.type === 12 && newNode.type === 12) {
+  if (
+    oldNode.type === VirtualDomElements.Text &&
+    newNode.type === VirtualDomElements.Text
+  ) {
     // VirtualDomElements.Text
     if (oldNode.text !== newNode.text) {
       patches.push({
-        type: 'setText',
+        type: PatchType.SetText,
         index: 0,
         value: newNode.text,
       })
@@ -35,7 +40,7 @@ export const diff = (
     if (key === 'type' || key === 'childCount') continue
     if (oldNode[key] !== newNode[key]) {
       patches.push({
-        type: 'setAttribute',
+        type: PatchType.SetAttribute,
         index: 0,
         key,
         value: newNode[key],

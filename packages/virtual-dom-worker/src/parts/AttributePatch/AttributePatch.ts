@@ -1,6 +1,6 @@
 export interface AttributePatch {
-  type: 'setAttribute'
-  index: number
-  key: string
-  value: any
+  readonly type: 3
+  readonly index: number
+  readonly key: string
+  readonly value: any
 }
