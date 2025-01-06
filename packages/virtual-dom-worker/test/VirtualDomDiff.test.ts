@@ -1,7 +1,7 @@
 import { expect, test } from '@jest/globals'
+import { text } from '../src/parts/Text/Text.ts'
 import { diff } from '../src/parts/VirtualDomDiff/VirtualDomDiff.ts'
 import * as VirtualDomElements from '../src/parts/VirtualDomElements/VirtualDomElements.ts'
-import { text } from '../src/parts/Text/Text.ts'
 
 test('diff - text node changed', () => {
   const oldNode = text('hello')
