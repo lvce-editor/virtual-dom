@@ -1,5 +1,5 @@
 export interface TextPatch {
-  type: 'setText'
-  index: number
-  value: string
+  readonly type: 1
+  readonly index: number
+  readonly value: string
 }
