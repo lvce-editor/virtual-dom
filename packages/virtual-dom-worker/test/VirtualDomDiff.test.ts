@@ -328,17 +328,23 @@ test('diff - same text content should not generate patches', () => {
 })
 
 test.skip('diff - multiple text nodes in sequence', () => {
-  const oldNode = {
-    type: VirtualDomElements.Div,
-    childCount: 2,
-    children: [text('hello'), text('world')],
-  }
-  const newNode = {
-    type: VirtualDomElements.Div,
-    childCount: 2,
-    children: [text('hi'), text('earth')],
-  }
-  const patches = diff(oldNode, newNode)
+  const oldNodes = [
+    {
+      type: VirtualDomElements.Div,
+      childCount: 2,
+    },
+    text('hello'),
+    text('world'),
+  ]
+  const newNodes = [
+    {
+      type: VirtualDomElements.Div,
+      childCount: 2,
+    },
+    text('hi'),
+    text('earth'),
+  ]
+  const patches = diff(oldNodes[0], newNodes[0])
   expect(patches).toEqual([
     {
       type: PatchType.SetText,
@@ -353,35 +359,115 @@ test.skip('diff - multiple text nodes in sequence', () => {
   ])
 })
 
-test.skip('diff - table structure changes', () => {
-  const oldNode = {
-    type: VirtualDomElements.Table,
-    childCount: 1,
-    children: [
-      {
-        type: VirtualDomElements.Tr,
-        childCount: 1,
-        children: [text('old')],
-      },
-    ],
-  }
-  const newNode = {
-    type: VirtualDomElements.Table,
-    childCount: 1,
-    children: [
-      {
-        type: VirtualDomElements.Tr,
-        childCount: 1,
-        children: [text('new')],
-      },
-    ],
-  }
-  const patches = diff(oldNode, newNode)
+test.skip('diff - table structure', () => {
+  const oldNodes = [
+    {
+      type: VirtualDomElements.Table,
+      childCount: 1,
+    },
+    {
+      type: VirtualDomElements.Tr,
+      childCount: 1,
+    },
+    text('old'),
+  ]
+  const newNodes = [
+    {
+      type: VirtualDomElements.Table,
+      childCount: 1,
+    },
+    {
+      type: VirtualDomElements.Tr,
+      childCount: 1,
+    },
+    text('new'),
+  ]
+  const patches = diff(oldNodes[0], newNodes[0])
   expect(patches).toEqual([
     {
       type: PatchType.SetText,
       index: 2,
       value: 'new',
+    },
+  ])
+})
+
+test.skip('diff - deep nested structure', () => {
+  const oldNodes = [
+    {
+      type: VirtualDomElements.Div,
+      childCount: 1,
+    },
+    {
+      type: VirtualDomElements.Div,
+      childCount: 1,
+    },
+    {
+      type: VirtualDomElements.Div,
+      childCount: 1,
+    },
+    text('deep'),
+  ]
+  const newNodes = [
+    {
+      type: VirtualDomElements.Div,
+      childCount: 1,
+    },
+    {
+      type: VirtualDomElements.Div,
+      childCount: 1,
+    },
+    {
+      type: VirtualDomElements.Div,
+      childCount: 1,
+    },
+    text('deeper'),
+  ]
+  const patches = diff(oldNodes[0], newNodes[0])
+  expect(patches).toEqual([
+    {
+      type: PatchType.SetText,
+      index: 3,
+      value: 'deeper',
+    },
+  ])
+})
+
+test.skip('diff - node with multiple children', () => {
+  const oldNodes = [
+    {
+      type: VirtualDomElements.Div,
+      childCount: 3,
+    },
+    text('one'),
+    text('two'),
+    text('three'),
+  ]
+  const newNodes = [
+    {
+      type: VirtualDomElements.Div,
+      childCount: 3,
+    },
+    text('uno'),
+    text('dos'),
+    text('tres'),
+  ]
+  const patches = diff(oldNodes[0], newNodes[0])
+  expect(patches).toEqual([
+    {
+      type: PatchType.SetText,
+      index: 1,
+      value: 'uno',
+    },
+    {
+      type: PatchType.SetText,
+      index: 2,
+      value: 'dos',
+    },
+    {
+      type: PatchType.SetText,
+      index: 3,
+      value: 'tres',
     },
   ])
 })
@@ -440,51 +526,6 @@ test('diff - change element with ARIA attributes', () => {
       index: 0,
       key: 'aria-expanded',
       value: true,
-    },
-  ])
-})
-
-test.skip('diff - deep nested structure', () => {
-  const oldNode = {
-    type: VirtualDomElements.Div,
-    childCount: 1,
-    children: [
-      {
-        type: VirtualDomElements.Div,
-        childCount: 1,
-        children: [
-          {
-            type: VirtualDomElements.Div,
-            childCount: 1,
-            children: [text('deep')],
-          },
-        ],
-      },
-    ],
-  }
-  const newNode = {
-    type: VirtualDomElements.Div,
-    childCount: 1,
-    children: [
-      {
-        type: VirtualDomElements.Div,
-        childCount: 1,
-        children: [
-          {
-            type: VirtualDomElements.Div,
-            childCount: 1,
-            children: [text('deeper')],
-          },
-        ],
-      },
-    ],
-  }
-  const patches = diff(oldNode, newNode)
-  expect(patches).toEqual([
-    {
-      type: PatchType.SetText,
-      index: 3,
-      value: 'deeper',
     },
   ])
 })
