@@ -1,25 +1,5 @@
+import type { Patch } from '../Patch/Patch.ts'
 import type { VirtualDomNode } from '../VirtualDomNode/VirtualDomNode.ts'
-
-export interface TextPatch {
-  type: 'setText'
-  index: number
-  value: string
-}
-
-export interface AttributePatch {
-  type: 'setAttribute'
-  index: number
-  key: string
-  value: any
-}
-
-export interface ReplacePatch {
-  type: 'replace'
-  index: number
-  node: VirtualDomNode
-}
-
-export type Patch = TextPatch | AttributePatch | ReplacePatch
 
 export const diff = (
   oldNode: VirtualDomNode,
