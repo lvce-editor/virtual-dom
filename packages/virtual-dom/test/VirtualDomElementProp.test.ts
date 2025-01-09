@@ -88,3 +88,15 @@ test('default behavior - sets property directly', () => {
   VirtualDomElementProp.setProp($Element, 'title', 'Test Title', {})
   expect($Element.title).toBe('Test Title')
 })
+
+test('setting id to undefined removes id', () => {
+  const $Element = document.createElement('div')
+  VirtualDomElementProp.setProp($Element, 'id', undefined, {})
+  expect($Element.id).toBe('')
+})
+
+test('setting id to empty string removes id', () => {
+  const $Element = document.createElement('div')
+  VirtualDomElementProp.setProp($Element, 'id', '', {})
+  expect($Element.id).toBe('')
+})
