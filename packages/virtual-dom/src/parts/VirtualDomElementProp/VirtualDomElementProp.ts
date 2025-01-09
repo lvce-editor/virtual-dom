@@ -76,6 +76,13 @@ export const setProp = (
       }
       AttachEvent.attachEvent($Element, eventMap, eventName, value, newEventMap)
       break
+    case 'id':
+      if (value) {
+        $Element[key] = value
+      } else {
+        $Element.removeAttribute(key)
+      }
+      break
     default:
       if (key.startsWith('data-')) {
         $Element.dataset[key.slice('data-'.length)] = value
