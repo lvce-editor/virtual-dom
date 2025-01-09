@@ -12,20 +12,25 @@ export const rememberFocus = (
   eventMap: any,
   uid = 0,
 ) => {
-  // TODO replace this workaround with
-  // virtual dom diffing
   const oldLeft = $Viewlet.style.left
   const oldTop = $Viewlet.style.top
   const oldWidth = $Viewlet.style.width
   const oldHeight = $Viewlet.style.height
-  // @ts-expect-error
-  const focused = document.activeElement.getAttribute('name')
+
+  const activeElement = document.activeElement
+  const isTreeFocused = activeElement?.getAttribute('role') === 'tree'
+  const isRootTree =
+    $Viewlet.getAttribute('role') === 'tree' && activeElement === $Viewlet
+
+  const focused = activeElement?.getAttribute('name')
+
   const $$Inputs = queryInputs($Viewlet)
   const inputMap = Object.create(null)
   for (const $Input of $$Inputs) {
     // @ts-ignore
     inputMap[$Input.name] = $Input.value
   }
+
   if (uid) {
     const newEventMap = RegisterEventListeners.getEventListenerMap(uid)
     const $New = VirtualDom.render(dom, eventMap, newEventMap).firstChild
@@ -37,12 +42,22 @@ export const rememberFocus = (
   } else {
     VirtualDom.renderInto($Viewlet, dom, eventMap)
   }
+
   const $$NewInputs = queryInputs($Viewlet)
   for (const $Input of $$NewInputs) {
     // @ts-ignore
     $Input.value = inputMap[$Input.name] || $Input.value || ''
   }
-  if (focused) {
+
+  if (isRootTree) {
+    $Viewlet.focus()
+  } else if (isTreeFocused) {
+    const $Tree = $Viewlet.querySelector('[role="tree"]')
+    if ($Tree) {
+      // @ts-ignore
+      $Tree.focus()
+    }
+  } else if (focused) {
     const $Focused = $Viewlet.querySelector(`[name="${focused}"]`)
     if ($Focused) {
       // @ts-ignore
