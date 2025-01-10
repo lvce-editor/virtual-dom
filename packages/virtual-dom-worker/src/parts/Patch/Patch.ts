@@ -1,8 +1,9 @@
+import type { AddPatch } from '../AddPatch/AddPatch.ts'
 import type { AttributePatch } from '../AttributePatch/AttributePatch.ts'
-import type { ReplacePatch } from '../ReplacePatch/ReplacePatch.ts'
-import type { TextPatch } from '../TextPatch/TextPatch.ts'
 import type { RemoveAttributePatch } from '../RemoveAttributePatch/RemoveAttributePatch.ts'
 import type { RemovePatch } from '../RemovePatch/RemovePatch.ts'
+import type { ReplacePatch } from '../ReplacePatch/ReplacePatch.ts'
+import type { TextPatch } from '../TextPatch/TextPatch.ts'
 
 export type Patch =
   | TextPatch
@@ -10,3 +11,4 @@ export type Patch =
   | ReplacePatch
   | RemoveAttributePatch
   | RemovePatch
+  | AddPatch
