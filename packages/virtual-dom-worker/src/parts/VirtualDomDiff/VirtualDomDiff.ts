@@ -1,5 +1,6 @@
 import type { Patch } from '../Patch/Patch.ts'
 import type { VirtualDomNode } from '../VirtualDomNode/VirtualDomNode.ts'
+import * as GetTotalChildCount from '../GetTotalChildCount/GetTotalChildCount.ts'
 import * as PatchType from '../PatchType/PatchType.ts'
 import * as VirtualDomElements from '../VirtualDomElements/VirtualDomElements.ts'
 
@@ -9,43 +10,34 @@ export const diff = (
 ): readonly Patch[] => {
   const patches: Patch[] = []
 
-  // Compare nodes at each index
-  for (let i = 0; i < Math.max(oldNodes.length, newNodes.length); i++) {
+  let i = 0 // Index for oldNodes
+  let j = 0 // Index for newNodes
+
+  const oldNodeCount = oldNodes.length
+  const newNodeCount = newNodes.length
+
+  while (i < oldNodeCount && j < newNodeCount) {
     const oldNode = oldNodes[i]
-    const newNode = newNodes[i]
+    const newNode = newNodes[j]
 
-    // Handle node removal
-    if (!newNode) {
-      patches.push({
-        type: PatchType.Replace,
-        index: i,
-        // @ts-ignore
-        node: undefined,
-      })
-      continue
-    }
-
-    // Handle node addition
-    if (!oldNode) {
-      patches.push({
-        type: PatchType.Replace,
-        index: i,
-        node: newNode,
-      })
-      continue
-    }
-
-    // Different node types - complete replacement
     if (oldNode.type !== newNode.type) {
+      const oldTotal = GetTotalChildCount.getTotalChildCount(oldNodes, i)
+      const newTotal = GetTotalChildCount.getTotalChildCount(newNodes, j)
       patches.push({
-        type: PatchType.Replace,
+        type: PatchType.Remove,
         index: i,
-        node: newNode,
       })
+      patches.push({
+        type: PatchType.Add,
+        index: i,
+        nodes: newNodes.slice(j, j + newTotal - 1),
+      })
+      i += oldTotal
+      j += newTotal
       continue
     }
 
-    // Text node changes
+    // text node
     if (
       oldNode.type === VirtualDomElements.Text &&
       newNode.type === VirtualDomElements.Text
@@ -57,6 +49,8 @@ export const diff = (
           value: newNode.text,
         })
       }
+      i++
+      j++
       continue
     }
 
@@ -90,7 +84,28 @@ export const diff = (
         })
       }
     }
+
+    i++
+    j++
   }
 
+  while (i < oldNodes.length) {
+    const count = GetTotalChildCount.getTotalChildCount(oldNodes, i)
+    patches.push({
+      type: PatchType.Remove,
+      index: i,
+    })
+    i += count
+  }
+  while (j < newNodes.length) {
+    const count = GetTotalChildCount.getTotalChildCount(newNodes, j)
+    // TODO find right index to add
+    patches.push({
+      type: PatchType.Add,
+      index: i,
+      nodes: newNodes.slice(j, j + count),
+    })
+    j += count
+  }
   return patches
 }
