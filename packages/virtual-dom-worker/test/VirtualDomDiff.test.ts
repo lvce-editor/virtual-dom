@@ -621,3 +621,38 @@ test('diff - form elements', () => {
     },
   ])
 })
+
+test.skip('diff - child removed, sibling added', () => {
+  const oldNodes = [
+    {
+      type: VirtualDomElements.Div,
+      childCount: 1,
+    },
+    {
+      type: VirtualDomElements.Div,
+      childCount: 0,
+    },
+    {
+      type: VirtualDomElements.Div,
+      childCount: 0,
+    },
+  ]
+  const newNodes = [
+    {
+      type: VirtualDomElements.Div,
+      childCount: 0,
+    },
+    {
+      type: VirtualDomElements.Div,
+      childCount: 0,
+    },
+    {
+      type: VirtualDomElements.Div,
+      childCount: 0,
+    },
+  ]
+  const patches = diff(oldNodes, newNodes)
+  expect(patches).toEqual([
+    // TODO
+  ])
+})
