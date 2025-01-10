@@ -236,7 +236,7 @@ test('diff - remove all attributes', () => {
   ])
 })
 
-test.skip('diff - change node type with attributes', () => {
+test('diff - change node type with attributes', () => {
   const oldNodes = [
     {
       type: VirtualDomElements.Div,
@@ -254,9 +254,19 @@ test.skip('diff - change node type with attributes', () => {
   const patches = diff(oldNodes, newNodes)
   expect(patches).toEqual([
     {
-      type: PatchType.Replace,
+      type: PatchType.Remove,
       index: 0,
-      node: newNodes[0],
+    },
+    {
+      type: PatchType.Add,
+      index: 0,
+      nodes: [
+        {
+          type: VirtualDomElements.Span,
+          id: 'new-id',
+          childCount: 0,
+        },
+      ],
     },
   ])
 })
@@ -742,6 +752,127 @@ test('diff - child added, sibling removed', () => {
     {
       type: PatchType.Remove,
       index: 2,
+    },
+  ])
+})
+
+test('diff - text node changed', () => {
+  const oldNodes = [text('hello')]
+  const newNodes = [text('world')]
+  const patches = diff(oldNodes, newNodes)
+  expect(patches).toEqual([
+    {
+      type: PatchType.SetText,
+      index: 0,
+      value: 'world',
+    },
+  ])
+})
+
+test('diff - attribute changed', () => {
+  const oldNodes = [
+    {
+      type: VirtualDomElements.Div,
+      className: 'old-class',
+      childCount: 0,
+    },
+  ]
+  const newNodes = [
+    {
+      type: VirtualDomElements.Div,
+      className: 'new-class',
+      childCount: 0,
+    },
+  ]
+  const patches = diff(oldNodes, newNodes)
+  expect(patches).toEqual([
+    {
+      type: PatchType.SetAttribute,
+      index: 0,
+      key: 'className',
+      value: 'new-class',
+    },
+  ])
+})
+
+test('diff - attribute removed', () => {
+  const oldNodes = [
+    {
+      type: VirtualDomElements.Div,
+      className: 'old-class',
+      childCount: 0,
+    },
+  ]
+  const newNodes = [
+    {
+      type: VirtualDomElements.Div,
+      childCount: 0,
+    },
+  ]
+  const patches = diff(oldNodes, newNodes)
+  expect(patches).toEqual([
+    {
+      type: PatchType.RemoveAttribute,
+      index: 0,
+      key: 'className',
+    },
+  ])
+})
+test('diff - nested nodes', () => {
+  const oldNodes = [
+    {
+      type: VirtualDomElements.Div,
+      childCount: 1,
+    },
+    text('hello'),
+  ]
+  const newNodes = [
+    {
+      type: VirtualDomElements.Div,
+      childCount: 1,
+    },
+    text('world'),
+  ]
+  const patches = diff(oldNodes, newNodes)
+  expect(patches).toEqual([
+    {
+      type: PatchType.SetText,
+      index: 1,
+      value: 'world',
+    },
+  ])
+})
+
+test('diff - multiple attributes changed', () => {
+  const oldNodes = [
+    {
+      type: VirtualDomElements.Div,
+      className: 'old-class',
+      id: 'old-id',
+      childCount: 0,
+    },
+  ]
+  const newNodes = [
+    {
+      type: VirtualDomElements.Div,
+      className: 'new-class',
+      id: 'new-id',
+      childCount: 0,
+    },
+  ]
+  const patches = diff(oldNodes, newNodes)
+  expect(patches).toEqual([
+    {
+      type: PatchType.SetAttribute,
+      index: 0,
+      key: 'className',
+      value: 'new-class',
+    },
+    {
+      type: PatchType.SetAttribute,
+      index: 0,
+      key: 'id',
+      value: 'new-id',
     },
   ])
 })
