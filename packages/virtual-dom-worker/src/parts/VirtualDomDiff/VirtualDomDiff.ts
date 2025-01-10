@@ -12,6 +12,8 @@ export const diff = (
 
   let i = 0 // Index for oldNodes
   let j = 0 // Index for newNodes
+  let oldDepth = 0
+  let newDepth = 0
 
   const oldNodeCount = oldNodes.length
   const newNodeCount = newNodes.length
@@ -83,6 +85,38 @@ export const diff = (
           key,
         })
       }
+    }
+
+    if (oldNode.childCount && newNode.childCount) {
+      oldDepth++
+      newDepth++
+      i++
+      j++
+      continue
+    }
+
+    if (oldNode.childCount) {
+      const total = GetTotalChildCount.getTotalChildCount(oldNodes, i)
+      // TODO remove all old children
+      patches.push({
+        type: PatchType.Remove,
+        index: i + 1,
+      })
+      i += total
+      j++
+      continue
+    }
+
+    if (newNode.childCount) {
+      const total = GetTotalChildCount.getTotalChildCount(newNodes, j)
+      patches.push({
+        type: PatchType.Add,
+        index: i + 1,
+        nodes: newNodes.slice(j, j + total),
+      })
+      i++
+      j += total
+      continue
     }
 
     i++

@@ -681,6 +681,19 @@ test('diff - child removed, sibling added', () => {
   ]
   const patches = diff(oldNodes, newNodes)
   expect(patches).toEqual([
-    // TODO
+    {
+      type: PatchType.Remove,
+      index: 1,
+    },
+    {
+      type: PatchType.Add,
+      index: 3,
+      nodes: [
+        {
+          type: 4,
+          childCount: 0,
+        },
+      ],
+    },
   ])
 })
