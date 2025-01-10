@@ -697,3 +697,51 @@ test('diff - child removed, sibling added', () => {
     },
   ])
 })
+
+test('diff - child added, sibling removed', () => {
+  const oldNodes = [
+    {
+      type: VirtualDomElements.Div,
+      childCount: 0,
+    },
+    {
+      type: VirtualDomElements.Div,
+      childCount: 0,
+    },
+    {
+      type: VirtualDomElements.Div,
+      childCount: 0,
+    },
+  ]
+  const newNodes = [
+    {
+      type: VirtualDomElements.Div,
+      childCount: 1,
+    },
+    {
+      type: VirtualDomElements.Div,
+      childCount: 0,
+    },
+    {
+      type: VirtualDomElements.Div,
+      childCount: 0,
+    },
+  ]
+  const patches = diff(oldNodes, newNodes)
+  expect(patches).toEqual([
+    {
+      type: PatchType.Add,
+      index: 1,
+      nodes: [
+        {
+          type: 4,
+          childCount: 0,
+        },
+      ],
+    },
+    {
+      type: PatchType.Remove,
+      index: 2,
+    },
+  ])
+})
