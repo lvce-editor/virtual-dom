@@ -236,7 +236,7 @@ test('diff - remove all attributes', () => {
   ])
 })
 
-test.skip('diff - change node type with attributes', () => {
+test('diff - change node type with attributes', () => {
   const oldNodes = [
     {
       type: VirtualDomElements.Div,
@@ -254,9 +254,19 @@ test.skip('diff - change node type with attributes', () => {
   const patches = diff(oldNodes, newNodes)
   expect(patches).toEqual([
     {
-      type: PatchType.Replace,
+      type: PatchType.Remove,
       index: 0,
-      node: newNodes[0],
+    },
+    {
+      type: PatchType.Add,
+      index: 0,
+      nodes: [
+        {
+          type: VirtualDomElements.Span,
+          id: 'new-id',
+          childCount: 0,
+        },
+      ],
     },
   ])
 })
