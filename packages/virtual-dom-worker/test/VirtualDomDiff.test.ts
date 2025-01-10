@@ -867,7 +867,7 @@ test('diff - multiple attributes changed', () => {
   ])
 })
 
-test('diff - empty nodes', () => {
+test('diff - two children added', () => {
   const oldNodes = [
     {
       type: VirtualDomElements.Div,
