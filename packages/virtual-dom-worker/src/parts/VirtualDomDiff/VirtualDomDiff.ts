@@ -112,7 +112,7 @@ export const diff = (
       patches.push({
         type: PatchType.Add,
         index: i + 1,
-        nodes: newNodes.slice(j, j + total),
+        nodes: newNodes.slice(j + 1, j + total),
       })
       i++
       j += total
