@@ -143,7 +143,7 @@ test('diff - empty nodes', () => {
   expect(patches).toEqual([])
 })
 
-test.skip('diff - node type changed from div to span', () => {
+test('diff - node type changed from div to span', () => {
   const oldNodes = [
     {
       type: VirtualDomElements.Div,
@@ -159,9 +159,18 @@ test.skip('diff - node type changed from div to span', () => {
   const patches = diff(oldNodes, newNodes)
   expect(patches).toEqual([
     {
-      type: PatchType.Replace,
+      type: PatchType.Remove,
       index: 0,
-      node: newNodes[0],
+    },
+    {
+      type: PatchType.Add,
+      index: 0,
+      nodes: [
+        {
+          type: VirtualDomElements.Span,
+          childCount: 0,
+        },
+      ],
     },
   ])
 })
@@ -265,7 +274,7 @@ test('diff - empty text to non-empty text', () => {
   ])
 })
 
-test.skip('diff - text node to div node', () => {
+test('diff - text node to div node', () => {
   const oldNodes = [text('hello')]
   const newNodes = [
     {
@@ -276,9 +285,18 @@ test.skip('diff - text node to div node', () => {
   const patches = diff(oldNodes, newNodes)
   expect(patches).toEqual([
     {
-      type: PatchType.Replace,
+      type: PatchType.Remove,
       index: 0,
-      node: newNodes[0],
+    },
+    {
+      type: PatchType.Add,
+      index: 0,
+      nodes: [
+        {
+          type: VirtualDomElements.Div,
+          childCount: 0,
+        },
+      ],
     },
   ])
 })
@@ -345,7 +363,7 @@ test('diff - mixed attribute changes', () => {
   ])
 })
 
-test.skip('diff - button to input conversion', () => {
+test('diff - button to input conversion', () => {
   const oldNodes = [
     {
       type: VirtualDomElements.Button,
@@ -363,9 +381,19 @@ test.skip('diff - button to input conversion', () => {
   const patches = diff(oldNodes, newNodes)
   expect(patches).toEqual([
     {
-      type: PatchType.Replace,
+      type: PatchType.Remove,
       index: 0,
-      node: newNodes[0],
+    },
+    {
+      type: PatchType.Add,
+      index: 0,
+      nodes: [
+        {
+          type: VirtualDomElements.Input,
+          className: 'input',
+          childCount: 0,
+        },
+      ],
     },
   ])
 })
