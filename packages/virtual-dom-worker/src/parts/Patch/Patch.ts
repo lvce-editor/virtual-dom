@@ -1,5 +1,7 @@
 import type { AddPatch } from '../AddPatch/AddPatch.ts'
 import type { AttributePatch } from '../AttributePatch/AttributePatch.ts'
+import type { NavigateChildPatch } from '../NavigateChildPatch/NavigateChildPatch.ts'
+import type { NavigateParentPatch } from '../NavigateParentPatch/NavigateParentPatch.ts'
 import type { RemoveAttributePatch } from '../RemoveAttributePatch/RemoveAttributePatch.ts'
 import type { RemovePatch } from '../RemovePatch/RemovePatch.ts'
 import type { ReplacePatch } from '../ReplacePatch/ReplacePatch.ts'
@@ -12,3 +14,5 @@ export type Patch =
   | RemoveAttributePatch
   | RemovePatch
   | AddPatch
+  | NavigateChildPatch
+  | NavigateParentPatch
