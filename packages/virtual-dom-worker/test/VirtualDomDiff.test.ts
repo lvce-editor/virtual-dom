@@ -113,13 +113,11 @@ test('diff - multiple attributes changed', () => {
   expect(patches).toEqual([
     {
       type: PatchType.SetAttribute,
-      index: 0,
       key: 'className',
       value: 'new-class',
     },
     {
       type: PatchType.SetAttribute,
-      index: 0,
       key: 'id',
       value: 'new-id',
     },
