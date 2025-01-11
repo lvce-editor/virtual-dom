@@ -12,6 +12,7 @@ export const diff = (
   let i = 0 // Index for oldNodes
   let j = 0 // Index for newNodes
   let siblingOffset = 0
+  let depth = 0
 
   const oldNodeCount = oldNodes.length
   const newNodeCount = newNodes.length
@@ -21,12 +22,14 @@ export const diff = (
     const newNode = newNodes[j]
 
     if (oldNode.type !== newNode.type) {
+      if (depth > 0) {
+        patches.push({
+          type: PatchType.NavigateParent,
+        })
+        depth--
+      }
       const oldTotal = GetTotalChildCount.getTotalChildCount(oldNodes, i)
       const newTotal = GetTotalChildCount.getTotalChildCount(newNodes, j)
-      const last = patches.at(-1)
-      if (last && last.type === PatchType.NavigateChild) {
-        patches.pop()
-      }
       patches.push({
         type: PatchType.RemoveChild,
         index: 0,
@@ -73,7 +76,6 @@ export const diff = (
       (key) => key !== 'type' && key !== 'childCount',
     )
 
-    // Check for changed or added attributes
     for (const key of newKeys) {
       if (oldNode[key] !== newNode[key]) {
         patches.push({
@@ -84,7 +86,6 @@ export const diff = (
       }
     }
 
-    // Check for removed attributes
     for (const key of oldKeys) {
       if (!(key in newNode)) {
         patches.push({
@@ -99,22 +100,24 @@ export const diff = (
         type: PatchType.NavigateChild,
         index: 0,
       })
+      depth++
       i++
       j++
       continue
     }
 
     if (oldNode.childCount) {
-      const total = GetTotalChildCount.getTotalChildCount(oldNodes, i)
-      // const last = patches.at(-1)
-      // if (last && last.type === PatchType.NavigateChild) {
-      //   patches.pop()
-      // }
+      if (depth > 0) {
+        patches.push({
+          type: PatchType.NavigateParent,
+        })
+        depth--
+      }
       patches.push({
         type: PatchType.RemoveChild,
         index: 0,
       })
-      i += total
+      i += GetTotalChildCount.getTotalChildCount(oldNodes, i)
       j++
       continue
     }
@@ -143,6 +146,12 @@ export const diff = (
         index: siblingOffset,
       })
       siblingOffset = 0
+    }
+    if (depth > 0) {
+      patches.push({
+        type: PatchType.NavigateParent,
+      })
+      depth--
     }
     patches.push({
       type: PatchType.RemoveChild,
