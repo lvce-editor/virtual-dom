@@ -120,7 +120,7 @@ test('element add', () => {
   expect($Node.firstElementChild?.className).toBe('test')
 })
 
-test.skip('expand search details', () => {
+test('expand search details', () => {
   const patches: readonly Patch[] = [
     {
       type: PatchType.NavigateChild,
