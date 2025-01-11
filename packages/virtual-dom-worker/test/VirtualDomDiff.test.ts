@@ -560,7 +560,6 @@ test('diff - deep nested structure', () => {
     },
     {
       type: PatchType.SetText,
-      index: 3,
       value: 'deeper',
     },
   ])
