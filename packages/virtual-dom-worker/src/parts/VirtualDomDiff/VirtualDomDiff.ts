@@ -125,10 +125,12 @@ export const diff = (
 
     if (oldNode.childCount) {
       ApplyPendingPatches.applyPendingPatches(patches, pendingPatches, 0)
-      patches.push({
-        type: PatchType.RemoveChild,
-        index: 0,
-      })
+      for (let k = 0; k < oldNode.childCount; k++) {
+        patches.push({
+          type: PatchType.RemoveChild,
+          index: 0,
+        })
+      }
       i += GetTotalChildCount.getTotalChildCount(oldNodes, i)
       j++
       continue
