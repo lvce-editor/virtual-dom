@@ -42,7 +42,6 @@ export const diff = (
       applyPendingPatches(patches, pendingPatches, 2)
       const oldTotal = GetTotalChildCount.getTotalChildCount(oldNodes, i)
       const newTotal = GetTotalChildCount.getTotalChildCount(newNodes, j)
-      console.log({ siblingOffset })
       patches.push({
         type: PatchType.RemoveChild,
         index: siblingOffset,

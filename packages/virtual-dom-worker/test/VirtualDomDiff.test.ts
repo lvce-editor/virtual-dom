@@ -327,7 +327,7 @@ test('diff - text node to div node', () => {
   ])
 })
 
-test.only('diff - two node type changes', () => {
+test('diff - two node type changes', () => {
   const oldNodes = [
     {
       type: VirtualDomElements.Div,
