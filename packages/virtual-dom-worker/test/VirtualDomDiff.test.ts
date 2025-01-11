@@ -1245,7 +1245,7 @@ test('diff - two children added', () => {
   ])
 })
 
-test.skip('diff - two children removed', () => {
+test('diff - two children removed', () => {
   const oldNodes = [
     {
       type: VirtualDomElements.Div,
@@ -1279,7 +1279,7 @@ test.skip('diff - two children removed', () => {
   ])
 })
 
-test.skip('diff - three children removed', () => {
+test('diff - three children removed', () => {
   const oldNodes = [
     {
       type: VirtualDomElements.Div,
@@ -1321,7 +1321,7 @@ test.skip('diff - three children removed', () => {
   ])
 })
 
-test.skip('diff - four children removed', () => {
+test('diff - four children removed', () => {
   const oldNodes = [
     {
       type: VirtualDomElements.Div,
