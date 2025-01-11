@@ -664,7 +664,7 @@ test('diff - node with multiple children', () => {
     },
     {
       type: PatchType.NavigateSibling,
-      index: 1,
+      index: 2,
     },
     {
       type: PatchType.SetText,
