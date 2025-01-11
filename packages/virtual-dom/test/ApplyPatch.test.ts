@@ -48,11 +48,11 @@ test('text change', () => {
   expect($Node.textContent).toBe('test')
 })
 
-test.skip('element removeChild', () => {
+test('element removeChild', () => {
   const patches: readonly Patch[] = [
     {
       type: PatchType.RemoveChild,
-      index: 1,
+      index: 0,
     },
   ]
   const $Node = document.createElement('div')
@@ -62,7 +62,7 @@ test.skip('element removeChild', () => {
   expect($Node.children.length).toBe(0)
 })
 
-test.skip('element add', () => {
+test('element add', () => {
   const patches: readonly Patch[] = [
     {
       type: PatchType.Add,
