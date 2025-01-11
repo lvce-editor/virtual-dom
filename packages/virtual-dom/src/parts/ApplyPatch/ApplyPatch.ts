@@ -1,6 +1,6 @@
 import { Patch } from '../Patch/Patch.ts'
-import * as PatchType from '../PatchType/PatchType.ts'
 import * as PatchFunctions from '../PatchFunctions/PatchFunctions.ts'
+import * as PatchType from '../PatchType/PatchType.ts'
 
 export const applyPatch = ($Element: Node, patches: readonly Patch[]): void => {
   let $Current = $Element
