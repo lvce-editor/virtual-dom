@@ -157,9 +157,12 @@ export const diff = (
   }
 
   while (i < oldNodes.length) {
-    patches.push({
-      type: PatchType.NavigateParent,
-    })
+    if (indexStack.length !== 2) {
+      patches.push({
+        type: PatchType.NavigateParent,
+      })
+    }
+
     // if (siblingOffset > 0) {
     //   patches.push({
     //     type: PatchType.NavigateSibling,
@@ -174,6 +177,8 @@ export const diff = (
       index: siblingOffset,
     })
     i += GetTotalChildCount.getTotalChildCount(oldNodes, i)
+    indexStack.pop()
+    indexStack.pop()
   }
 
   while (j < newNodes.length) {
