@@ -21,6 +21,9 @@ export const applyPatch = ($Element: Node, patches: readonly Patch[]): void => {
       case PatchType.RemoveChild:
         PatchFunctions.removeChild($Element as HTMLElement, patch.index)
         break
+      case PatchType.Add:
+        PatchFunctions.add($Element as HTMLElement, patch.nodes)
+        break
       default:
         break
     }

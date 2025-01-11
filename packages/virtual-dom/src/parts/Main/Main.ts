@@ -1,3 +1,4 @@
+export { applyPatch } from '../ApplyPatch/ApplyPatch.ts'
 export {
   getComponentUid,
   getComponentUidFromEvent,
