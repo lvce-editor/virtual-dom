@@ -9,11 +9,10 @@ export const diff = (
   newNodes: readonly VirtualDomNode[],
 ): readonly Patch[] => {
   const patches: Patch[] = []
-
   let i = 0 // Index for oldNodes
   let j = 0 // Index for newNodes
-  let oldDepth = 0
-  let newDepth = 0
+  let currentDepth = 0
+  let siblingOffset = 0
 
   const oldNodeCount = oldNodes.length
   const newNodeCount = newNodes.length
@@ -22,16 +21,22 @@ export const diff = (
     const oldNode = oldNodes[i]
     const newNode = newNodes[j]
 
+    if (siblingOffset > 0) {
+      patches.push({
+        type: PatchType.NavigateSibling,
+        index: siblingOffset,
+      })
+      siblingOffset = 0
+    }
+
     if (oldNode.type !== newNode.type) {
       const oldTotal = GetTotalChildCount.getTotalChildCount(oldNodes, i)
       const newTotal = GetTotalChildCount.getTotalChildCount(newNodes, j)
       patches.push({
         type: PatchType.Remove,
-        index: i,
       })
       patches.push({
         type: PatchType.Add,
-        index: i,
         nodes: newNodes.slice(j, j + newTotal),
       })
       i += oldTotal
@@ -47,12 +52,12 @@ export const diff = (
       if (oldNode.text !== newNode.text) {
         patches.push({
           type: PatchType.SetText,
-          index: i,
           value: newNode.text,
         })
       }
       i++
       j++
+      siblingOffset++
       continue
     }
 
@@ -69,7 +74,6 @@ export const diff = (
       if (oldNode[key] !== newNode[key]) {
         patches.push({
           type: PatchType.SetAttribute,
-          index: i,
           key,
           value: newNode[key],
         })
@@ -81,27 +85,28 @@ export const diff = (
       if (!(key in newNode)) {
         patches.push({
           type: PatchType.RemoveAttribute,
-          index: i,
           key,
         })
       }
     }
 
     if (oldNode.childCount && newNode.childCount) {
-      oldDepth++
-      newDepth++
+      patches.push({
+        type: PatchType.NavigateChild,
+        index: 0,
+      })
+      currentDepth++
       i++
       j++
       continue
     }
 
     if (oldNode.childCount) {
-      const total = GetTotalChildCount.getTotalChildCount(oldNodes, i)
-      // TODO remove all old children
       patches.push({
-        type: PatchType.Remove,
-        index: i + 1,
+        type: PatchType.RemoveChild,
+        index: 0,
       })
+      const total = GetTotalChildCount.getTotalChildCount(oldNodes, i)
       i += total
       j++
       continue
@@ -111,7 +116,6 @@ export const diff = (
       const total = GetTotalChildCount.getTotalChildCount(newNodes, j)
       patches.push({
         type: PatchType.Add,
-        index: i + 1,
         nodes: newNodes.slice(j + 1, j + total),
       })
       i++
@@ -121,25 +125,40 @@ export const diff = (
 
     i++
     j++
+    siblingOffset++
   }
 
+  // Handle remaining old nodes
   while (i < oldNodes.length) {
-    const count = GetTotalChildCount.getTotalChildCount(oldNodes, i)
+    if (siblingOffset > 0) {
+      patches.push({
+        type: PatchType.NavigateSibling,
+        index: siblingOffset,
+      })
+      siblingOffset = 0
+    }
     patches.push({
       type: PatchType.Remove,
-      index: i,
     })
-    i += count
+    i += GetTotalChildCount.getTotalChildCount(oldNodes, i)
   }
+
+  // Handle remaining new nodes
   while (j < newNodes.length) {
+    if (siblingOffset > 0) {
+      patches.push({
+        type: PatchType.NavigateSibling,
+        index: siblingOffset,
+      })
+      siblingOffset = 0
+    }
     const count = GetTotalChildCount.getTotalChildCount(newNodes, j)
-    // TODO find right index to add
     patches.push({
       type: PatchType.Add,
-      index: i,
       nodes: newNodes.slice(j, j + count),
     })
     j += count
   }
+
   return patches
 }
