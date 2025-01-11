@@ -14,13 +14,18 @@ export const diff = (
   let i = 0
   let j = 0
   let siblingOffset = 0
-
+  let maxSiblingOffset = 1
+  const indexStack: number[] = [0]
   while (i < oldNodes.length && j < newNodes.length) {
     const oldNode = oldNodes[i]
     const newNode = newNodes[j]
 
     if (siblingOffset > 0) {
-      pendingPatches.push(PatchType.NavigateSibling, siblingOffset)
+      // pendingPatches.push(PatchType.NavigateSibling, siblingOffset)
+    }
+    if (siblingOffset === maxSiblingOffset) {
+      pendingPatches.push(PatchType.NavigateParent, 0)
+      siblingOffset = indexStack.pop() as number
     }
 
     if (oldNode.type !== newNode.type) {
@@ -30,14 +35,6 @@ export const diff = (
         pendingPatches.at(-2) === PatchType.NavigateChild
       ) {
         skip = 2
-      } else if (
-        pendingPatches.length > 0 &&
-        pendingPatches.at(-2) === PatchType.NavigateSibling
-      ) {
-        skip = 2
-
-        siblingOffset = pendingPatches.at(-1) as number
-        // pendingPatches[pendingPatches.length - 2] = PatchType.NavigateParent
       }
       ApplyPendingPatches.applyPendingPatches(patches, pendingPatches, skip)
       const oldTotal = GetTotalChildCount.getTotalChildCount(oldNodes, i)
@@ -62,6 +59,9 @@ export const diff = (
       newNode.type === VirtualDomElements.Text
     ) {
       if (oldNode.text !== newNode.text) {
+        if (siblingOffset !== 0) {
+          pendingPatches.push(PatchType.NavigateSibling, siblingOffset)
+        }
         ApplyPendingPatches.applyPendingPatches(patches, pendingPatches, 0)
         patches.push({
           type: PatchType.SetText,
@@ -118,6 +118,8 @@ export const diff = (
     }
 
     if (oldNode.childCount && newNode.childCount) {
+      maxSiblingOffset = oldNode.childCount
+      indexStack.push(maxSiblingOffset)
       pendingPatches.push(PatchType.NavigateChild, 0)
       i++
       j++
@@ -155,10 +157,10 @@ export const diff = (
 
   while (i < oldNodes.length) {
     if (siblingOffset > 0) {
-      patches.push({
-        type: PatchType.NavigateSibling,
-        index: siblingOffset,
-      })
+      // patches.push({
+      //   type: PatchType.NavigateSibling,
+      //   index: siblingOffset,
+      // })
       siblingOffset = 0
     }
     patches.push({

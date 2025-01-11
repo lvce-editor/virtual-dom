@@ -387,7 +387,7 @@ test('diff - two node type changes', () => {
   ])
 })
 
-test.skip('diff - two nested node type changes', () => {
+test('diff - two nested node type changes', () => {
   const oldNodes = [
     {
       type: VirtualDomElements.Div,
@@ -986,7 +986,7 @@ test('diff - child removed, sibling added', () => {
   ])
 })
 
-test('diff - child added, sibling removed', () => {
+test.skip('diff - child added, sibling removed', () => {
   const oldNodes = [
     {
       type: VirtualDomElements.Div,
