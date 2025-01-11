@@ -33,7 +33,8 @@ export const diff = (
       const oldTotal = GetTotalChildCount.getTotalChildCount(oldNodes, i)
       const newTotal = GetTotalChildCount.getTotalChildCount(newNodes, j)
       patches.push({
-        type: PatchType.Remove,
+        type: PatchType.RemoveChild,
+        index: siblingOffset,
       })
       patches.push({
         type: PatchType.Add,
@@ -138,7 +139,8 @@ export const diff = (
       siblingOffset = 0
     }
     patches.push({
-      type: PatchType.Remove,
+      type: PatchType.RemoveChild,
+      index: siblingOffset,
     })
     i += GetTotalChildCount.getTotalChildCount(oldNodes, i)
   }
