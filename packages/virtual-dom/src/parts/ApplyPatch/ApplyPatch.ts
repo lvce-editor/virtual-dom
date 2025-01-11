@@ -29,7 +29,7 @@ export const applyPatch = ($Element: Node, patches: readonly Patch[]): void => {
         $Current = ($Current.parentNode as HTMLElement).childNodes[patch.index]
         break
       case PatchType.NavigateChild:
-        $Current = ($Current as HTMLElement).children[patch.index]
+        $Current = ($Current as HTMLElement).childNodes[patch.index]
         break
       default:
         break
