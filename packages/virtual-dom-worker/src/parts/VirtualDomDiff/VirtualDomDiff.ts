@@ -1,28 +1,9 @@
 import type { Patch } from '../Patch/Patch.ts'
 import type { VirtualDomNode } from '../VirtualDomNode/VirtualDomNode.ts'
+import * as ApplyPendingPatches from '../ApplyPendingPatches/ApplyPendingPatches.ts'
 import * as GetTotalChildCount from '../GetTotalChildCount/GetTotalChildCount.ts'
 import * as PatchType from '../PatchType/PatchType.ts'
 import * as VirtualDomElements from '../VirtualDomElements/VirtualDomElements.ts'
-
-const applyPendingPatches = (
-  patches: Patch[],
-  pendingPatches: number[],
-  skip: number,
-): void => {
-  for (let k = 0; k < pendingPatches.length - skip; k += 2) {
-    const type = pendingPatches[k]
-    const index = pendingPatches[k + 1]
-    if (type === PatchType.NavigateParent) {
-      patches.push({ type })
-    } else {
-      patches.push({
-        type,
-        index,
-      } as Patch)
-    }
-  }
-  pendingPatches.length = 0
-}
 
 export const diff = (
   oldNodes: readonly VirtualDomNode[],
@@ -58,7 +39,7 @@ export const diff = (
         siblingOffset = pendingPatches.at(-1) as number
         // pendingPatches[pendingPatches.length - 2] = PatchType.NavigateParent
       }
-      applyPendingPatches(patches, pendingPatches, skip)
+      ApplyPendingPatches.applyPendingPatches(patches, pendingPatches, skip)
       const oldTotal = GetTotalChildCount.getTotalChildCount(oldNodes, i)
       const newTotal = GetTotalChildCount.getTotalChildCount(newNodes, j)
 
@@ -81,7 +62,7 @@ export const diff = (
       newNode.type === VirtualDomElements.Text
     ) {
       if (oldNode.text !== newNode.text) {
-        applyPendingPatches(patches, pendingPatches, 0)
+        ApplyPendingPatches.applyPendingPatches(patches, pendingPatches, 0)
         patches.push({
           type: PatchType.SetText,
           value: newNode.text,
@@ -115,7 +96,7 @@ export const diff = (
     }
 
     if (hasAttributeChanges) {
-      applyPendingPatches(patches, pendingPatches, 0)
+      ApplyPendingPatches.applyPendingPatches(patches, pendingPatches, 0)
 
       for (const key of newKeys) {
         if (oldNode[key] !== newNode[key]) {
@@ -144,7 +125,7 @@ export const diff = (
     }
 
     if (oldNode.childCount) {
-      applyPendingPatches(patches, pendingPatches, 0)
+      ApplyPendingPatches.applyPendingPatches(patches, pendingPatches, 0)
 
       patches.push({
         type: PatchType.RemoveChild,
@@ -156,7 +137,7 @@ export const diff = (
     }
 
     if (newNode.childCount) {
-      applyPendingPatches(patches, pendingPatches, 0)
+      ApplyPendingPatches.applyPendingPatches(patches, pendingPatches, 0)
       const total = GetTotalChildCount.getTotalChildCount(newNodes, j)
       patches.push({
         type: PatchType.Add,
