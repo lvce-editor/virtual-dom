@@ -144,6 +144,32 @@ test('element add', () => {
   expect($Node.firstElementChild?.className).toBe('test')
 })
 
+test('remove and add element', () => {
+  const patches: readonly Patch[] = [
+    {
+      type: PatchType.RemoveChild,
+      index: 0,
+    },
+    {
+      type: PatchType.Add,
+      index: 1,
+      nodes: [
+        {
+          type: VirtualDomElements.Div,
+          childCount: 0,
+          className: 'test',
+        },
+      ],
+    },
+  ]
+  const $Root = document.createElement('div')
+  const $Child = document.createElement('div')
+  $Root.append($Child)
+  ApplyPatch.applyPatch($Root, patches)
+  expect($Root.children.length).toBe(1)
+  expect($Root.firstElementChild?.className).toBe('test')
+})
+
 test('expand search details', () => {
   const patches: readonly Patch[] = [
     {
