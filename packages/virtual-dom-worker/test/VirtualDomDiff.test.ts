@@ -889,9 +889,6 @@ test('diff - child added, sibling removed', () => {
       index: 1,
     },
     {
-      type: PatchType.NavigateParent,
-    },
-    {
       type: PatchType.RemoveChild,
       index: 0,
     },
