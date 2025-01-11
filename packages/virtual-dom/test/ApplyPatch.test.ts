@@ -127,7 +127,6 @@ test('element add', () => {
   const patches: readonly Patch[] = [
     {
       type: PatchType.Add,
-      index: 1,
       nodes: [
         {
           type: VirtualDomElements.Div,
@@ -151,7 +150,6 @@ test('remove and add element', () => {
     },
     {
       type: PatchType.Add,
-      index: 1,
       nodes: [
         {
           type: VirtualDomElements.Div,
@@ -177,7 +175,6 @@ test('expand search details', () => {
     },
     {
       type: PatchType.Add,
-      index: 0,
       nodes: [
         {
           type: VirtualDomElements.Input,
@@ -229,4 +226,54 @@ test('collapse search details', () => {
   expect($TopRight.children).toHaveLength(1)
   expect($TopRight.children[0]).toBeInstanceOf(HTMLInputElement)
   expect($TopRight.children[0].className).toBe('SearchValue')
+})
+
+test.skip('multiple changes', () => {
+  const patches: readonly Patch[] = [
+    {
+      type: PatchType.NavigateChild,
+      index: 0,
+    },
+    {
+      type: PatchType.RemoveChild,
+      index: 0,
+    },
+    {
+      type: PatchType.Add,
+      nodes: [
+        {
+          type: VirtualDomElements.Span,
+          childCount: 0,
+        },
+      ],
+    },
+    {
+      type: PatchType.NavigateParent,
+    },
+    {
+      type: PatchType.RemoveChild,
+      index: 1,
+    },
+    {
+      type: PatchType.Add,
+      nodes: [
+        {
+          type: VirtualDomElements.Span,
+          childCount: 0,
+        },
+      ],
+    },
+  ]
+  const $Root = document.createElement('div')
+  const $Child1 = document.createElement('div')
+  const $Child2 = document.createElement('div')
+  const $Child3 = document.createComment('div')
+  $Child1.append($Child2)
+  $Root.append($Child1, $Child3)
+  ApplyPatch.applyPatch($Root, patches)
+  expect($Root.children).toHaveLength(2)
+  expect($Root.children[0]).toBeInstanceOf(HTMLDivElement)
+  expect($Root.children[0].children).toHaveLength(1)
+  expect($Root.children[0].children[0]).toBeInstanceOf(HTMLSpanElement)
+  expect($Root.children[1]).toBeInstanceOf(HTMLSpanElement)
 })
