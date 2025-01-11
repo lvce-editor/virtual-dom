@@ -228,6 +228,67 @@ test('collapse search details', () => {
   expect($TopRight.children[0].className).toBe('SearchValue')
 })
 
+test.skip('remove nested child node', () => {
+  const patches: readonly Patch[] = [
+    {
+      type: PatchType.NavigateChild,
+      index: 0,
+    },
+    {
+      type: PatchType.RemoveChild,
+      index: 0,
+    },
+  ]
+  const $Root = document.createElement('div')
+  $Root.className = 'Root'
+  const $Child1 = document.createElement('div')
+  const $Child2 = document.createElement('div')
+  const $Child3 = document.createComment('div')
+  $Child1.append($Child2)
+  $Root.append($Child1, $Child3)
+  ApplyPatch.applyPatch($Root, patches)
+  expect($Root.children).toHaveLength(2)
+  expect($Root.children[0]).toBeInstanceOf(HTMLDivElement)
+  expect($Root.children[0].children).toHaveLength(1)
+  expect($Root.children[0].children[0]).toBeInstanceOf(HTMLSpanElement)
+  expect($Root.children[1]).toBeInstanceOf(HTMLSpanElement)
+})
+
+test.skip('remove and add node', () => {
+  const patches: readonly Patch[] = [
+    {
+      type: PatchType.NavigateChild,
+      index: 0,
+    },
+    {
+      type: PatchType.RemoveChild,
+      index: 0,
+    },
+    {
+      type: PatchType.Add,
+      nodes: [
+        {
+          type: VirtualDomElements.Span,
+          childCount: 0,
+        },
+      ],
+    },
+  ]
+  const $Root = document.createElement('div')
+  $Root.className = 'Root'
+  const $Child1 = document.createElement('div')
+  const $Child2 = document.createElement('div')
+  const $Child3 = document.createComment('div')
+  $Child1.append($Child2)
+  $Root.append($Child1, $Child3)
+  ApplyPatch.applyPatch($Root, patches)
+  expect($Root.children).toHaveLength(2)
+  expect($Root.children[0]).toBeInstanceOf(HTMLDivElement)
+  expect($Root.children[0].children).toHaveLength(1)
+  expect($Root.children[0].children[0]).toBeInstanceOf(HTMLSpanElement)
+  expect($Root.children[1]).toBeInstanceOf(HTMLSpanElement)
+})
+
 test.skip('multiple changes', () => {
   const patches: readonly Patch[] = [
     {
@@ -265,6 +326,7 @@ test.skip('multiple changes', () => {
     },
   ]
   const $Root = document.createElement('div')
+  $Root.className = 'Root'
   const $Child1 = document.createElement('div')
   const $Child2 = document.createElement('div')
   const $Child3 = document.createComment('div')
