@@ -36,7 +36,6 @@ export const diff = (
 
     if (siblingOffset > 0) {
       pendingPatches.push(PatchType.NavigateSibling, siblingOffset)
-      siblingOffset = 0
     }
 
     if (oldNode.type !== newNode.type) {
