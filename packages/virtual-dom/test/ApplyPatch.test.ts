@@ -11,7 +11,6 @@ test('attribute change', () => {
   const patches: readonly Patch[] = [
     {
       type: PatchType.SetAttribute,
-      index: 0,
       key: 'id',
       value: 'test',
     },
