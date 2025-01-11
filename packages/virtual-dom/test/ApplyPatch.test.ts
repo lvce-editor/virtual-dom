@@ -152,3 +152,32 @@ test('expand search details', () => {
   expect($TopRight.children[1]).toBeInstanceOf(HTMLInputElement)
   expect($TopRight.children[1].className).toBe('Replace')
 })
+
+test('collapse search details', () => {
+  const patches: readonly Patch[] = [
+    {
+      type: PatchType.NavigateChild,
+      index: 1,
+    },
+    {
+      type: PatchType.RemoveChild,
+      index: 1,
+    },
+  ]
+  const $Root = document.createElement('div')
+  $Root.className = 'SearchHeaderTop'
+  const $Toggle = document.createElement('div')
+  $Toggle.className = 'Toggle'
+  const $TopRight = document.createElement('div')
+  $TopRight.className = 'SearchHeaderTopRight'
+  const $Input = document.createElement('input')
+  $Input.className = 'SearchValue'
+  const $Replace = document.createElement('input')
+  $Replace.className = 'Replace'
+  $TopRight.append($Input, $Replace)
+  $Root.append($Toggle, $TopRight)
+  ApplyPatch.applyPatch($Root, patches)
+  expect($TopRight.children).toHaveLength(1)
+  expect($TopRight.children[0]).toBeInstanceOf(HTMLInputElement)
+  expect($TopRight.children[0].className).toBe('SearchValue')
+})
