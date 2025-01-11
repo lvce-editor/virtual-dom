@@ -35,11 +35,7 @@ export const diff = (
     const newNode = newNodes[j]
 
     if (siblingOffset > 0) {
-      patches.push({
-        type: PatchType.NavigateSibling,
-        index: siblingOffset,
-      })
-      siblingOffset = 0
+      pendingPatches.push(PatchType.NavigateSibling, siblingOffset)
     }
 
     if (oldNode.type !== newNode.type) {
@@ -48,12 +44,13 @@ export const diff = (
       const newTotal = GetTotalChildCount.getTotalChildCount(newNodes, j)
       patches.push({
         type: PatchType.RemoveChild,
-        index: 0,
+        index: siblingOffset,
       })
       patches.push({
         type: PatchType.Add,
         nodes: newNodes.slice(j, j + newTotal),
       })
+      siblingOffset++
       i += oldTotal
       j += newTotal
       continue

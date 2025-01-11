@@ -327,7 +327,7 @@ test('diff - text node to div node', () => {
   ])
 })
 
-test.skip('diff - two node type changes', () => {
+test('diff - two node type changes', () => {
   const oldNodes = [
     {
       type: VirtualDomElements.Div,
@@ -664,7 +664,7 @@ test('diff - node with multiple children', () => {
     },
     {
       type: PatchType.NavigateSibling,
-      index: 1,
+      index: 2,
     },
     {
       type: PatchType.SetText,
