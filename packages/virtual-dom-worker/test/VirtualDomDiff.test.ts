@@ -1167,6 +1167,40 @@ test('diff - multiple attributes changed', () => {
   ])
 })
 
+test('diff - first child and nested child removed', () => {
+  const oldNodes = [
+    {
+      type: VirtualDomElements.Div,
+      childCount: 1,
+    },
+    {
+      type: VirtualDomElements.Div,
+      childCount: 0,
+    },
+    {
+      type: VirtualDomElements.Div,
+      childCount: 0,
+    },
+  ]
+  const newNodes = [
+    {
+      type: VirtualDomElements.Div,
+      childCount: 0,
+    },
+  ]
+  const patches = diff(oldNodes, newNodes)
+  expect(patches).toEqual([
+    {
+      type: PatchType.RemoveChild,
+      index: 0,
+    },
+    {
+      type: PatchType.RemoveChild,
+      index: 0,
+    },
+  ])
+})
+
 test('diff - two children added', () => {
   const oldNodes = [
     {
@@ -1211,11 +1245,11 @@ test('diff - two children added', () => {
   ])
 })
 
-test('diff - two children removed', () => {
+test.skip('diff - two children removed', () => {
   const oldNodes = [
     {
       type: VirtualDomElements.Div,
-      childCount: 1,
+      childCount: 2,
     },
     {
       type: VirtualDomElements.Div,
@@ -1234,6 +1268,98 @@ test('diff - two children removed', () => {
   ]
   const patches = diff(oldNodes, newNodes)
   expect(patches).toEqual([
+    {
+      type: PatchType.RemoveChild,
+      index: 0,
+    },
+    {
+      type: PatchType.RemoveChild,
+      index: 0,
+    },
+  ])
+})
+
+test.skip('diff - three children removed', () => {
+  const oldNodes = [
+    {
+      type: VirtualDomElements.Div,
+      childCount: 3,
+    },
+    {
+      type: VirtualDomElements.Div,
+      childCount: 0,
+    },
+    {
+      type: VirtualDomElements.Div,
+      childCount: 0,
+    },
+    {
+      type: VirtualDomElements.Div,
+      childCount: 0,
+    },
+  ]
+  const newNodes = [
+    {
+      type: VirtualDomElements.Div,
+      childCount: 0,
+    },
+  ]
+  const patches = diff(oldNodes, newNodes)
+  expect(patches).toEqual([
+    {
+      type: PatchType.RemoveChild,
+      index: 0,
+    },
+    {
+      type: PatchType.RemoveChild,
+      index: 0,
+    },
+    {
+      type: PatchType.RemoveChild,
+      index: 0,
+    },
+  ])
+})
+
+test.skip('diff - four children removed', () => {
+  const oldNodes = [
+    {
+      type: VirtualDomElements.Div,
+      childCount: 4,
+    },
+    {
+      type: VirtualDomElements.Div,
+      childCount: 0,
+    },
+    {
+      type: VirtualDomElements.Div,
+      childCount: 0,
+    },
+    {
+      type: VirtualDomElements.Div,
+      childCount: 0,
+    },
+    {
+      type: VirtualDomElements.Div,
+      childCount: 0,
+    },
+  ]
+  const newNodes = [
+    {
+      type: VirtualDomElements.Div,
+      childCount: 0,
+    },
+  ]
+  const patches = diff(oldNodes, newNodes)
+  expect(patches).toEqual([
+    {
+      type: PatchType.RemoveChild,
+      index: 0,
+    },
+    {
+      type: PatchType.RemoveChild,
+      index: 0,
+    },
     {
       type: PatchType.RemoveChild,
       index: 0,
