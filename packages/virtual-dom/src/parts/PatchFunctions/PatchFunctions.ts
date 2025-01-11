@@ -1,4 +1,5 @@
 import { VirtualDomNode } from '../VirtualDomNode/VirtualDomNode.ts'
+import * as RenderInternal from '../RenderInternal/RenderInternal.ts'
 
 export const setAttribute = (
   $Element: HTMLElement,
@@ -25,6 +26,5 @@ export const add = (
   $Element: HTMLElement,
   nodes: readonly VirtualDomNode[],
 ): void => {
-  // const $Child = $Element.children[index]
-  // $Child.remove()
+  RenderInternal.renderInternal($Element, nodes, {}, {})
 }
