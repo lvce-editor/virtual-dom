@@ -3,6 +3,7 @@ import type { AttributePatch } from '../AttributePatch/AttributePatch.ts'
 import type { NavigateChildPatch } from '../NavigateChildPatch/NavigateChildPatch.ts'
 import type { NavigateParentPatch } from '../NavigateParentPatch/NavigateParentPatch.ts'
 import type { RemoveAttributePatch } from '../RemoveAttributePatch/RemoveAttributePatch.ts'
+import type { RemoveChildPatch } from '../RemoveChildPatch/RemoveChildPatch.ts'
 import type { RemovePatch } from '../RemovePatch/RemovePatch.ts'
 import type { ReplacePatch } from '../ReplacePatch/ReplacePatch.ts'
 import type { TextPatch } from '../TextPatch/TextPatch.ts'
@@ -16,3 +17,4 @@ export type Patch =
   | AddPatch
   | NavigateChildPatch
   | NavigateParentPatch
+  | RemoveChildPatch

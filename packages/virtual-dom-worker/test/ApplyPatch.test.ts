@@ -46,3 +46,17 @@ test('text change', () => {
   ApplyPatch.applyPatch($Node, patches)
   expect($Node.textContent).toBe('test')
 })
+
+test.skip('element removeChild', () => {
+  const patches: readonly Patch[] = [
+    {
+      type: PatchType.RemoveChild,
+      index: 1,
+    },
+  ]
+  const $Node = document.createElement('div')
+  const $Child = document.createElement('div')
+  $Node.append($Child)
+  ApplyPatch.applyPatch($Node, patches)
+  expect($Node.children.length).toBe(0)
+})

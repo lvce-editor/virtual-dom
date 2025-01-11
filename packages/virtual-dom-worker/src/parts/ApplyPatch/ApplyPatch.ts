@@ -1,7 +1,7 @@
 import { Patch } from '../Patch/Patch.ts'
 import * as PatchType from '../PatchType/PatchType.ts'
 
-export const applyPatch = ($Element: Node, patches: readonly Patch[]) => {
+export const applyPatch = ($Element: Node, patches: readonly Patch[]): void => {
   for (const patch of patches) {
     switch (patch.type) {
       case PatchType.SetAttribute:
@@ -13,7 +13,9 @@ export const applyPatch = ($Element: Node, patches: readonly Patch[]) => {
       case PatchType.SetText:
         $Element.nodeValue = patch.value
         break
-
+      case PatchType.RemoveChild:
+        ;($Element as HTMLElement).children[patch.index].remove()
+        break
       default:
         break
     }
