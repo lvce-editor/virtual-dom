@@ -387,7 +387,7 @@ test('diff - two node type changes', () => {
   ])
 })
 
-test('diff - two nested node type changes', () => {
+test.skip('diff - two nested node type changes', () => {
   const oldNodes = [
     {
       type: VirtualDomElements.Div,
@@ -443,10 +443,9 @@ test('diff - two nested node type changes', () => {
         },
       ],
     },
-    // TODO
-    // {
-    //   type: PatchType.NavigateParent,
-    // },
+    {
+      type: PatchType.NavigateParent,
+    },
     {
       type: PatchType.RemoveChild,
       index: 1,

@@ -12,10 +12,14 @@ const applyPendingPatches = (
   for (let k = 0; k < pendingPatches.length - skip; k += 2) {
     const type = pendingPatches[k]
     const index = pendingPatches[k + 1]
-    patches.push({
-      type,
-      index,
-    } as Patch)
+    if (type === PatchType.NavigateParent) {
+      patches.push({ type })
+    } else {
+      patches.push({
+        type,
+        index,
+      } as Patch)
+    }
   }
   pendingPatches.length = 0
 }
@@ -39,9 +43,25 @@ export const diff = (
     }
 
     if (oldNode.type !== newNode.type) {
-      applyPendingPatches(patches, pendingPatches, 2)
+      let skip = 0
+      if (
+        pendingPatches.length > 0 &&
+        pendingPatches.at(-2) === PatchType.NavigateChild
+      ) {
+        skip = 2
+      } else if (
+        pendingPatches.length > 0 &&
+        pendingPatches.at(-2) === PatchType.NavigateSibling
+      ) {
+        skip = 2
+
+        siblingOffset = pendingPatches.at(-1) as number
+        // pendingPatches[pendingPatches.length - 2] = PatchType.NavigateParent
+      }
+      applyPendingPatches(patches, pendingPatches, skip)
       const oldTotal = GetTotalChildCount.getTotalChildCount(oldNodes, i)
       const newTotal = GetTotalChildCount.getTotalChildCount(newNodes, j)
+
       patches.push({
         type: PatchType.RemoveChild,
         index: siblingOffset,
