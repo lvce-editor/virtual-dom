@@ -39,13 +39,51 @@ test('text change', () => {
   const patches: readonly Patch[] = [
     {
       type: PatchType.SetText,
-      index: 0,
       value: 'test',
     },
   ]
   const $Node = document.createTextNode('test')
   ApplyPatch.applyPatch($Node, patches)
   expect($Node.textContent).toBe('test')
+})
+
+test('text change of second node', () => {
+  const patches: readonly Patch[] = [
+    {
+      type: PatchType.NavigateSibling,
+      index: 1,
+    },
+    {
+      type: PatchType.SetText,
+      value: 'test',
+    },
+  ]
+  const $Root = document.createElement('div')
+  const $Child1 = document.createElement('div')
+  const $Child2 = document.createTextNode('')
+  $Root.append($Child1, $Child2)
+  ApplyPatch.applyPatch($Child1, patches)
+  expect($Child2.textContent).toBe('test')
+})
+
+test('text change of third node', () => {
+  const patches: readonly Patch[] = [
+    {
+      type: PatchType.NavigateSibling,
+      index: 2,
+    },
+    {
+      type: PatchType.SetText,
+      value: 'test',
+    },
+  ]
+  const $Root = document.createElement('div')
+  const $Child1 = document.createElement('div')
+  const $Child2 = document.createElement('div')
+  const $Child3 = document.createTextNode('')
+  $Root.append($Child1, $Child2, $Child3)
+  ApplyPatch.applyPatch($Child1, patches)
+  expect($Child3.textContent).toBe('test')
 })
 
 test('element removeChild', () => {

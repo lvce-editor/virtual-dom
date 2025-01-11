@@ -3,26 +3,30 @@ import * as PatchType from '../PatchType/PatchType.ts'
 import * as PatchFunctions from '../PatchFunctions/PatchFunctions.ts'
 
 export const applyPatch = ($Element: Node, patches: readonly Patch[]): void => {
+  let $Current = $Element
   for (const patch of patches) {
     switch (patch.type) {
       case PatchType.SetAttribute:
         PatchFunctions.setAttribute(
-          $Element as HTMLElement,
+          $Current as HTMLElement,
           patch.key,
           patch.value,
         )
         break
       case PatchType.RemoveAttribute:
-        PatchFunctions.removeAttribute($Element as HTMLElement, patch.key)
+        PatchFunctions.removeAttribute($Current as HTMLElement, patch.key)
         break
       case PatchType.SetText:
-        PatchFunctions.setText($Element as Text, patch.value)
+        PatchFunctions.setText($Current as Text, patch.value)
         break
       case PatchType.RemoveChild:
-        PatchFunctions.removeChild($Element as HTMLElement, patch.index)
+        PatchFunctions.removeChild($Current as HTMLElement, patch.index)
         break
       case PatchType.Add:
-        PatchFunctions.add($Element as HTMLElement, patch.nodes)
+        PatchFunctions.add($Current as HTMLElement, patch.nodes)
+        break
+      case PatchType.NavigateSibling:
+        $Current = ($Current.parentNode as HTMLElement).childNodes[patch.index]
         break
       default:
         break
