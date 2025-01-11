@@ -1,6 +1,7 @@
 import type { Patch } from '../Patch/Patch.ts'
 import type { VirtualDomNode } from '../VirtualDomNode/VirtualDomNode.ts'
 import * as ApplyPendingPatches from '../ApplyPendingPatches/ApplyPendingPatches.ts'
+import * as GetKeys from '../GetKeys/GetKeys.ts'
 import * as GetTotalChildCount from '../GetTotalChildCount/GetTotalChildCount.ts'
 import * as PatchType from '../PatchType/PatchType.ts'
 import * as VirtualDomElements from '../VirtualDomElements/VirtualDomElements.ts'
@@ -75,13 +76,8 @@ export const diff = (
       continue
     }
 
-    const oldKeys = Object.keys(oldNode).filter(
-      (key) => key !== 'type' && key !== 'childCount',
-    )
-    const newKeys = Object.keys(newNode).filter(
-      (key) => key !== 'type' && key !== 'childCount',
-    )
-
+    const oldKeys = GetKeys.getKeys(oldNode)
+    const newKeys = GetKeys.getKeys(newNode)
     let hasAttributeChanges = false
     for (const key of newKeys) {
       if (oldNode[key] !== newNode[key]) {
