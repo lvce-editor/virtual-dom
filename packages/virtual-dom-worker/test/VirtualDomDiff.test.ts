@@ -327,6 +327,66 @@ test('diff - text node to div node', () => {
   ])
 })
 
+test.skip('diff - two node type changes', () => {
+  const oldNodes = [
+    {
+      type: VirtualDomElements.Div,
+      childCount: 2,
+    },
+    {
+      type: VirtualDomElements.Div,
+      childCount: 0,
+    },
+    {
+      type: VirtualDomElements.Div,
+      childCount: 0,
+    },
+  ]
+  const newNodes = [
+    {
+      type: VirtualDomElements.Div,
+      childCount: 2,
+    },
+    {
+      type: VirtualDomElements.Span,
+      childCount: 0,
+    },
+    {
+      type: VirtualDomElements.Span,
+      childCount: 0,
+    },
+  ]
+  const patches = diff(oldNodes, newNodes)
+  expect(patches).toEqual([
+    {
+      type: PatchType.RemoveChild,
+      index: 0,
+    },
+    {
+      type: PatchType.Add,
+      nodes: [
+        {
+          type: VirtualDomElements.Span,
+          childCount: 0,
+        },
+      ],
+    },
+    {
+      type: PatchType.RemoveChild,
+      index: 1,
+    },
+    {
+      type: PatchType.Add,
+      nodes: [
+        {
+          type: VirtualDomElements.Span,
+          childCount: 0,
+        },
+      ],
+    },
+  ])
+})
+
 test('diff - same attribute values should not generate patches', () => {
   const oldNodes = [
     {
