@@ -6,7 +6,7 @@
   "scripts": {
     "postinstall": "lerna bootstrap --ci",
     "test": "lerna run test",
-    "type-check": "tsc",
+    "type-check": "tsc -b",
     "build": "node packages/build/src/build.js",
     "lint": "eslint ."
   },

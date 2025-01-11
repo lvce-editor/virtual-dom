@@ -2,7 +2,7 @@ import * as VirtualDomElement from '../VirtualDomElement/VirtualDomElement.ts'
 
 export const renderInternal = (
   $Parent: HTMLElement,
-  elements: any[],
+  elements: readonly any[],
   eventMap: any,
   newEventMap?: any,
 ) => {

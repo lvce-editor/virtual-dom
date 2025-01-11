@@ -71,6 +71,7 @@ test.skip('element add', () => {
         {
           type: VirtualDomElements.Div,
           childCount: 0,
+          className: 'test',
         },
       ],
     },
@@ -78,4 +79,5 @@ test.skip('element add', () => {
   const $Node = document.createElement('div')
   ApplyPatch.applyPatch($Node, patches)
   expect($Node.children.length).toBe(1)
+  expect($Node.firstElementChild?.className).toBe('test')
 })
