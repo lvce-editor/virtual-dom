@@ -11,7 +11,6 @@ export const diff = (
   const patches: Patch[] = []
   let i = 0 // Index for oldNodes
   let j = 0 // Index for newNodes
-  let currentDepth = 0
   let siblingOffset = 0
 
   const oldNodeCount = oldNodes.length
@@ -21,20 +20,16 @@ export const diff = (
     const oldNode = oldNodes[i]
     const newNode = newNodes[j]
 
-    if (siblingOffset > 0) {
-      patches.push({
-        type: PatchType.NavigateSibling,
-        index: siblingOffset,
-      })
-      siblingOffset = 0
-    }
-
     if (oldNode.type !== newNode.type) {
       const oldTotal = GetTotalChildCount.getTotalChildCount(oldNodes, i)
       const newTotal = GetTotalChildCount.getTotalChildCount(newNodes, j)
+      const last = patches.at(-1)
+      if (last && last.type === PatchType.NavigateChild) {
+        patches.pop()
+      }
       patches.push({
         type: PatchType.RemoveChild,
-        index: siblingOffset,
+        index: 0,
       })
       patches.push({
         type: PatchType.Add,
@@ -43,6 +38,14 @@ export const diff = (
       i += oldTotal
       j += newTotal
       continue
+    }
+
+    if (siblingOffset > 0) {
+      patches.push({
+        type: PatchType.NavigateSibling,
+        index: siblingOffset,
+      })
+      siblingOffset = 0
     }
 
     // text node
@@ -96,18 +99,21 @@ export const diff = (
         type: PatchType.NavigateChild,
         index: 0,
       })
-      currentDepth++
       i++
       j++
       continue
     }
 
     if (oldNode.childCount) {
+      const total = GetTotalChildCount.getTotalChildCount(oldNodes, i)
+      // const last = patches.at(-1)
+      // if (last && last.type === PatchType.NavigateChild) {
+      //   patches.pop()
+      // }
       patches.push({
         type: PatchType.RemoveChild,
         index: 0,
       })
-      const total = GetTotalChildCount.getTotalChildCount(oldNodes, i)
       i += total
       j++
       continue
@@ -140,7 +146,7 @@ export const diff = (
     }
     patches.push({
       type: PatchType.RemoveChild,
-      index: siblingOffset,
+      index: 0,
     })
     i += GetTotalChildCount.getTotalChildCount(oldNodes, i)
   }

@@ -604,7 +604,7 @@ test('diff - node with multiple children', () => {
     },
     {
       type: PatchType.NavigateSibling,
-      index: 2,
+      index: 1,
     },
     {
       type: PatchType.SetText,
@@ -711,6 +711,10 @@ test('diff - child removed, sibling added', () => {
   const oldNodes = [
     {
       type: VirtualDomElements.Div,
+      childCount: 2,
+    },
+    {
+      type: VirtualDomElements.Div,
       childCount: 1,
     },
     {
@@ -723,6 +727,10 @@ test('diff - child removed, sibling added', () => {
     },
   ]
   const newNodes = [
+    {
+      type: VirtualDomElements.Div,
+      childCount: 3,
+    },
     {
       type: VirtualDomElements.Div,
       childCount: 0,
@@ -739,8 +747,16 @@ test('diff - child removed, sibling added', () => {
   const patches = diff(oldNodes, newNodes)
   expect(patches).toEqual([
     {
+      type: PatchType.NavigateChild,
+      index: 0,
+    },
+    {
       type: PatchType.RemoveChild,
       index: 0,
+    },
+    {
+      type: PatchType.NavigateSibling,
+      index: 1,
     },
     {
       type: PatchType.Add,
@@ -807,11 +823,12 @@ test('diff - child added, sibling removed', () => {
       ],
     },
     {
-      type: PatchType.NavigateParent,
+      type: PatchType.NavigateSibling,
+      index: 1,
     },
     {
       type: PatchType.RemoveChild,
-      index: 1,
+      index: 0,
     },
   ])
 })
