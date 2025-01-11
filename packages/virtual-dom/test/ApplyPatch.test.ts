@@ -119,3 +119,36 @@ test('element add', () => {
   expect($Node.children.length).toBe(1)
   expect($Node.firstElementChild?.className).toBe('test')
 })
+
+test.skip('expand search details', () => {
+  const patches: readonly Patch[] = [
+    {
+      type: PatchType.NavigateChild,
+      index: 1,
+    },
+    {
+      type: PatchType.Add,
+      index: 0,
+      nodes: [
+        {
+          type: VirtualDomElements.Input,
+          className: 'Replace',
+        },
+      ],
+    },
+  ]
+  const $Root = document.createElement('div')
+  $Root.className = 'SearchHeaderTop'
+  const $Toggle = document.createElement('div')
+  $Toggle.className = 'Toggle'
+  const $TopRight = document.createElement('div')
+  $TopRight.className = 'SearchHeaderTopRight'
+  const $Input = document.createElement('input')
+  $Input.className = 'SearchValue'
+  $TopRight.append($Input)
+  $Root.append($Toggle, $TopRight)
+  ApplyPatch.applyPatch($Root, patches)
+  expect($TopRight.children).toHaveLength(2)
+  expect($TopRight.children[1]).toBeInstanceOf(HTMLInputElement)
+  expect($TopRight.children[1].className).toBe('Replace')
+})
