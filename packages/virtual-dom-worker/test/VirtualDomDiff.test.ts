@@ -636,13 +636,11 @@ test('diff - add data attributes', () => {
   expect(patches).toEqual([
     {
       type: PatchType.SetAttribute,
-      index: 0,
       key: 'data-testid',
       value: 'test',
     },
     {
       type: PatchType.SetAttribute,
-      index: 0,
       key: 'data-value',
       value: '123',
     },
@@ -670,13 +668,11 @@ test('diff - change element with ARIA attributes', () => {
   expect(patches).toEqual([
     {
       type: PatchType.SetAttribute,
-      index: 0,
       key: 'aria-label',
       value: 'New Label',
     },
     {
       type: PatchType.SetAttribute,
-      index: 0,
       key: 'aria-expanded',
       value: true,
     },
@@ -704,13 +700,11 @@ test('diff - form elements', () => {
   expect(patches).toEqual([
     {
       type: PatchType.SetAttribute,
-      index: 0,
       key: 'value',
       value: 'new',
     },
     {
       type: PatchType.SetAttribute,
-      index: 0,
       key: 'inputType',
       value: 'password',
     },
@@ -749,12 +743,11 @@ test('diff - child removed, sibling added', () => {
   const patches = diff(oldNodes, newNodes)
   expect(patches).toEqual([
     {
-      type: PatchType.Remove,
-      index: 1,
+      type: PatchType.RemoveChild,
+      index: 0,
     },
     {
       type: PatchType.Add,
-      index: 3,
       nodes: [
         {
           type: 4,
