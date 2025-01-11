@@ -128,7 +128,6 @@ export const diff = (
 
     if (oldNode.childCount) {
       ApplyPendingPatches.applyPendingPatches(patches, pendingPatches, 0)
-
       patches.push({
         type: PatchType.RemoveChild,
         index: 0,
@@ -157,10 +156,10 @@ export const diff = (
 
   while (i < oldNodes.length) {
     if (siblingOffset > 0) {
-      // patches.push({
-      //   type: PatchType.NavigateSibling,
-      //   index: siblingOffset,
-      // })
+      patches.push({
+        type: PatchType.NavigateSibling,
+        index: siblingOffset,
+      })
       siblingOffset = 0
     }
     patches.push({
