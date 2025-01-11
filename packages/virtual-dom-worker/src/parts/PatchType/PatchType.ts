@@ -6,3 +6,4 @@ export const Remove = 5
 export const Add = 6
 export const NavigateChild = 7
 export const NavigateParent = 8
+export const RemoveChild = 9
