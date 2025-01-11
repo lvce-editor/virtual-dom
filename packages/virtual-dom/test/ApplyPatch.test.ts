@@ -86,7 +86,7 @@ test('text change of third node', () => {
   expect($Child3.textContent).toBe('test')
 })
 
-test.skip('text change of nested node', () => {
+test('text change of nested node', () => {
   const patches: readonly Patch[] = [
     {
       type: PatchType.NavigateChild,
@@ -96,7 +96,6 @@ test.skip('text change of nested node', () => {
       type: PatchType.NavigateChild,
       index: 0,
     },
-
     {
       type: PatchType.SetText,
       value: 'test',
