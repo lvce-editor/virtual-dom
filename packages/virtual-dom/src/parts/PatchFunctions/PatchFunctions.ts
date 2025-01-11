@@ -1,3 +1,5 @@
+import { VirtualDomNode } from '../VirtualDomNode/VirtualDomNode.ts'
+
 export const setAttribute = (
   $Element: HTMLElement,
   key: string,
@@ -17,4 +19,12 @@ export const setText = ($Element: Text, value: string): void => {
 export const removeChild = ($Element: HTMLElement, index: number): void => {
   const $Child = $Element.children[index]
   $Child.remove()
+}
+
+export const add = (
+  $Element: HTMLElement,
+  nodes: readonly VirtualDomNode[],
+): void => {
+  // const $Child = $Element.children[index]
+  // $Child.remove()
 }
