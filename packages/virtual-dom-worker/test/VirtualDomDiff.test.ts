@@ -508,7 +508,6 @@ test('diff - table structure', () => {
     },
     {
       type: PatchType.SetText,
-      index: 2,
       value: 'new',
     },
   ])
