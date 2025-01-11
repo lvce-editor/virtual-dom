@@ -1038,14 +1038,12 @@ test('diff - child added, sibling removed', () => {
         },
       ],
     },
-    // TODO should navigate to parent and remove child at index 1
     {
-      type: PatchType.NavigateSibling,
-      index: 1,
+      type: PatchType.NavigateParent,
     },
     {
       type: PatchType.RemoveChild,
-      index: 0,
+      index: 1,
     },
   ])
 })

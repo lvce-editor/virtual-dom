@@ -1,6 +1,7 @@
 import type { Patch } from '../Patch/Patch.ts'
 import type { VirtualDomNode } from '../VirtualDomNode/VirtualDomNode.ts'
 import * as ApplyPendingPatches from '../ApplyPendingPatches/ApplyPendingPatches.ts'
+import * as GetKeys from '../GetKeys/GetKeys.ts'
 import * as GetTotalChildCount from '../GetTotalChildCount/GetTotalChildCount.ts'
 import * as PatchType from '../PatchType/PatchType.ts'
 import * as VirtualDomElements from '../VirtualDomElements/VirtualDomElements.ts'
@@ -15,7 +16,7 @@ export const diff = (
   let j = 0
   let siblingOffset = 0
   let maxSiblingOffset = 1
-  const indexStack: number[] = [0]
+  const indexStack: number[] = [0, 1]
   while (i < oldNodes.length && j < newNodes.length) {
     const oldNode = oldNodes[i]
     const newNode = newNodes[j]
@@ -25,7 +26,8 @@ export const diff = (
     }
     if (siblingOffset === maxSiblingOffset) {
       pendingPatches.push(PatchType.NavigateParent, 0)
-      siblingOffset = indexStack.pop() as number
+      maxSiblingOffset = indexStack.pop() as number
+      siblingOffset = (indexStack.pop() as number) + 1
     }
 
     if (oldNode.type !== newNode.type) {
@@ -74,13 +76,8 @@ export const diff = (
       continue
     }
 
-    const oldKeys = Object.keys(oldNode).filter(
-      (key) => key !== 'type' && key !== 'childCount',
-    )
-    const newKeys = Object.keys(newNode).filter(
-      (key) => key !== 'type' && key !== 'childCount',
-    )
-
+    const oldKeys = GetKeys.getKeys(oldNode)
+    const newKeys = GetKeys.getKeys(newNode)
     let hasAttributeChanges = false
     for (const key of newKeys) {
       if (oldNode[key] !== newNode[key]) {
@@ -119,7 +116,7 @@ export const diff = (
 
     if (oldNode.childCount && newNode.childCount) {
       maxSiblingOffset = oldNode.childCount
-      indexStack.push(maxSiblingOffset)
+      indexStack.push(0, maxSiblingOffset)
       pendingPatches.push(PatchType.NavigateChild, 0)
       i++
       j++
@@ -155,18 +152,18 @@ export const diff = (
   }
 
   while (i < oldNodes.length) {
-    if (siblingOffset > 0) {
+    if (indexStack.length !== 2) {
       patches.push({
-        type: PatchType.NavigateSibling,
-        index: siblingOffset,
+        type: PatchType.NavigateParent,
       })
-      siblingOffset = 0
     }
     patches.push({
       type: PatchType.RemoveChild,
-      index: 0,
+      index: siblingOffset,
     })
     i += GetTotalChildCount.getTotalChildCount(oldNodes, i)
+    indexStack.pop()
+    indexStack.pop()
   }
 
   while (j < newNodes.length) {
