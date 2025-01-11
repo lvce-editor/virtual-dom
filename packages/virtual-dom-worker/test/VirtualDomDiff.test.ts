@@ -762,6 +762,10 @@ test('diff - child added, sibling removed', () => {
   const oldNodes = [
     {
       type: VirtualDomElements.Div,
+      childCount: 3,
+    },
+    {
+      type: VirtualDomElements.Div,
       childCount: 0,
     },
     {
@@ -774,6 +778,10 @@ test('diff - child added, sibling removed', () => {
     },
   ]
   const newNodes = [
+    {
+      type: VirtualDomElements.Div,
+      childCount: 2,
+    },
     {
       type: VirtualDomElements.Div,
       childCount: 1,
@@ -790,8 +798,11 @@ test('diff - child added, sibling removed', () => {
   const patches = diff(oldNodes, newNodes)
   expect(patches).toEqual([
     {
+      type: PatchType.NavigateChild,
+      index: 0,
+    },
+    {
       type: PatchType.Add,
-      index: 1,
       nodes: [
         {
           type: 4,
@@ -800,8 +811,11 @@ test('diff - child added, sibling removed', () => {
       ],
     },
     {
-      type: PatchType.Remove,
-      index: 2,
+      type: PatchType.NavigateParent,
+    },
+    {
+      type: PatchType.RemoveChild,
+      index: 1,
     },
   ])
 })
@@ -813,7 +827,6 @@ test('diff - text node changed', () => {
   expect(patches).toEqual([
     {
       type: PatchType.SetText,
-      index: 0,
       value: 'world',
     },
   ])
@@ -838,7 +851,6 @@ test('diff - attribute changed', () => {
   expect(patches).toEqual([
     {
       type: PatchType.SetAttribute,
-      index: 0,
       key: 'className',
       value: 'new-class',
     },
@@ -863,7 +875,6 @@ test('diff - attribute removed', () => {
   expect(patches).toEqual([
     {
       type: PatchType.RemoveAttribute,
-      index: 0,
       key: 'className',
     },
   ])
@@ -886,8 +897,11 @@ test('diff - nested nodes', () => {
   const patches = diff(oldNodes, newNodes)
   expect(patches).toEqual([
     {
+      type: PatchType.NavigateChild,
+      index: 0,
+    },
+    {
       type: PatchType.SetText,
-      index: 1,
       value: 'world',
     },
   ])
@@ -914,13 +928,11 @@ test('diff - multiple attributes changed', () => {
   expect(patches).toEqual([
     {
       type: PatchType.SetAttribute,
-      index: 0,
       key: 'className',
       value: 'new-class',
     },
     {
       type: PatchType.SetAttribute,
-      index: 0,
       key: 'id',
       value: 'new-id',
     },
@@ -952,7 +964,6 @@ test('diff - two children added', () => {
   expect(patches).toEqual([
     {
       type: PatchType.Add,
-      index: 1,
       nodes: [
         {
           type: 4,
@@ -962,7 +973,6 @@ test('diff - two children added', () => {
     },
     {
       type: PatchType.Add,
-      index: 1,
       nodes: [
         {
           type: 4,
@@ -997,12 +1007,12 @@ test('diff - two children removed', () => {
   const patches = diff(oldNodes, newNodes)
   expect(patches).toEqual([
     {
-      type: PatchType.Remove,
-      index: 1,
+      type: PatchType.RemoveChild,
+      index: 0,
     },
     {
-      type: PatchType.Remove,
-      index: 2,
+      type: PatchType.RemoveChild,
+      index: 0,
     },
   ])
 })
