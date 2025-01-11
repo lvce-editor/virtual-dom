@@ -986,7 +986,7 @@ test('diff - child removed, sibling added', () => {
   ])
 })
 
-test.skip('diff - child added, sibling removed', () => {
+test('diff - child added, sibling removed', () => {
   const oldNodes = [
     {
       type: VirtualDomElements.Div,
