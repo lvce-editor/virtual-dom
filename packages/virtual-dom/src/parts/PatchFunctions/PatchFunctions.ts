@@ -18,6 +18,9 @@ export const setText = ($Element: Text, value: string): void => {
 }
 
 export const removeChild = ($Element: HTMLElement, index: number): void => {
+  console.log('el', $Element.className)
+  console.log('index', index)
+  console.log('ch', $Element.children.length)
   const $Child = $Element.children[index]
   $Child.remove()
 }

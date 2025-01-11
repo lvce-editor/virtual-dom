@@ -22,3 +22,8 @@ export const rememberFocus: (
 ) => void
 
 export const registerEventListeners: any
+
+export const applyPatch: (
+  $Element: HTMLElement,
+  patches: readonly any[],
+) => void
