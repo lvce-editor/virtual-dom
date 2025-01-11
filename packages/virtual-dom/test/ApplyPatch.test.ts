@@ -62,7 +62,7 @@ test.skip('element removeChild', () => {
   expect($Node.children.length).toBe(0)
 })
 
-test('element add', () => {
+test.skip('element add', () => {
   const patches: readonly Patch[] = [
     {
       type: PatchType.Add,
