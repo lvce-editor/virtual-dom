@@ -86,6 +86,31 @@ test('text change of third node', () => {
   expect($Child3.textContent).toBe('test')
 })
 
+test.skip('text change of nested node', () => {
+  const patches: readonly Patch[] = [
+    {
+      type: PatchType.NavigateChild,
+      index: 0,
+    },
+    {
+      type: PatchType.NavigateChild,
+      index: 0,
+    },
+
+    {
+      type: PatchType.SetText,
+      value: 'test',
+    },
+  ]
+  const $Root = document.createElement('div')
+  const $Child1 = document.createElement('div')
+  const $Child2 = document.createTextNode('')
+  $Child1.append($Child2)
+  $Root.append($Child1)
+  ApplyPatch.applyPatch($Root, patches)
+  expect($Child2.textContent).toBe('test')
+})
+
 test('element removeChild', () => {
   const patches: readonly Patch[] = [
     {
