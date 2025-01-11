@@ -228,7 +228,7 @@ test('collapse search details', () => {
   expect($TopRight.children[0].className).toBe('SearchValue')
 })
 
-test.skip('remove nested child node', () => {
+test('remove nested child node', () => {
   const patches: readonly Patch[] = [
     {
       type: PatchType.NavigateChild,
@@ -242,19 +242,21 @@ test.skip('remove nested child node', () => {
   const $Root = document.createElement('div')
   $Root.className = 'Root'
   const $Child1 = document.createElement('div')
+  $Child1.className = '1'
   const $Child2 = document.createElement('div')
-  const $Child3 = document.createComment('div')
+  $Child2.className = '2'
+  const $Child3 = document.createElement('div')
+  $Child3.className = '3'
   $Child1.append($Child2)
   $Root.append($Child1, $Child3)
   ApplyPatch.applyPatch($Root, patches)
   expect($Root.children).toHaveLength(2)
   expect($Root.children[0]).toBeInstanceOf(HTMLDivElement)
-  expect($Root.children[0].children).toHaveLength(1)
-  expect($Root.children[0].children[0]).toBeInstanceOf(HTMLSpanElement)
-  expect($Root.children[1]).toBeInstanceOf(HTMLSpanElement)
+  expect($Root.children[0].children).toHaveLength(0)
+  expect($Root.children[1]).toBeInstanceOf(HTMLDivElement)
 })
 
-test.skip('remove and add node', () => {
+test('remove and add node', () => {
   const patches: readonly Patch[] = [
     {
       type: PatchType.NavigateChild,
@@ -278,7 +280,7 @@ test.skip('remove and add node', () => {
   $Root.className = 'Root'
   const $Child1 = document.createElement('div')
   const $Child2 = document.createElement('div')
-  const $Child3 = document.createComment('div')
+  const $Child3 = document.createElement('div')
   $Child1.append($Child2)
   $Root.append($Child1, $Child3)
   ApplyPatch.applyPatch($Root, patches)
@@ -286,10 +288,10 @@ test.skip('remove and add node', () => {
   expect($Root.children[0]).toBeInstanceOf(HTMLDivElement)
   expect($Root.children[0].children).toHaveLength(1)
   expect($Root.children[0].children[0]).toBeInstanceOf(HTMLSpanElement)
-  expect($Root.children[1]).toBeInstanceOf(HTMLSpanElement)
+  expect($Root.children[1]).toBeInstanceOf(HTMLDivElement)
 })
 
-test.skip('multiple changes', () => {
+test('multiple changes', () => {
   const patches: readonly Patch[] = [
     {
       type: PatchType.NavigateChild,
@@ -329,7 +331,7 @@ test.skip('multiple changes', () => {
   $Root.className = 'Root'
   const $Child1 = document.createElement('div')
   const $Child2 = document.createElement('div')
-  const $Child3 = document.createComment('div')
+  const $Child3 = document.createElement('div')
   $Child1.append($Child2)
   $Root.append($Child1, $Child3)
   ApplyPatch.applyPatch($Root, patches)
