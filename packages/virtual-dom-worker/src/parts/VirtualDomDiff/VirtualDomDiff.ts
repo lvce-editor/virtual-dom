@@ -15,7 +15,7 @@ export const diff = (
   let j = 0
   let siblingOffset = 0
   let maxSiblingOffset = 1
-  const indexStack: number[] = [0]
+  const indexStack: number[] = [0, 1]
   while (i < oldNodes.length && j < newNodes.length) {
     const oldNode = oldNodes[i]
     const newNode = newNodes[j]
@@ -25,6 +25,7 @@ export const diff = (
     }
     if (siblingOffset === maxSiblingOffset) {
       pendingPatches.push(PatchType.NavigateParent, 0)
+      maxSiblingOffset = indexStack.pop() as number
       siblingOffset = indexStack.pop() as number
     }
 
@@ -119,7 +120,7 @@ export const diff = (
 
     if (oldNode.childCount && newNode.childCount) {
       maxSiblingOffset = oldNode.childCount
-      indexStack.push(maxSiblingOffset)
+      indexStack.push(0, maxSiblingOffset)
       pendingPatches.push(PatchType.NavigateChild, 0)
       i++
       j++
@@ -132,6 +133,7 @@ export const diff = (
         type: PatchType.RemoveChild,
         index: 0,
       })
+      console.log('r2')
       i += GetTotalChildCount.getTotalChildCount(oldNodes, i)
       j++
       continue
@@ -155,16 +157,21 @@ export const diff = (
   }
 
   while (i < oldNodes.length) {
-    if (siblingOffset > 0) {
-      patches.push({
-        type: PatchType.NavigateSibling,
-        index: siblingOffset,
-      })
-      siblingOffset = 0
-    }
+    patches.push({
+      type: PatchType.NavigateParent,
+    })
+    // if (siblingOffset > 0) {
+    //   patches.push({
+    //     type: PatchType.NavigateSibling,
+    //     index: siblingOffset,
+    //   })
+    //   console.log({ maxSiblingOffset, siblingOffset, indexStack })
+    // }
+    // console.log('r3')
+
     patches.push({
       type: PatchType.RemoveChild,
-      index: 0,
+      index: siblingOffset,
     })
     i += GetTotalChildCount.getTotalChildCount(oldNodes, i)
   }
