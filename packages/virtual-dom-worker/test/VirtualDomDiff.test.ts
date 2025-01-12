@@ -979,7 +979,7 @@ test('diff - child removed, sibling added', () => {
       type: PatchType.Add,
       nodes: [
         {
-          type: 4,
+          type: VirtualDomElements.Div,
           childCount: 0,
         },
       ],
@@ -1034,7 +1034,7 @@ test('diff - child added, sibling removed', () => {
       type: PatchType.Add,
       nodes: [
         {
-          type: 4,
+          type: VirtualDomElements.Div,
           childCount: 0,
         },
       ],
@@ -1229,7 +1229,7 @@ test('diff - two children added', () => {
       type: PatchType.Add,
       nodes: [
         {
-          type: 4,
+          type: VirtualDomElements.Div,
           childCount: 0,
         },
       ],
@@ -1238,7 +1238,7 @@ test('diff - two children added', () => {
       type: PatchType.Add,
       nodes: [
         {
-          type: 4,
+          type: VirtualDomElements.Div,
           childCount: 0,
         },
       ],
@@ -1783,6 +1783,8 @@ test('large diff', () => {
       key: 'className',
       value: 'MaskIcon MaskIconChevronRight',
     },
+
+    // TODO this navigation seems wrong
     {
       type: PatchType.NavigateParent,
     },
@@ -1816,13 +1818,14 @@ test('large diff', () => {
       type: PatchType.NavigateChild,
       index: 0,
     },
+    // TODO this should not be in the diff, search header details hasn't changed
     {
       type: PatchType.SetAttribute,
       key: 'className',
       value: 'SearchHeaderDetails',
     },
     {
-      type: 4,
+      type: PatchType.RemoveAttribute,
       key: 'role',
     },
     {
@@ -1845,7 +1848,7 @@ test('large diff', () => {
       value: 0,
     },
     {
-      type: 9,
+      type: PatchType.RemoveChild,
       index: 4,
     },
     {
@@ -1896,7 +1899,7 @@ test('large diff', () => {
       type: PatchType.Add,
       nodes: [
         {
-          type: 4,
+          type: VirtualDomElements.Div,
           className: 'MaskIcon MaskIconEllipsis',
           childCount: 0,
         },
@@ -1910,14 +1913,14 @@ test('large diff', () => {
       type: PatchType.Add,
       nodes: [
         {
-          type: 4,
+          type: VirtualDomElements.Div,
           className: 'Viewlet List Tree',
           role: 'tree',
           tabIndex: 0,
           childCount: 1,
         },
         {
-          type: 4,
+          type: VirtualDomElements.Div,
           className: 'TreeItems',
           childCount: 0,
           onClick: 'handleClick',
