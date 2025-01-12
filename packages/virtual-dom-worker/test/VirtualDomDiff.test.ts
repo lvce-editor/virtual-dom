@@ -1680,7 +1680,7 @@ test('large diff', () => {
     },
     {
       type: VirtualDomElements.Text,
-      text: 'No results found',
+      text: '',
       childCount: 0,
     },
     {
@@ -1839,7 +1839,7 @@ test('large diff', () => {
     },
     {
       type: VirtualDomElements.Text,
-      text: 'No results found',
+      text: '',
       childCount: 0,
     },
     {
@@ -1989,7 +1989,7 @@ test('large diff', () => {
       nodes: [
         {
           type: VirtualDomElements.Text,
-          text: 'No results found',
+          text: '',
           childCount: 0,
         },
       ],
