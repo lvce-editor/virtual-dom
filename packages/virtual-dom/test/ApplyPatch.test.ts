@@ -346,171 +346,186 @@ test.skip('large patch', () => {
   $Root.innerHTML = `<div class="Viewlet Search"><div class="SearchHeader" role="none"><div class="SearchHeaderTop" role="none"><button class="IconButton SearchToggleButton SearchToggleButtonExpanded" title="Toggle Replace" aria-label="Toggle Replace" aria-expanded="true" data-command="toggleReplace" name="ToggleReplace" classname="IconButton SearchToggleButton" ariaexpanded="false"><div class="MaskIcon MaskIconChevronDown" classname="MaskIcon MaskIconChevronRight"></div></button><div class="SearchHeaderTopRight" role="none"><div class="SearchField" role="none"><textarea class="MultilineInputBox" spellcheck="false" autocapitalize="off" placeholder="Search" name="SearchValue"></textarea><div class="SearchFieldButtons"><button class="SearchFieldButton" name="MatchCase" title="Match Case" role="checkbox" aria-checked="false" tabindex="0"><span class="MaskIcon MaskIconCaseSensitive"></span></button><button class="SearchFieldButton" name="MatchWholeWord" title="Match Whole Word" role="checkbox" aria-checked="false" tabindex="0"><span class="MaskIcon MaskIconWholeWord"></span></button><button class="SearchFieldButton" name="UseRegularExpression" title="Use Regular Expression" role="checkbox" aria-checked="false" tabindex="0"><span class="MaskIcon MaskIconRegex"></span></button></div></div><div class="SearchFieldContainer" role="none"><div class="SearchField" role="none"><textarea class="MultilineInputBox" spellcheck="false" autocapitalize="off" placeholder="Replace" name="ReplaceValue"></textarea><div class="SearchFieldButtons"><button class="SearchFieldButton" name="PreserveCase" title="Preserve Case" role="checkbox" aria-checked="false" tabindex="0"><span class="MaskIcon MaskIconPreserveCase"></span></button></div></div><button class="SearchFieldButton SearchFieldButtonDisabled" name="ReplaceAll" title="Replace All" role="checkbox" aria-checked="false" tabindex="0"><span class="MaskIcon MaskIconReplaceAll"></span></button></div></div></div><div class="SearchHeaderDetails"><div class="ViewletSearchMessage" role="status" tabindex="0">No results found</div><div class="ToggleDetails" role="button" tabindex="0" aria-label="Toggle Search Details" title="Toggle Search Details"><div class="MaskIcon MaskIconEllipsis"></div></div></div></div><div class="Viewlet List Tree" role="tree" tabindex="0"><div class="TreeItems" id="TreeItems" style="top: 0px;"></div></div></div>`
   const patches: readonly Patch[] = [
     {
-      type: 7,
+      type: PatchType.NavigateChild,
       index: 0,
     },
     {
-      type: 7,
+      type: PatchType.NavigateChild,
       index: 0,
     },
     {
-      type: 7,
+      type: PatchType.NavigateChild,
       index: 0,
     },
     {
-      type: 3,
+      type: PatchType.SetAttribute,
       key: 'className',
       value: 'IconButton SearchToggleButton',
     },
     {
-      type: 3,
+      type: PatchType.SetAttribute,
       key: 'ariaExpanded',
       value: false,
     },
     {
-      type: 7,
+      type: PatchType.NavigateChild,
       index: 0,
     },
     {
-      type: 3,
+      type: PatchType.SetAttribute,
       key: 'className',
       value: 'MaskIcon MaskIconChevronRight',
     },
+
+    // TODO this navigation seems wrong
     {
-      type: 8,
+      type: PatchType.NavigateParent,
     },
     {
-      type: 7,
+      type: PatchType.NavigateChild,
       index: 0,
     },
     {
-      type: 7,
+      type: PatchType.NavigateChild,
       index: 0,
     },
     {
-      type: 8,
+      type: PatchType.NavigateParent,
     },
     {
-      type: 7,
+      type: PatchType.NavigateChild,
       index: 0,
     },
     {
-      type: 7,
+      type: PatchType.NavigateChild,
       index: 0,
     },
     {
-      type: 8,
+      type: PatchType.NavigateParent,
     },
     {
-      type: 7,
+      type: PatchType.NavigateChild,
       index: 0,
     },
     {
-      type: 7,
+      type: PatchType.NavigateChild,
       index: 0,
     },
     {
-      type: 3,
+      type: PatchType.NavigateSibling,
+      index: 4,
+    },
+    // TODO this should not be in the diff, search header details hasn't changed
+    {
+      type: PatchType.SetAttribute,
       key: 'className',
       value: 'SearchHeaderDetails',
     },
     {
-      type: 4,
+      type: PatchType.RemoveAttribute,
       key: 'role',
     },
     {
-      type: 7,
+      type: PatchType.NavigateChild,
       index: 0,
     },
     {
-      type: 3,
+      type: PatchType.NavigateSibling,
+      index: 4,
+    },
+    {
+      type: PatchType.SetAttribute,
       key: 'className',
       value: 'ViewletSearchMessage',
     },
     {
-      type: 3,
+      type: PatchType.SetAttribute,
       key: 'role',
       value: 'status',
     },
     {
-      type: 3,
+      type: PatchType.SetAttribute,
       key: 'tabIndex',
       value: 0,
     },
     {
-      type: 9,
+      type: PatchType.RemoveChild,
       index: 4,
     },
     {
-      type: 6,
+      type: PatchType.Add,
       nodes: [
         {
-          type: 12,
+          type: VirtualDomElements.Text,
           text: 'No results found',
           childCount: 0,
         },
       ],
     },
     {
-      type: 3,
+      type: PatchType.NavigateSibling,
+      index: 5,
+    },
+    {
+      type: PatchType.SetAttribute,
       key: 'className',
       value: 'ToggleDetails',
     },
     {
-      type: 3,
+      type: PatchType.SetAttribute,
       key: 'role',
       value: 'button',
     },
     {
-      type: 3,
+      type: PatchType.SetAttribute,
       key: 'tabIndex',
       value: 0,
     },
     {
-      type: 3,
+      type: PatchType.SetAttribute,
       key: 'ariaLabel',
       value: 'Toggle Search Details',
     },
     {
-      type: 3,
+      type: PatchType.SetAttribute,
       key: 'title',
       value: 'Toggle Search Details',
     },
     {
-      type: 3,
+      type: PatchType.SetAttribute,
       key: 'name',
       value: 'ToggleSearchDetails',
     },
     {
-      type: 9,
+      type: PatchType.RemoveChild,
       index: 5,
     },
     {
-      type: 6,
+      type: PatchType.Add,
       nodes: [
         {
-          type: 4,
+          type: VirtualDomElements.Div,
           className: 'MaskIcon MaskIconEllipsis',
           childCount: 0,
         },
       ],
     },
     {
-      type: 9,
+      type: PatchType.RemoveChild,
       index: 6,
     },
     {
-      type: 6,
+      type: PatchType.Add,
       nodes: [
         {
-          type: 4,
+          type: VirtualDomElements.Div,
           className: 'Viewlet List Tree',
           role: 'tree',
           tabIndex: 0,
           childCount: 1,
         },
         {
-          type: 4,
+          type: VirtualDomElements.Div,
           className: 'TreeItems',
           childCount: 0,
           onClick: 'handleClick',
@@ -522,17 +537,17 @@ test.skip('large patch', () => {
       ],
     },
     {
-      type: 8,
+      type: PatchType.NavigateParent,
     },
     {
-      type: 9,
+      type: PatchType.RemoveChild,
       index: 7,
     },
     {
-      type: 8,
+      type: PatchType.NavigateParent,
     },
     {
-      type: 9,
+      type: PatchType.RemoveChild,
       index: 7,
     },
   ]
