@@ -93,6 +93,9 @@ export const diff = (
     }
 
     if (hasAttributeChanges) {
+      if (siblingOffset > 0) {
+        pendingPatches.push(PatchType.NavigateSibling, siblingOffset)
+      }
       ApplyPendingPatches.applyPendingPatches(patches, pendingPatches, 0)
 
       for (const key of newKeys) {
@@ -133,6 +136,7 @@ export const diff = (
       }
       i += GetTotalChildCount.getTotalChildCount(oldNodes, i)
       j++
+      siblingOffset++
       continue
     }
 
