@@ -1427,7 +1427,7 @@ test('nested elements removed', () => {
   ])
 })
 
-test.skip('nested elements removed 2', () => {
+test('nested elements removed 2', () => {
   const oldNodes: readonly VirtualDomNode[] = [
     {
       type: VirtualDomElements.Div,
@@ -1486,10 +1486,7 @@ test.skip('nested elements removed 2', () => {
       type: PatchType.NavigateParent,
     },
     {
-      type: PatchType.NavigateParent,
-    },
-    {
-      type: PatchType.NavigateChild,
+      type: PatchType.NavigateSibling,
       index: 1,
     },
     {
