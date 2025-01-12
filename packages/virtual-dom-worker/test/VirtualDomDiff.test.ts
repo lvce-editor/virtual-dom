@@ -1848,7 +1848,7 @@ test('large diff', () => {
       value: 0,
     },
     {
-      type: 9,
+      type: PatchType.RemoveChild,
       index: 4,
     },
     {
