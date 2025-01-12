@@ -1825,7 +1825,7 @@ test('large diff', () => {
       value: 'SearchHeaderDetails',
     },
     {
-      type: 4,
+      type: PatchType.RemoveAttribute,
       key: 'role',
     },
     {
