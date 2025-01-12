@@ -1783,6 +1783,8 @@ test('large diff', () => {
       key: 'className',
       value: 'MaskIcon MaskIconChevronRight',
     },
+
+    // TODO this navigation seems wrong
     {
       type: PatchType.NavigateParent,
     },
@@ -1816,6 +1818,7 @@ test('large diff', () => {
       type: PatchType.NavigateChild,
       index: 0,
     },
+    // TODO this should not be in the diff, search header details hasn't changed
     {
       type: PatchType.SetAttribute,
       key: 'className',
