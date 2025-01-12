@@ -979,7 +979,7 @@ test('diff - child removed, sibling added', () => {
       type: PatchType.Add,
       nodes: [
         {
-          type: 4,
+          type: VirtualDomElements.Div,
           childCount: 0,
         },
       ],
@@ -1034,7 +1034,7 @@ test('diff - child added, sibling removed', () => {
       type: PatchType.Add,
       nodes: [
         {
-          type: 4,
+          type: VirtualDomElements.Div,
           childCount: 0,
         },
       ],
@@ -1229,7 +1229,7 @@ test('diff - two children added', () => {
       type: PatchType.Add,
       nodes: [
         {
-          type: 4,
+          type: VirtualDomElements.Div,
           childCount: 0,
         },
       ],
@@ -1238,7 +1238,7 @@ test('diff - two children added', () => {
       type: PatchType.Add,
       nodes: [
         {
-          type: 4,
+          type: VirtualDomElements.Div,
           childCount: 0,
         },
       ],
@@ -1899,7 +1899,7 @@ test('large diff', () => {
       type: PatchType.Add,
       nodes: [
         {
-          type: 4,
+          type: VirtualDomElements.Div,
           className: 'MaskIcon MaskIconEllipsis',
           childCount: 0,
         },
@@ -1913,14 +1913,14 @@ test('large diff', () => {
       type: PatchType.Add,
       nodes: [
         {
-          type: 4,
+          type: VirtualDomElements.Div,
           className: 'Viewlet List Tree',
           role: 'tree',
           tabIndex: 0,
           childCount: 1,
         },
         {
-          type: 4,
+          type: VirtualDomElements.Div,
           className: 'TreeItems',
           childCount: 0,
           onClick: 'handleClick',
