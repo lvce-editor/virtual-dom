@@ -1497,7 +1497,7 @@ test('nested elements removed 2', () => {
   ])
 })
 
-test.skip('large diff', () => {
+test('large diff', () => {
   const oldNodes: readonly VirtualDomNode[] = [
     {
       type: VirtualDomElements.Div,
@@ -1573,7 +1573,7 @@ test.skip('large diff', () => {
       childCount: 1,
     },
     {
-      type: PatchType.NavigateParent,
+      type: VirtualDomElements.Span,
       className: 'MaskIcon MaskIconCaseSensitive',
       childCount: 0,
     },
@@ -1588,7 +1588,7 @@ test.skip('large diff', () => {
       childCount: 1,
     },
     {
-      type: PatchType.NavigateParent,
+      type: VirtualDomElements.Span,
       className: 'MaskIcon MaskIconWholeWord',
       childCount: 0,
     },
@@ -1603,7 +1603,7 @@ test.skip('large diff', () => {
       childCount: 1,
     },
     {
-      type: PatchType.NavigateParent,
+      type: VirtualDomElements.Span,
       className: 'MaskIcon MaskIconRegex',
       childCount: 0,
     },
@@ -1647,7 +1647,7 @@ test.skip('large diff', () => {
       childCount: 1,
     },
     {
-      type: PatchType.NavigateParent,
+      type: VirtualDomElements.Span,
       className: 'MaskIcon MaskIconPreserveCase',
       childCount: 0,
     },
@@ -1662,7 +1662,7 @@ test.skip('large diff', () => {
       childCount: 1,
     },
     {
-      type: PatchType.NavigateParent,
+      type: VirtualDomElements.Span,
       className: 'MaskIcon MaskIconReplaceAll',
       childCount: 0,
     },
@@ -1791,7 +1791,7 @@ test.skip('large diff', () => {
       childCount: 1,
     },
     {
-      type: PatchType.NavigateParent,
+      type: VirtualDomElements.Span,
       className: 'MaskIcon MaskIconCaseSensitive',
       childCount: 0,
     },
@@ -1806,7 +1806,7 @@ test.skip('large diff', () => {
       childCount: 1,
     },
     {
-      type: PatchType.NavigateParent,
+      type: VirtualDomElements.Span,
       className: 'MaskIcon MaskIconWholeWord',
       childCount: 0,
     },
@@ -1821,7 +1821,7 @@ test.skip('large diff', () => {
       childCount: 1,
     },
     {
-      type: PatchType.NavigateParent,
+      type: VirtualDomElements.Span,
       className: 'MaskIcon MaskIconRegex',
       childCount: 0,
     },
@@ -1943,6 +1943,10 @@ test.skip('large diff', () => {
       type: PatchType.NavigateChild,
       index: 0,
     },
+    {
+      type: PatchType.NavigateSibling,
+      index: 4,
+    },
     // TODO this should not be in the diff, search header details hasn't changed
     {
       type: PatchType.SetAttribute,
@@ -1956,6 +1960,10 @@ test.skip('large diff', () => {
     {
       type: PatchType.NavigateChild,
       index: 0,
+    },
+    {
+      type: PatchType.NavigateSibling,
+      index: 4,
     },
     {
       type: PatchType.SetAttribute,
@@ -1985,6 +1993,10 @@ test.skip('large diff', () => {
           childCount: 0,
         },
       ],
+    },
+    {
+      type: PatchType.NavigateSibling,
+      index: 5,
     },
     {
       type: PatchType.SetAttribute,
