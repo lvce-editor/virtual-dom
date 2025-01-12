@@ -1372,15 +1372,15 @@ test('diff - four children removed', () => {
   ])
 })
 
-test.skip('large diff', () => {
+test('large diff', () => {
   const oldNodes: readonly VirtualDomNode[] = [
     {
-      type: 4,
+      type: VirtualDomElements.Div,
       className: 'Viewlet Search',
       childCount: 2,
     },
     {
-      type: 4,
+      type: VirtualDomElements.Div,
       className: 'SearchHeader',
       role: 'none',
       childCount: 2,
@@ -1388,7 +1388,7 @@ test.skip('large diff', () => {
       onFocusIn: 'handleHeaderFocusIn',
     },
     {
-      type: 4,
+      type: VirtualDomElements.Div,
       className: 'SearchHeaderTop',
       role: 'none',
       childCount: 2,
@@ -1404,24 +1404,24 @@ test.skip('large diff', () => {
       name: 'ToggleReplace',
     },
     {
-      type: 4,
+      type: VirtualDomElements.Div,
       className: 'MaskIcon MaskIconChevronDown',
       childCount: 0,
     },
     {
-      type: 4,
+      type: VirtualDomElements.Div,
       className: 'SearchHeaderTopRight',
       role: 'none',
       childCount: 2,
     },
     {
-      type: 4,
+      type: VirtualDomElements.Div,
       className: 'SearchField',
       role: 'none',
       childCount: 2,
     },
     {
-      type: 62,
+      type: VirtualDomElements.TextArea,
       className: 'MultilineInputBox',
       spellcheck: false,
       autocapitalize: 'off',
@@ -1433,7 +1433,7 @@ test.skip('large diff', () => {
       childCount: 0,
     },
     {
-      type: 4,
+      type: VirtualDomElements.Div,
       className: 'SearchFieldButtons',
       childCount: 3,
     },
@@ -1448,7 +1448,7 @@ test.skip('large diff', () => {
       childCount: 1,
     },
     {
-      type: 8,
+      type: PatchType.NavigateParent,
       className: 'MaskIcon MaskIconCaseSensitive',
       childCount: 0,
     },
@@ -1463,7 +1463,7 @@ test.skip('large diff', () => {
       childCount: 1,
     },
     {
-      type: 8,
+      type: PatchType.NavigateParent,
       className: 'MaskIcon MaskIconWholeWord',
       childCount: 0,
     },
@@ -1478,24 +1478,24 @@ test.skip('large diff', () => {
       childCount: 1,
     },
     {
-      type: 8,
+      type: PatchType.NavigateParent,
       className: 'MaskIcon MaskIconRegex',
       childCount: 0,
     },
     {
-      type: 4,
+      type: VirtualDomElements.Div,
       className: 'SearchFieldContainer',
       role: 'none',
       childCount: 2,
     },
     {
-      type: 4,
+      type: VirtualDomElements.Div,
       className: 'SearchField',
       role: 'none',
       childCount: 2,
     },
     {
-      type: 62,
+      type: VirtualDomElements.TextArea,
       className: 'MultilineInputBox',
       spellcheck: false,
       autocapitalize: 'off',
@@ -1507,7 +1507,7 @@ test.skip('large diff', () => {
       childCount: 0,
     },
     {
-      type: 4,
+      type: VirtualDomElements.Div,
       className: 'SearchFieldButtons',
       childCount: 1,
     },
@@ -1522,7 +1522,7 @@ test.skip('large diff', () => {
       childCount: 1,
     },
     {
-      type: 8,
+      type: PatchType.NavigateParent,
       className: 'MaskIcon MaskIconPreserveCase',
       childCount: 0,
     },
@@ -1537,29 +1537,29 @@ test.skip('large diff', () => {
       childCount: 1,
     },
     {
-      type: 8,
+      type: PatchType.NavigateParent,
       className: 'MaskIcon MaskIconReplaceAll',
       childCount: 0,
     },
     {
-      type: 4,
+      type: VirtualDomElements.Div,
       className: 'SearchHeaderDetails',
       childCount: 2,
     },
     {
-      type: 4,
+      type: VirtualDomElements.Div,
       className: 'ViewletSearchMessage',
       role: 'status',
       tabIndex: 0,
       childCount: 1,
     },
     {
-      type: 12,
+      type: VirtualDomElements.Text,
       text: 'No results found',
       childCount: 0,
     },
     {
-      type: 4,
+      type: VirtualDomElements.Div,
       className: 'ToggleDetails',
       role: 'button',
       tabIndex: 0,
@@ -1569,19 +1569,19 @@ test.skip('large diff', () => {
       childCount: 1,
     },
     {
-      type: 4,
+      type: VirtualDomElements.Div,
       className: 'MaskIcon MaskIconEllipsis',
       childCount: 0,
     },
     {
-      type: 4,
+      type: VirtualDomElements.Div,
       className: 'Viewlet List Tree',
       role: 'tree',
       tabIndex: 0,
       childCount: 1,
     },
     {
-      type: 4,
+      type: VirtualDomElements.Div,
       className: 'TreeItems',
       childCount: 0,
       onClick: 'handleClick',
@@ -1593,12 +1593,12 @@ test.skip('large diff', () => {
   ]
   const newNodes: readonly VirtualDomNode[] = [
     {
-      type: 4,
+      type: VirtualDomElements.Div,
       className: 'Viewlet Search',
       childCount: 2,
     },
     {
-      type: 4,
+      type: VirtualDomElements.Div,
       className: 'SearchHeader',
       role: 'none',
       childCount: 2,
@@ -1606,7 +1606,7 @@ test.skip('large diff', () => {
       onFocusIn: 'handleHeaderFocusIn',
     },
     {
-      type: 4,
+      type: VirtualDomElements.Div,
       className: 'SearchHeaderTop',
       role: 'none',
       childCount: 2,
@@ -1622,24 +1622,24 @@ test.skip('large diff', () => {
       name: 'ToggleReplace',
     },
     {
-      type: 4,
+      type: VirtualDomElements.Div,
       className: 'MaskIcon MaskIconChevronRight',
       childCount: 0,
     },
     {
-      type: 4,
+      type: VirtualDomElements.Div,
       className: 'SearchHeaderTopRight',
       role: 'none',
       childCount: 1,
     },
     {
-      type: 4,
+      type: VirtualDomElements.Div,
       className: 'SearchField',
       role: 'none',
       childCount: 2,
     },
     {
-      type: 62,
+      type: VirtualDomElements.TextArea,
       className: 'MultilineInputBox',
       spellcheck: false,
       autocapitalize: 'off',
@@ -1651,7 +1651,7 @@ test.skip('large diff', () => {
       childCount: 0,
     },
     {
-      type: 4,
+      type: VirtualDomElements.Div,
       className: 'SearchFieldButtons',
       childCount: 3,
     },
@@ -1666,7 +1666,7 @@ test.skip('large diff', () => {
       childCount: 1,
     },
     {
-      type: 8,
+      type: PatchType.NavigateParent,
       className: 'MaskIcon MaskIconCaseSensitive',
       childCount: 0,
     },
@@ -1681,7 +1681,7 @@ test.skip('large diff', () => {
       childCount: 1,
     },
     {
-      type: 8,
+      type: PatchType.NavigateParent,
       className: 'MaskIcon MaskIconWholeWord',
       childCount: 0,
     },
@@ -1696,29 +1696,29 @@ test.skip('large diff', () => {
       childCount: 1,
     },
     {
-      type: 8,
+      type: PatchType.NavigateParent,
       className: 'MaskIcon MaskIconRegex',
       childCount: 0,
     },
     {
-      type: 4,
+      type: VirtualDomElements.Div,
       className: 'SearchHeaderDetails',
       childCount: 2,
     },
     {
-      type: 4,
+      type: VirtualDomElements.Div,
       className: 'ViewletSearchMessage',
       role: 'status',
       tabIndex: 0,
       childCount: 1,
     },
     {
-      type: 12,
+      type: VirtualDomElements.Text,
       text: 'No results found',
       childCount: 0,
     },
     {
-      type: 4,
+      type: VirtualDomElements.Div,
       className: 'ToggleDetails',
       role: 'button',
       tabIndex: 0,
@@ -1728,19 +1728,19 @@ test.skip('large diff', () => {
       childCount: 1,
     },
     {
-      type: 4,
+      type: VirtualDomElements.Div,
       className: 'MaskIcon MaskIconEllipsis',
       childCount: 0,
     },
     {
-      type: 4,
+      type: VirtualDomElements.Div,
       className: 'Viewlet List Tree',
       role: 'tree',
       tabIndex: 0,
       childCount: 1,
     },
     {
-      type: 4,
+      type: VirtualDomElements.Div,
       className: 'TreeItems',
       childCount: 0,
       onClick: 'handleClick',
@@ -1753,71 +1753,71 @@ test.skip('large diff', () => {
   const patches = diff(oldNodes, newNodes)
   expect(patches).toEqual([
     {
-      type: 7,
+      type: PatchType.NavigateChild,
       index: 0,
     },
     {
-      type: 7,
+      type: PatchType.NavigateChild,
       index: 0,
     },
     {
-      type: 7,
+      type: PatchType.NavigateChild,
       index: 0,
     },
     {
-      type: 3,
+      type: PatchType.SetAttribute,
       key: 'className',
       value: 'IconButton SearchToggleButton',
     },
     {
-      type: 3,
+      type: PatchType.SetAttribute,
       key: 'ariaExpanded',
       value: false,
     },
     {
-      type: 7,
+      type: PatchType.NavigateChild,
       index: 0,
     },
     {
-      type: 3,
+      type: PatchType.SetAttribute,
       key: 'className',
       value: 'MaskIcon MaskIconChevronRight',
     },
     {
-      type: 8,
+      type: PatchType.NavigateParent,
     },
     {
-      type: 7,
+      type: PatchType.NavigateChild,
       index: 0,
     },
     {
-      type: 7,
+      type: PatchType.NavigateChild,
       index: 0,
     },
     {
-      type: 8,
+      type: PatchType.NavigateParent,
     },
     {
-      type: 7,
+      type: PatchType.NavigateChild,
       index: 0,
     },
     {
-      type: 7,
+      type: PatchType.NavigateChild,
       index: 0,
     },
     {
-      type: 8,
+      type: PatchType.NavigateParent,
     },
     {
-      type: 7,
+      type: PatchType.NavigateChild,
       index: 0,
     },
     {
-      type: 7,
+      type: PatchType.NavigateChild,
       index: 0,
     },
     {
-      type: 3,
+      type: PatchType.SetAttribute,
       key: 'className',
       value: 'SearchHeaderDetails',
     },
@@ -1826,21 +1826,21 @@ test.skip('large diff', () => {
       key: 'role',
     },
     {
-      type: 7,
+      type: PatchType.NavigateChild,
       index: 0,
     },
     {
-      type: 3,
+      type: PatchType.SetAttribute,
       key: 'className',
       value: 'ViewletSearchMessage',
     },
     {
-      type: 3,
+      type: PatchType.SetAttribute,
       key: 'role',
       value: 'status',
     },
     {
-      type: 3,
+      type: PatchType.SetAttribute,
       key: 'tabIndex',
       value: 0,
     },
@@ -1849,51 +1849,51 @@ test.skip('large diff', () => {
       index: 4,
     },
     {
-      type: 6,
+      type: PatchType.Add,
       nodes: [
         {
-          type: 12,
+          type: VirtualDomElements.Text,
           text: 'No results found',
           childCount: 0,
         },
       ],
     },
     {
-      type: 3,
+      type: PatchType.SetAttribute,
       key: 'className',
       value: 'ToggleDetails',
     },
     {
-      type: 3,
+      type: PatchType.SetAttribute,
       key: 'role',
       value: 'button',
     },
     {
-      type: 3,
+      type: PatchType.SetAttribute,
       key: 'tabIndex',
       value: 0,
     },
     {
-      type: 3,
+      type: PatchType.SetAttribute,
       key: 'ariaLabel',
       value: 'Toggle Search Details',
     },
     {
-      type: 3,
+      type: PatchType.SetAttribute,
       key: 'title',
       value: 'Toggle Search Details',
     },
     {
-      type: 3,
+      type: PatchType.SetAttribute,
       key: 'name',
       value: 'ToggleSearchDetails',
     },
     {
-      type: 9,
+      type: PatchType.RemoveChild,
       index: 5,
     },
     {
-      type: 6,
+      type: PatchType.Add,
       nodes: [
         {
           type: 4,
@@ -1903,11 +1903,11 @@ test.skip('large diff', () => {
       ],
     },
     {
-      type: 9,
+      type: PatchType.RemoveChild,
       index: 6,
     },
     {
-      type: 6,
+      type: PatchType.Add,
       nodes: [
         {
           type: 4,
@@ -1929,17 +1929,17 @@ test.skip('large diff', () => {
       ],
     },
     {
-      type: 8,
+      type: PatchType.NavigateParent,
     },
     {
-      type: 9,
+      type: PatchType.RemoveChild,
       index: 7,
     },
     {
-      type: 8,
+      type: PatchType.NavigateParent,
     },
     {
-      type: 9,
+      type: PatchType.RemoveChild,
       index: 7,
     },
   ])
