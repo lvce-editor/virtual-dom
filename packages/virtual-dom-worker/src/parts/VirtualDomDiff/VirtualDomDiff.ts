@@ -24,7 +24,17 @@ export const diff = (
     if (siblingOffset > 0) {
       // pendingPatches.push(PatchType.NavigateSibling, siblingOffset)
     }
+
+    // TODO maybe don't have the current element in indexstack
     if (siblingOffset === maxSiblingOffset) {
+      indexStack.pop()
+      indexStack.pop()
+      pendingPatches.push(PatchType.NavigateParent, 0)
+      maxSiblingOffset = indexStack.pop() as number
+      siblingOffset = (indexStack.pop() as number) + 1
+    }
+
+    while (siblingOffset === maxSiblingOffset) {
       pendingPatches.push(PatchType.NavigateParent, 0)
       maxSiblingOffset = indexStack.pop() as number
       siblingOffset = (indexStack.pop() as number) + 1
