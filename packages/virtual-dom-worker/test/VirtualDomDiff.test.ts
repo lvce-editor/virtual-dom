@@ -3,6 +3,7 @@ import * as PatchType from '../src/parts/PatchType/PatchType.ts'
 import { text } from '../src/parts/Text/Text.ts'
 import { diff } from '../src/parts/VirtualDomDiff/VirtualDomDiff.ts'
 import * as VirtualDomElements from '../src/parts/VirtualDomElements/VirtualDomElements.ts'
+import { VirtualDomNode } from '../src/parts/VirtualDomNode/VirtualDomNode.ts'
 
 test('diff - text node changed', () => {
   const oldNodes = [text('hello')]
@@ -1367,6 +1368,579 @@ test('diff - four children removed', () => {
     {
       type: PatchType.RemoveChild,
       index: 0,
+    },
+  ])
+})
+
+test.skip('large diff', () => {
+  const oldNodes: readonly VirtualDomNode[] = [
+    {
+      type: 4,
+      className: 'Viewlet Search',
+      childCount: 2,
+    },
+    {
+      type: 4,
+      className: 'SearchHeader',
+      role: 'none',
+      childCount: 2,
+      onClick: 'handleHeaderClick2',
+      onFocusIn: 'handleHeaderFocusIn',
+    },
+    {
+      type: 4,
+      className: 'SearchHeaderTop',
+      role: 'none',
+      childCount: 2,
+    },
+    {
+      type: 1,
+      className: 'IconButton SearchToggleButton SearchToggleButtonExpanded',
+      title: 'Toggle Replace',
+      ariaLabel: 'Toggle Replace',
+      ariaExpanded: true,
+      childCount: 1,
+      'data-command': 'toggleReplace',
+      name: 'ToggleReplace',
+    },
+    {
+      type: 4,
+      className: 'MaskIcon MaskIconChevronDown',
+      childCount: 0,
+    },
+    {
+      type: 4,
+      className: 'SearchHeaderTopRight',
+      role: 'none',
+      childCount: 2,
+    },
+    {
+      type: 4,
+      className: 'SearchField',
+      role: 'none',
+      childCount: 2,
+    },
+    {
+      type: 62,
+      className: 'MultilineInputBox',
+      spellcheck: false,
+      autocapitalize: 'off',
+      autocorrect: 'off',
+      placeholder: 'Search',
+      name: 'SearchValue',
+      onInput: 'handleInput',
+      onFocus: '',
+      childCount: 0,
+    },
+    {
+      type: 4,
+      className: 'SearchFieldButtons',
+      childCount: 3,
+    },
+    {
+      type: 1,
+      className: 'SearchFieldButton',
+      name: 'MatchCase',
+      title: 'Match Case',
+      role: 'checkbox',
+      ariaChecked: false,
+      tabIndex: 0,
+      childCount: 1,
+    },
+    {
+      type: 8,
+      className: 'MaskIcon MaskIconCaseSensitive',
+      childCount: 0,
+    },
+    {
+      type: 1,
+      className: 'SearchFieldButton',
+      name: 'MatchWholeWord',
+      title: 'Match Whole Word',
+      role: 'checkbox',
+      ariaChecked: false,
+      tabIndex: 0,
+      childCount: 1,
+    },
+    {
+      type: 8,
+      className: 'MaskIcon MaskIconWholeWord',
+      childCount: 0,
+    },
+    {
+      type: 1,
+      className: 'SearchFieldButton',
+      name: 'UseRegularExpression',
+      title: 'Use Regular Expression',
+      role: 'checkbox',
+      ariaChecked: false,
+      tabIndex: 0,
+      childCount: 1,
+    },
+    {
+      type: 8,
+      className: 'MaskIcon MaskIconRegex',
+      childCount: 0,
+    },
+    {
+      type: 4,
+      className: 'SearchFieldContainer',
+      role: 'none',
+      childCount: 2,
+    },
+    {
+      type: 4,
+      className: 'SearchField',
+      role: 'none',
+      childCount: 2,
+    },
+    {
+      type: 62,
+      className: 'MultilineInputBox',
+      spellcheck: false,
+      autocapitalize: 'off',
+      autocorrect: 'off',
+      placeholder: 'Replace',
+      name: 'ReplaceValue',
+      onInput: 'handleReplaceInput',
+      onFocus: '',
+      childCount: 0,
+    },
+    {
+      type: 4,
+      className: 'SearchFieldButtons',
+      childCount: 1,
+    },
+    {
+      type: 1,
+      className: 'SearchFieldButton',
+      name: 'PreserveCase',
+      title: 'Preserve Case',
+      role: 'checkbox',
+      ariaChecked: false,
+      tabIndex: 0,
+      childCount: 1,
+    },
+    {
+      type: 8,
+      className: 'MaskIcon MaskIconPreserveCase',
+      childCount: 0,
+    },
+    {
+      type: 1,
+      className: 'SearchFieldButton SearchFieldButtonDisabled',
+      name: 'ReplaceAll',
+      title: 'Replace All',
+      role: 'checkbox',
+      ariaChecked: false,
+      tabIndex: 0,
+      childCount: 1,
+    },
+    {
+      type: 8,
+      className: 'MaskIcon MaskIconReplaceAll',
+      childCount: 0,
+    },
+    {
+      type: 4,
+      className: 'SearchHeaderDetails',
+      childCount: 2,
+    },
+    {
+      type: 4,
+      className: 'ViewletSearchMessage',
+      role: 'status',
+      tabIndex: 0,
+      childCount: 1,
+    },
+    {
+      type: 12,
+      text: 'No results found',
+      childCount: 0,
+    },
+    {
+      type: 4,
+      className: 'ToggleDetails',
+      role: 'button',
+      tabIndex: 0,
+      ariaLabel: 'Toggle Search Details',
+      title: 'Toggle Search Details',
+      name: 'ToggleSearchDetails',
+      childCount: 1,
+    },
+    {
+      type: 4,
+      className: 'MaskIcon MaskIconEllipsis',
+      childCount: 0,
+    },
+    {
+      type: 4,
+      className: 'Viewlet List Tree',
+      role: 'tree',
+      tabIndex: 0,
+      childCount: 1,
+    },
+    {
+      type: 4,
+      className: 'TreeItems',
+      childCount: 0,
+      onClick: 'handleClick',
+      onBlur: 'handleListBlur',
+      onWheel: 'handleWheel',
+      id: 'TreeItems',
+      top: '0px',
+    },
+  ]
+  const newNodes: readonly VirtualDomNode[] = [
+    {
+      type: 4,
+      className: 'Viewlet Search',
+      childCount: 2,
+    },
+    {
+      type: 4,
+      className: 'SearchHeader',
+      role: 'none',
+      childCount: 2,
+      onClick: 'handleHeaderClick2',
+      onFocusIn: 'handleHeaderFocusIn',
+    },
+    {
+      type: 4,
+      className: 'SearchHeaderTop',
+      role: 'none',
+      childCount: 2,
+    },
+    {
+      type: 1,
+      className: 'IconButton SearchToggleButton',
+      title: 'Toggle Replace',
+      ariaLabel: 'Toggle Replace',
+      ariaExpanded: false,
+      childCount: 1,
+      'data-command': 'toggleReplace',
+      name: 'ToggleReplace',
+    },
+    {
+      type: 4,
+      className: 'MaskIcon MaskIconChevronRight',
+      childCount: 0,
+    },
+    {
+      type: 4,
+      className: 'SearchHeaderTopRight',
+      role: 'none',
+      childCount: 1,
+    },
+    {
+      type: 4,
+      className: 'SearchField',
+      role: 'none',
+      childCount: 2,
+    },
+    {
+      type: 62,
+      className: 'MultilineInputBox',
+      spellcheck: false,
+      autocapitalize: 'off',
+      autocorrect: 'off',
+      placeholder: 'Search',
+      name: 'SearchValue',
+      onInput: 'handleInput',
+      onFocus: '',
+      childCount: 0,
+    },
+    {
+      type: 4,
+      className: 'SearchFieldButtons',
+      childCount: 3,
+    },
+    {
+      type: 1,
+      className: 'SearchFieldButton',
+      name: 'MatchCase',
+      title: 'Match Case',
+      role: 'checkbox',
+      ariaChecked: false,
+      tabIndex: 0,
+      childCount: 1,
+    },
+    {
+      type: 8,
+      className: 'MaskIcon MaskIconCaseSensitive',
+      childCount: 0,
+    },
+    {
+      type: 1,
+      className: 'SearchFieldButton',
+      name: 'MatchWholeWord',
+      title: 'Match Whole Word',
+      role: 'checkbox',
+      ariaChecked: false,
+      tabIndex: 0,
+      childCount: 1,
+    },
+    {
+      type: 8,
+      className: 'MaskIcon MaskIconWholeWord',
+      childCount: 0,
+    },
+    {
+      type: 1,
+      className: 'SearchFieldButton',
+      name: 'UseRegularExpression',
+      title: 'Use Regular Expression',
+      role: 'checkbox',
+      ariaChecked: false,
+      tabIndex: 0,
+      childCount: 1,
+    },
+    {
+      type: 8,
+      className: 'MaskIcon MaskIconRegex',
+      childCount: 0,
+    },
+    {
+      type: 4,
+      className: 'SearchHeaderDetails',
+      childCount: 2,
+    },
+    {
+      type: 4,
+      className: 'ViewletSearchMessage',
+      role: 'status',
+      tabIndex: 0,
+      childCount: 1,
+    },
+    {
+      type: 12,
+      text: 'No results found',
+      childCount: 0,
+    },
+    {
+      type: 4,
+      className: 'ToggleDetails',
+      role: 'button',
+      tabIndex: 0,
+      ariaLabel: 'Toggle Search Details',
+      title: 'Toggle Search Details',
+      name: 'ToggleSearchDetails',
+      childCount: 1,
+    },
+    {
+      type: 4,
+      className: 'MaskIcon MaskIconEllipsis',
+      childCount: 0,
+    },
+    {
+      type: 4,
+      className: 'Viewlet List Tree',
+      role: 'tree',
+      tabIndex: 0,
+      childCount: 1,
+    },
+    {
+      type: 4,
+      className: 'TreeItems',
+      childCount: 0,
+      onClick: 'handleClick',
+      onBlur: 'handleListBlur',
+      onWheel: 'handleWheel',
+      id: 'TreeItems',
+      top: '0px',
+    },
+  ]
+  const patches = diff(oldNodes, newNodes)
+  expect(patches).toEqual([
+    {
+      type: 7,
+      index: 0,
+    },
+    {
+      type: 7,
+      index: 0,
+    },
+    {
+      type: 7,
+      index: 0,
+    },
+    {
+      type: 3,
+      key: 'className',
+      value: 'IconButton SearchToggleButton',
+    },
+    {
+      type: 3,
+      key: 'ariaExpanded',
+      value: false,
+    },
+    {
+      type: 7,
+      index: 0,
+    },
+    {
+      type: 3,
+      key: 'className',
+      value: 'MaskIcon MaskIconChevronRight',
+    },
+    {
+      type: 8,
+    },
+    {
+      type: 7,
+      index: 0,
+    },
+    {
+      type: 7,
+      index: 0,
+    },
+    {
+      type: 8,
+    },
+    {
+      type: 7,
+      index: 0,
+    },
+    {
+      type: 7,
+      index: 0,
+    },
+    {
+      type: 8,
+    },
+    {
+      type: 7,
+      index: 0,
+    },
+    {
+      type: 7,
+      index: 0,
+    },
+    {
+      type: 3,
+      key: 'className',
+      value: 'SearchHeaderDetails',
+    },
+    {
+      type: 4,
+      key: 'role',
+    },
+    {
+      type: 7,
+      index: 0,
+    },
+    {
+      type: 3,
+      key: 'className',
+      value: 'ViewletSearchMessage',
+    },
+    {
+      type: 3,
+      key: 'role',
+      value: 'status',
+    },
+    {
+      type: 3,
+      key: 'tabIndex',
+      value: 0,
+    },
+    {
+      type: 9,
+      index: 4,
+    },
+    {
+      type: 6,
+      nodes: [
+        {
+          type: 12,
+          text: 'No results found',
+          childCount: 0,
+        },
+      ],
+    },
+    {
+      type: 3,
+      key: 'className',
+      value: 'ToggleDetails',
+    },
+    {
+      type: 3,
+      key: 'role',
+      value: 'button',
+    },
+    {
+      type: 3,
+      key: 'tabIndex',
+      value: 0,
+    },
+    {
+      type: 3,
+      key: 'ariaLabel',
+      value: 'Toggle Search Details',
+    },
+    {
+      type: 3,
+      key: 'title',
+      value: 'Toggle Search Details',
+    },
+    {
+      type: 3,
+      key: 'name',
+      value: 'ToggleSearchDetails',
+    },
+    {
+      type: 9,
+      index: 5,
+    },
+    {
+      type: 6,
+      nodes: [
+        {
+          type: 4,
+          className: 'MaskIcon MaskIconEllipsis',
+          childCount: 0,
+        },
+      ],
+    },
+    {
+      type: 9,
+      index: 6,
+    },
+    {
+      type: 6,
+      nodes: [
+        {
+          type: 4,
+          className: 'Viewlet List Tree',
+          role: 'tree',
+          tabIndex: 0,
+          childCount: 1,
+        },
+        {
+          type: 4,
+          className: 'TreeItems',
+          childCount: 0,
+          onClick: 'handleClick',
+          onBlur: 'handleListBlur',
+          onWheel: 'handleWheel',
+          id: 'TreeItems',
+          top: '0px',
+        },
+      ],
+    },
+    {
+      type: 8,
+    },
+    {
+      type: 9,
+      index: 7,
+    },
+    {
+      type: 8,
+    },
+    {
+      type: 9,
+      index: 7,
     },
   ])
 })
