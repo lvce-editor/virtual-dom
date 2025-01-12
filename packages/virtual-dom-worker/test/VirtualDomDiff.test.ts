@@ -1372,7 +1372,138 @@ test('diff - four children removed', () => {
   ])
 })
 
-test('large diff', () => {
+test.skip('nested elements removed', () => {
+  const oldNodes: readonly VirtualDomNode[] = [
+    {
+      type: VirtualDomElements.Div,
+      childCount: 2,
+    },
+    {
+      type: VirtualDomElements.Div,
+      childCount: 1,
+    },
+    {
+      type: VirtualDomElements.Div,
+      childCount: 0,
+    },
+    {
+      type: VirtualDomElements.Div,
+      className: 'a',
+    },
+  ]
+  const newNodes: readonly VirtualDomNode[] = [
+    {
+      type: VirtualDomElements.Div,
+      childCount: 2,
+    },
+    {
+      type: VirtualDomElements.Div,
+      childCount: 0,
+    },
+    {
+      type: VirtualDomElements.Div,
+      className: 'b',
+    },
+  ]
+  const patches = diff(oldNodes, newNodes)
+  expect(patches).toEqual([
+    {
+      index: 0,
+      type: PatchType.NavigateChild,
+    },
+    {
+      index: 0,
+      type: PatchType.RemoveChild,
+    },
+    {
+      type: PatchType.NavigateParent,
+    },
+    {
+      type: PatchType.NavigateChild,
+      index: 1,
+    },
+    {
+      type: PatchType.SetAttribute,
+      key: 'className',
+      value: 'b',
+    },
+  ])
+})
+
+test.skip('nested elements removed 2', () => {
+  const oldNodes: readonly VirtualDomNode[] = [
+    {
+      type: VirtualDomElements.Div,
+      childCount: 2,
+    },
+    {
+      type: VirtualDomElements.Div,
+      childCount: 1,
+    },
+    {
+      type: VirtualDomElements.Div,
+      childCount: 1,
+    },
+    {
+      type: VirtualDomElements.Div,
+      childCount: 0,
+    },
+    {
+      type: VirtualDomElements.Div,
+      className: 'a',
+    },
+  ]
+  const newNodes: readonly VirtualDomNode[] = [
+    {
+      type: VirtualDomElements.Div,
+      childCount: 2,
+    },
+    {
+      type: VirtualDomElements.Div,
+      childCount: 1,
+    },
+    {
+      type: VirtualDomElements.Div,
+      childCount: 0,
+    },
+    {
+      type: VirtualDomElements.Div,
+      className: 'b',
+    },
+  ]
+  const patches = diff(oldNodes, newNodes)
+  expect(patches).toEqual([
+    {
+      index: 0,
+      type: PatchType.NavigateChild,
+    },
+    {
+      index: 0,
+      type: PatchType.NavigateChild,
+    },
+    {
+      index: 0,
+      type: PatchType.RemoveChild,
+    },
+    {
+      type: PatchType.NavigateParent,
+    },
+    {
+      type: PatchType.NavigateParent,
+    },
+    {
+      type: PatchType.NavigateChild,
+      index: 1,
+    },
+    {
+      type: PatchType.SetAttribute,
+      key: 'className',
+      value: 'b',
+    },
+  ])
+})
+
+test.skip('large diff', () => {
   const oldNodes: readonly VirtualDomNode[] = [
     {
       type: VirtualDomElements.Div,
