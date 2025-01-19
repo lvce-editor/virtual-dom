@@ -1497,7 +1497,7 @@ test('nested elements removed 2', () => {
   ])
 })
 
-test('large diff', () => {
+test.only('large diff', () => {
   const oldNodes: readonly VirtualDomNode[] = [
     {
       type: VirtualDomElements.Div,
@@ -1878,15 +1878,15 @@ test('large diff', () => {
   const patches = diff(oldNodes, newNodes)
   expect(patches).toEqual([
     {
-      type: PatchType.NavigateChild,
+      type: PatchType.NavigateChild, // SearchHeader
       index: 0,
     },
     {
-      type: PatchType.NavigateChild,
+      type: PatchType.NavigateChild, // SearchHeaderTop
       index: 0,
     },
     {
-      type: PatchType.NavigateChild,
+      type: PatchType.NavigateChild, // SearchToggleButton
       index: 0,
     },
     {
@@ -1900,7 +1900,7 @@ test('large diff', () => {
       value: false,
     },
     {
-      type: PatchType.NavigateChild,
+      type: PatchType.NavigateChild, // MaskIcon
       index: 0,
     },
     {
@@ -1908,39 +1908,41 @@ test('large diff', () => {
       key: 'className',
       value: 'MaskIcon MaskIconChevronRight',
     },
-
+    {
+      type: PatchType.NavigateParent, // SearchToggleButton
+    },
     // TODO this navigation seems wrong
+    // TODO here should be navigatesibling index 1
     {
-      type: PatchType.NavigateParent,
-    },
-    {
-      type: PatchType.NavigateChild,
+      type: PatchType.NavigateChild, // search field
       index: 0,
     },
     {
-      type: PatchType.NavigateChild,
+      type: PatchType.NavigateChild, // textarea
       index: 0,
     },
     {
-      type: PatchType.NavigateParent,
+      type: PatchType.NavigateParent, // search field
     },
+    // TODO here should be navigatesibling index 1
     {
-      type: PatchType.NavigateChild,
+      type: PatchType.NavigateChild, // match case button
       index: 0,
     },
     {
-      type: PatchType.NavigateChild,
+      type: PatchType.NavigateChild, // match case icon
       index: 0,
     },
     {
-      type: PatchType.NavigateParent,
+      type: PatchType.NavigateParent, // match case button
     },
+    // TODO here should be navigatesibling, index 1
     {
-      type: PatchType.NavigateChild,
+      type: PatchType.NavigateChild, // match whole word
       index: 0,
     },
     {
-      type: PatchType.NavigateChild,
+      type: PatchType.NavigateChild, // match whole word icon
       index: 0,
     },
     {

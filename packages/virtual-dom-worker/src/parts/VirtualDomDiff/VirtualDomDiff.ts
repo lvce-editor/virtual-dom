@@ -21,12 +21,15 @@ export const diff = (
     const oldNode = oldNodes[i]
     const newNode = newNodes[j]
 
+    console.log('ITERATE', i, j, indexStack)
+
     if (siblingOffset > 0) {
       // pendingPatches.push(PatchType.NavigateSibling, siblingOffset)
     }
 
     // TODO maybe don't have the current element in indexstack
     if (siblingOffset === maxSiblingOffset) {
+      console.log('PARENT 1', i, j)
       indexStack.pop()
       indexStack.pop()
       pendingPatches.push(PatchType.NavigateParent, 0)
@@ -34,7 +37,10 @@ export const diff = (
       siblingOffset = (indexStack.pop() as number) + 1
     }
 
+    console.log('s', siblingOffset, maxSiblingOffset, indexStack)
     while (siblingOffset === maxSiblingOffset) {
+      console.log('PARENT 2', i, j)
+
       pendingPatches.push(PatchType.NavigateParent, 0)
       maxSiblingOffset = indexStack.pop() as number
       siblingOffset = (indexStack.pop() as number) + 1
@@ -130,6 +136,17 @@ export const diff = (
     if (oldNode.childCount && newNode.childCount) {
       maxSiblingOffset = oldNode.childCount
       indexStack.push(0, maxSiblingOffset)
+      console.log(
+        'DEPTH',
+        i,
+        j,
+        oldNodes[i],
+        newNodes[j],
+        'max',
+        maxSiblingOffset,
+        pendingPatches,
+        indexStack,
+      )
       pendingPatches.push(PatchType.NavigateChild, 0)
       i++
       j++
@@ -162,9 +179,12 @@ export const diff = (
       continue
     }
 
+    console.log('lazy same', oldNode, newNode, siblingOffset, maxSiblingOffset)
     i++
     j++
     siblingOffset++
+    if (siblingOffset === maxSiblingOffset) {
+    }
   }
 
   while (i < oldNodes.length) {
