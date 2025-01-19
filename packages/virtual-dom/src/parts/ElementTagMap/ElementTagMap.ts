@@ -105,6 +105,8 @@ export const getElementTag = (type) => {
       return ElementTag.Select
     case VirtualDomElements.Option:
       return ElementTag.Option
+    case VirtualDomElements.Code:
+      return ElementTag.Code
     default:
       throw new Error(`element tag not found ${type}`)
   }

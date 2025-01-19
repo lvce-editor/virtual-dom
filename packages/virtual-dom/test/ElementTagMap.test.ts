@@ -129,6 +129,9 @@ test('ElementTagMap - maps text formatting elements', () => {
   expect(ElementTagMap.getElementTag(VirtualDomElements.Kbd)).toBe(
     ElementTags.Kbd,
   )
+  expect(ElementTagMap.getElementTag(VirtualDomElements.Code)).toBe(
+    ElementTags.Code,
+  )
 })
 
 test('ElementTagMap - maps media elements', () => {
