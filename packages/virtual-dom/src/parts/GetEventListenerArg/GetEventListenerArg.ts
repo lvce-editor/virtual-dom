@@ -16,6 +16,8 @@ export const getEventListenerArg = (param: string, event: any): any => {
       return event.deltaX
     case 'event.deltaY':
       return event.deltaY
+    case 'event.detail':
+      return event.detail
     default:
       return param
   }
