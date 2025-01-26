@@ -1,10 +1,7 @@
 import * as ComponentUid from '../ComponentUid/ComponentUid.ts'
+import * as GetEventListenerArgs from '../GetEventListenerArgs/GetEventListenerArgs.ts'
 import * as IpcState from '../IpcState/IpcState.ts'
 import * as NameAnonymousFunction from '../NameAnonymousFunction/NameAnonymousFunction.ts'
-
-const getArgs = (params, event) => {
-  return [...params]
-}
 
 export const createFn = (info) => {
   const fn = (event) => {
@@ -12,7 +9,7 @@ export const createFn = (info) => {
       event.preventDefault(event)
     }
     const uid = ComponentUid.getComponentUidFromEvent(event)
-    const args = getArgs(info.params, event)
+    const args = GetEventListenerArgs.getEventListenerArgs(info.params, event)
     if (args.length === 0) {
       return
     }
