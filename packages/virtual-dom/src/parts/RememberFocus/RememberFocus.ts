@@ -17,7 +17,7 @@ export const rememberFocus = (
   const oldWidth = $Viewlet.style.width
   const oldHeight = $Viewlet.style.height
 
-  const activeElement = document.activeElement
+  const {activeElement} = document
   const isTreeFocused = activeElement?.getAttribute('role') === 'tree'
   const isRootTree =
     $Viewlet.getAttribute('role') === 'tree' && activeElement === $Viewlet
