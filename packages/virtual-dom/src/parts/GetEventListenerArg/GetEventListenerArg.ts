@@ -8,6 +8,8 @@ export const getEventListenerArg = (param: string, event: any): any => {
       return event.button
     case 'event.target.value':
       return event.target.value
+    case 'event.data':
+      return event.data
     default:
       return param
   }
