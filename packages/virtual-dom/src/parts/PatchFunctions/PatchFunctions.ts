@@ -1,5 +1,5 @@
+import type { VirtualDomNode } from '../VirtualDomNode/VirtualDomNode.ts'
 import * as RenderInternal from '../RenderInternal/RenderInternal.ts'
-import { VirtualDomNode } from '../VirtualDomNode/VirtualDomNode.ts'
 
 export const setAttribute = (
   $Element: HTMLElement,

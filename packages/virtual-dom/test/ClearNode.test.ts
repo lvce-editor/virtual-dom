@@ -21,7 +21,7 @@ test('clearNode - clears child nodes', () => {
   const $Node = document.createElement('div')
   const $Child = document.createElement('span')
   $Child.textContent = 'Child Element'
-  $Node.appendChild($Child)
+  $Node.append($Child)
   clearNode($Node)
   expect($Node.textContent).toBe('')
   expect($Node.children.length).toBe(0)
@@ -33,9 +33,9 @@ test('clearNode - clears multiple nested children', () => {
   const $Child2 = document.createElement('span')
   const $GrandChild = document.createElement('p')
   $GrandChild.textContent = 'Nested Content'
-  $Child2.appendChild($GrandChild)
-  $Child1.appendChild($Child2)
-  $Node.appendChild($Child1)
+  $Child2.append($GrandChild)
+  $Child1.append($Child2)
+  $Node.append($Child1)
 
   clearNode($Node)
   expect($Node.textContent).toBe('')

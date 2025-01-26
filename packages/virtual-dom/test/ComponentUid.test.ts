@@ -29,7 +29,7 @@ test('getComponentUid - returns uid from element', () => {
 test('getComponentUid - returns uid from parent element', () => {
   const $Parent = document.createElement('div')
   const $Child = document.createElement('span')
-  $Parent.appendChild($Child)
+  $Parent.append($Child)
   setComponentUid($Parent, 789)
   expect(getComponentUid($Child)).toBe(789)
 })
