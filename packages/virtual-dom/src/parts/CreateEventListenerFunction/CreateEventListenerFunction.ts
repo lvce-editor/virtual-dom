@@ -17,5 +17,9 @@ export const createFn = (info) => {
     ipc.send('Viewlet.executeViewletCommand', uid, ...args)
   }
   NameAnonymousFunction.nameAnonymousFunction(fn, info.name)
+  if (info.passive) {
+    // TODO avoid mutating function property, maybe return an object with function and options
+    fn.passive = true
+  }
   return fn
 }
