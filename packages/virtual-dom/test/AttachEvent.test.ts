@@ -1,7 +1,7 @@
 /**
  * @jest-environment jsdom
  */
-import { expect, test, jest } from '@jest/globals'
+import { expect, test, jest, beforeEach } from '@jest/globals'
 
 const mockGetEventListenerOptions = {
   getEventListenerOptions: jest.fn(),
@@ -21,6 +21,10 @@ jest.unstable_mockModule(
 )
 
 const { attachEvent } = await import('../src/parts/AttachEvent/AttachEvent.ts')
+
+beforeEach(() => {
+  jest.resetAllMocks()
+})
 
 test('attachEvent - attaches event listener with correct parameters', () => {
   const $Element = document.createElement('div')
@@ -81,7 +85,7 @@ test('attachEvent - uses event options from GetEventListenerOptions', () => {
 
   expect(
     mockGetEventListenerOptions.getEventListenerOptions,
-  ).toHaveBeenCalledWith('wheel')
+  ).toHaveBeenCalledWith('wheel', 'test-handler')
   expect($Element.addEventListener).toHaveBeenCalledWith(
     'wheel',
     mockWrappedListener,
