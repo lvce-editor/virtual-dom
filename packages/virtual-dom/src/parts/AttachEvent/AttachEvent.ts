@@ -18,7 +18,7 @@ export const attachEvent = (
     console.warn('listener not found', value)
     return
   }
-  const options = GetEventListenerOptions.getEventListenerOptions(key)
+  const options = GetEventListenerOptions.getEventListenerOptions(key, value)
   const wrapped = GetWrappedListener.getWrappedListener(
     listener,
     eventMap.returnValue,

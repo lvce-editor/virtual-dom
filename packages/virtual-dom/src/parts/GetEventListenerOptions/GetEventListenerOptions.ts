@@ -1,4 +1,9 @@
-export const getEventListenerOptions = (eventName: string) => {
+export const getEventListenerOptions = (eventName: string, value: any) => {
+  if (value.passive) {
+    return {
+      passive: true,
+    }
+  }
   switch (eventName) {
     case 'wheel':
       return {
