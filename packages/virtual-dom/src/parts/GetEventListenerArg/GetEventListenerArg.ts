@@ -20,6 +20,20 @@ export const getEventListenerArg = (param: string, event: any): any => {
       return event.detail
     case 'event.target.name':
       return event.target.name
+    case 'event.target.href':
+      return event.target.href
+    case 'event.target.src':
+      return event.target.src
+    case 'event.altKey':
+      return event.altKey
+    case 'event.ctrlKey':
+      return event.ctrlKey
+    case 'event.shiftKey':
+      return event.shiftKey
+    case 'event.inputType':
+      return event.inputType
+    case 'event.data':
+      return event.data
     default:
       return param
   }
