@@ -26,6 +26,8 @@ export const getEventListenerArg = (param: string, event: any): any => {
       return event.target.src
     case 'event.altKey':
       return event.altKey
+    case 'event.key':
+      return event.key
     case 'event.ctrlKey':
       return event.ctrlKey
     case 'event.shiftKey':
