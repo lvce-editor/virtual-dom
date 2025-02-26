@@ -12,6 +12,10 @@ export const getEventListenerArg = (param: string, event: any): any => {
       return event.button
     case 'event.target.value':
       return event.target.value
+    case 'event.isTrusted':
+      return event.isTrusted
+    case 'event.target.className':
+      return event.target.className
     case 'event.data':
       return event.data
     case 'event.deltaMode':
