@@ -44,6 +44,13 @@ export const setProp = (
         $Element.removeAttribute('aria-owns')
       }
       break
+    case 'ariaActivedescendant':
+      if (value) {
+        $Element.setAttribute('aria-activedescendant', value)
+      } else {
+        $Element.removeAttribute('aria-activedescendant')
+      }
+      break
     case 'ariaControls':
       $Element.setAttribute('aria-controls', value)
       break
