@@ -13,3 +13,10 @@ export const diff: (
   oldNodes: readonly VirtualDomNode[],
   newNodes: readonly VirtualDomNode[],
 ) => readonly Patch[]
+
+export interface DomEventListener {
+  readonly name: string
+  readonly params: readonly string[]
+  readonly preventDefault?: boolean
+  readonly passive?: boolean
+}
