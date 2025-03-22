@@ -16,12 +16,6 @@ export const renderIncremental = ($Parent, dom) => {
   const $Node = $Parent
   for (let i = 0; i < dom.length; i++) {
     const node = dom[i]
-    if (!$Node) {
-      $Parent.append
-    }
-    console.log({ $Node, node })
-    console.log($Node.nodeValue, node.text)
-
     if ($Node.nodeValue !== node.props.text && node.props.text) {
       $Node.nodeValue = node.props.text
     }
