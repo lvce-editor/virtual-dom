@@ -2,7 +2,7 @@ import * as CreateEventListenerFunction from '../CreateEventListenerFunction/Cre
 
 const listeners = Object.create(null)
 
-export const registerEventListeners = (id, eventListeners) => {
+export const registerEventListeners = (id, eventListeners): void => {
   const map = Object.create(null)
   for (const info of eventListeners) {
     const fn = CreateEventListenerFunction.createFn(info)
@@ -11,7 +11,7 @@ export const registerEventListeners = (id, eventListeners) => {
   listeners[id] = map
 }
 
-export const getEventListenerMap = (id) => {
+export const getEventListenerMap = (id): any => {
   const map = listeners[id]
   return map
 }
