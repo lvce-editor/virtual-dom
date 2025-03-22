@@ -17,7 +17,7 @@ test('diff - text node changed', () => {
   ])
 })
 
-test('diff - attribute changed', () => {
+test('diff - attribute changed 1', () => {
   const oldNodes = [
     {
       type: VirtualDomElements.Div,
@@ -1049,7 +1049,7 @@ test('diff - child added, sibling removed', () => {
   ])
 })
 
-test('diff - text node changed', () => {
+test('diff - text node changed 1', () => {
   const oldNodes = [text('hello')]
   const newNodes = [text('world')]
   const patches = diff(oldNodes, newNodes)
@@ -1086,7 +1086,7 @@ test('diff - attribute changed', () => {
   ])
 })
 
-test('diff - attribute removed', () => {
+test('diff - attribute removed 1', () => {
   const oldNodes = [
     {
       type: VirtualDomElements.Div,
@@ -1108,7 +1108,7 @@ test('diff - attribute removed', () => {
     },
   ])
 })
-test('diff - nested nodes', () => {
+test('diff - nested nodes 1', () => {
   const oldNodes = [
     {
       type: VirtualDomElements.Div,
@@ -1136,7 +1136,7 @@ test('diff - nested nodes', () => {
   ])
 })
 
-test('diff - multiple attributes changed', () => {
+test('diff - multiple attributes changed 1', () => {
   const oldNodes = [
     {
       type: VirtualDomElements.Div,
