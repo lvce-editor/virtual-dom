@@ -11,7 +11,7 @@ export const rememberFocus = (
   dom: any[],
   eventMap: any,
   uid = 0,
-): void => {
+): any => {
   const oldLeft = $Viewlet.style.left
   const oldTop = $Viewlet.style.top
   const oldWidth = $Viewlet.style.width
