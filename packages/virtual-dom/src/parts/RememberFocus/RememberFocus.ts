@@ -1,10 +1,7 @@
 import * as ComponentUid from '../ComponentUid/ComponentUid.ts'
+import * as QueryInputs from '../QueryInputs/QueryInputs.ts'
 import * as RegisterEventListeners from '../RegisterEventListeners/RegisterEventListeners.ts'
 import * as VirtualDom from '../VirtualDom/VirtualDom.ts'
-
-const queryInputs = ($Viewlet: HTMLElement): readonly any[] => {
-  return [...$Viewlet.querySelectorAll('input, textarea')]
-}
 
 export const rememberFocus = (
   $Viewlet: HTMLElement,
@@ -24,7 +21,7 @@ export const rememberFocus = (
 
   const focused = activeElement?.getAttribute('name')
 
-  const $$Inputs = queryInputs($Viewlet)
+  const $$Inputs = QueryInputs.queryInputs($Viewlet)
   const inputMap = Object.create(null)
   for (const $Input of $$Inputs) {
     // @ts-ignore
@@ -43,7 +40,7 @@ export const rememberFocus = (
     VirtualDom.renderInto($Viewlet, dom, eventMap)
   }
 
-  const $$NewInputs = queryInputs($Viewlet)
+  const $$NewInputs = QueryInputs.queryInputs($Viewlet)
   for (const $Input of $$NewInputs) {
     // @ts-ignore
     $Input.value = inputMap[$Input.name] || $Input.value || ''
