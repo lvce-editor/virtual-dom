@@ -42,8 +42,6 @@ export const getEventListenerArg = (param: string, event: any): any => {
       return event.shiftKey
     case 'event.inputType':
       return event.inputType
-    case 'event.data':
-      return event.data
     default:
       return param
   }

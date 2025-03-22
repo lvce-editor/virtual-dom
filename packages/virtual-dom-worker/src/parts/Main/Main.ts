@@ -1,4 +1,4 @@
-export * from '../DomEventListener/DomEventListener.ts'
+export type * from '../DomEventListener/DomEventListener.ts'
 export * from '../MergeClassNames/MergeClassNames.ts'
 export * from '../Text/Text.ts'
 export { diff } from '../VirtualDomDiff/VirtualDomDiff.ts'
