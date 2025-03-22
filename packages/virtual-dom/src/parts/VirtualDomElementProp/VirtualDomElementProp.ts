@@ -6,7 +6,7 @@ export const setProp = (
   value: any,
   eventMap: any,
   newEventMap?: any,
-) => {
+): void => {
   switch (key) {
     case 'maskImage':
       $Element.style.maskImage = `url('${value}')`

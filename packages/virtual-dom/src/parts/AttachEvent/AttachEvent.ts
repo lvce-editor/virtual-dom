@@ -1,7 +1,7 @@
 import * as GetEventListenerOptions from '../GetEventListenerOptions/GetEventListenerOptions.ts'
 import * as GetWrappedListener from '../GetWrappedListener/GetWrappedListener.ts'
 
-const getOptions = (fn: any) => {
+const getOptions = (fn: any) :any => {
   if (fn.passive) {
     return {
       passive: true,
@@ -16,7 +16,7 @@ export const attachEvent = (
   key: string,
   value: string,
   newEventMap?: any,
-) => {
+):void  => {
   if (newEventMap && newEventMap[value]) {
     const fn = newEventMap[value]
     const options: any = getOptions(fn)

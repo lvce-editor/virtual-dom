@@ -1,12 +1,12 @@
 import * as ClearNode from '../ClearNode/ClearNode.ts'
 import * as RenderInternal from '../RenderInternal/RenderInternal.ts'
 
-export const renderInto = ($Parent, dom, eventMap = {}) => {
+export const renderInto = ($Parent, dom, eventMap = {}): void => {
   ClearNode.clearNode($Parent)
   RenderInternal.renderInternal($Parent, dom, eventMap)
 }
 
-export const renderIncremental = ($Parent, dom) => {
+export const renderIncremental = ($Parent, dom): void => {
   if ($Parent.textContent === '') {
     // @ts-expect-error
     renderInternal($Parent, dom)
@@ -33,7 +33,11 @@ export const renderIncremental = ($Parent, dom) => {
  * @param {any[]} elements
  * @returns
  */
-export const render = (elements, eventMap = {}, newEventMap = {}) => {
+export const render = (
+  elements,
+  eventMap = {},
+  newEventMap = {},
+): HTMLElement => {
   const $Root = document.createElement('div')
   RenderInternal.renderInternal($Root, elements, eventMap, newEventMap)
   return $Root

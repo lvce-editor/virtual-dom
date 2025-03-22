@@ -1,7 +1,7 @@
 import * as ElementTag from '../ElementTags/ElementTags.ts'
 import * as VirtualDomElements from '../VirtualDomElements/VirtualDomElements.ts'
 
-export const getElementTag = (type) => {
+export const getElementTag = (type: number): string => {
   switch (type) {
     case VirtualDomElements.Audio:
       return ElementTag.Audio

@@ -1,11 +1,11 @@
 import { getUidTarget } from '../GetUidTarget/GetUidTarget.ts'
 import { uidSymbol } from '../UidSymbol/UidSymbol.ts'
 
-export const setComponentUid = ($Element, uid) => {
+export const setComponentUid = ($Element, uid): void => {
   $Element[uidSymbol] = uid
 }
 
-export const getComponentUid = ($Element) => {
+export const getComponentUid = ($Element): number => {
   const $Target = getUidTarget($Element)
   if (!$Target) {
     return 0
@@ -13,7 +13,7 @@ export const getComponentUid = ($Element) => {
   return $Target[uidSymbol]
 }
 
-export const getComponentUidFromEvent = (event) => {
+export const getComponentUidFromEvent = (event): number => {
   const { target, currentTarget } = event
   return getComponentUid(currentTarget || target)
 }

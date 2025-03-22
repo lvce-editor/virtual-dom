@@ -3,8 +3,8 @@ import * as GetEventListenerArgs from '../GetEventListenerArgs/GetEventListenerA
 import * as IpcState from '../IpcState/IpcState.ts'
 import * as NameAnonymousFunction from '../NameAnonymousFunction/NameAnonymousFunction.ts'
 
-export const createFn = (info) => {
-  const fn = (event) => {
+export const createFn = (info): any => {
+  const fn = (event): void => {
     if (info.preventDefault) {
       event.preventDefault(event)
     }
