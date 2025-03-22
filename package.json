@@ -8,7 +8,8 @@
     "test": "lerna run test",
     "type-check": "tsc -b",
     "build": "node packages/build/src/build.js",
-    "lint": "eslint ."
+    "lint": "eslint .",
+    "format": "prettier --write ."
   },
   "keywords": [],
   "author": "",
