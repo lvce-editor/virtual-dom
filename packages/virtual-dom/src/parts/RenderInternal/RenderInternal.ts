@@ -5,7 +5,7 @@ export const renderInternal = (
   elements: readonly any[],
   eventMap: any,
   newEventMap?: any,
-) => {
+): void => {
   const max = elements.length - 1
   let stack: Node[] = []
   for (let i = max; i >= 0; i--) {

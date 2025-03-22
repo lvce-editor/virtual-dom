@@ -6,7 +6,6 @@ export default [
   {
     rules: {
       '@typescript-eslint/prefer-readonly-parameter-types': 'off',
-      '@typescript-eslint/explicit-function-return-type': 'off',
       '@typescript-eslint/unbound-method': 'off',
       'no-console': 'off',
       'tsconfig/no-implicit-any': 'off',

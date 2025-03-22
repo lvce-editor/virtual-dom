@@ -1,4 +1,4 @@
-export const getEventListenerOptions = (eventName: string, value: any) => {
+export const getEventListenerOptions = (eventName: string, value: any): any => {
   if (value.passive) {
     return {
       passive: true,

@@ -2,7 +2,7 @@ import * as ComponentUid from '../ComponentUid/ComponentUid.ts'
 import * as RegisterEventListeners from '../RegisterEventListeners/RegisterEventListeners.ts'
 import * as VirtualDom from '../VirtualDom/VirtualDom.ts'
 
-const queryInputs = ($Viewlet: HTMLElement) => {
+const queryInputs = ($Viewlet: HTMLElement): readonly any[] => {
   return [...$Viewlet.querySelectorAll('input, textarea')]
 }
 
@@ -11,13 +11,13 @@ export const rememberFocus = (
   dom: any[],
   eventMap: any,
   uid = 0,
-) => {
+): void => {
   const oldLeft = $Viewlet.style.left
   const oldTop = $Viewlet.style.top
   const oldWidth = $Viewlet.style.width
   const oldHeight = $Viewlet.style.height
 
-  const {activeElement} = document
+  const { activeElement } = document
   const isTreeFocused = activeElement?.getAttribute('role') === 'tree'
   const isRootTree =
     $Viewlet.getAttribute('role') === 'tree' && activeElement === $Viewlet
