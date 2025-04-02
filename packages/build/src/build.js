@@ -2,6 +2,7 @@ import { execa } from 'execa'
 import { cp, mkdir, readFile, rm, writeFile } from 'node:fs/promises'
 import { dirname, join } from 'node:path'
 import { fileURLToPath } from 'node:url'
+import { bundleJs } from './bundleJs.js'
 import { root } from './root.js'
 
 const __dirname = dirname(fileURLToPath(import.meta.url))
@@ -88,21 +89,10 @@ for (const packageName of ['virtual-dom', 'virtual-dom-worker']) {
       recursive: true,
     },
   )
-  const esbuildPath = join(
-    root,
-    'packages',
-    'build',
-    'node_modules',
-    '.bin',
-    'esbuild',
-  )
-  await execa(
-    esbuildPath,
-    ['src/index.ts', '--bundle', '--outdir=dist', '--platform=neutral'],
-    {
-      cwd: join(root, 'dist', packageName),
-    },
-  )
+  await bundleJs({
+    inFile: `packages/${packageName}/src/index.ts`,
+    outFile: `dist/${packageName}/dist/index.js`,
+  })
 }
 
 await cp(
