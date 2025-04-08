@@ -20,3 +20,7 @@ export interface DomEventListener {
   readonly preventDefault?: boolean
   readonly passive?: boolean
 }
+
+export interface VirtualDomElements {
+  readonly [key: number]: number
+}
