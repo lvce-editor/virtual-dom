@@ -27,7 +27,7 @@ export const getEventListenerArg = (param: string, event: any): any => {
     case 'event.detail':
       return event.detail
     case 'event.target.name':
-      return event.target.name
+      return event.target.name || ''
     case 'event.target.href':
       return event.target.href
     case 'event.target.src':
