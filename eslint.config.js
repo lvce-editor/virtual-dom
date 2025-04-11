@@ -8,6 +8,8 @@ export default [
       '@typescript-eslint/prefer-readonly-parameter-types': 'off',
       '@typescript-eslint/unbound-method': 'off',
       'tsconfig/no-implicit-any': 'off',
+
+      '@typescript-eslint/no-deprecated': 'off',
     },
   },
 ]
