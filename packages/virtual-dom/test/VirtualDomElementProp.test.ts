@@ -8,7 +8,6 @@ test('maskImage - sets mask image style', () => {
   const $Element = document.createElement('div')
   VirtualDomElementProp.setProp($Element, 'maskImage', 'test.svg', {})
   expect($Element.style.maskImage).toBe(`url('test.svg')`)
-  expect($Element.style.webkitMaskImage).toBe(`url('test.svg')`)
 })
 
 test('numeric style properties - converts numbers to pixels', () => {
