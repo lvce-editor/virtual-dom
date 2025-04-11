@@ -1,6 +1,6 @@
 import { expect, test } from '@jest/globals'
+import type { VirtualDomNode } from '../src/parts/VirtualDomNode/VirtualDomNode.ts'
 import * as GetTotalChildCount from '../src/parts/GetTotalChildCount/GetTotalChildCount.ts'
-import { VirtualDomNode } from '../src/parts/VirtualDomNode/VirtualDomNode.ts'
 
 test('single node', () => {
   const nodes: readonly VirtualDomNode[] = [

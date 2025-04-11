@@ -1,7 +1,7 @@
 import * as ElementTag from '../ElementTags/ElementTags.ts'
 import * as VirtualDomElements from '../VirtualDomElements/VirtualDomElements.ts'
 
-export const getElementTag = (type) => {
+export const getElementTag = (type: number): string => {
   switch (type) {
     case VirtualDomElements.Audio:
       return ElementTag.Audio
@@ -105,6 +105,8 @@ export const getElementTag = (type) => {
       return ElementTag.Select
     case VirtualDomElements.Option:
       return ElementTag.Option
+    case VirtualDomElements.Code:
+      return ElementTag.Code
     default:
       throw new Error(`element tag not found ${type}`)
   }

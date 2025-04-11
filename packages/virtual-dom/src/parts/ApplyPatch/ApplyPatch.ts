@@ -1,4 +1,4 @@
-import { Patch } from '../Patch/Patch.ts'
+import type { Patch } from '../Patch/Patch.ts'
 import * as PatchFunctions from '../PatchFunctions/PatchFunctions.ts'
 import * as PatchType from '../PatchType/PatchType.ts'
 

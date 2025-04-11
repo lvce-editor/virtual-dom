@@ -16,7 +16,10 @@
     "composite": true,
     "allowImportingTsExtensions": true,
     "rootDir": ".",
-    "noUnusedLocals": true
+    "noUnusedLocals": true,
+    "forceConsistentCasingInFileNames": true,
+    "noUncheckedSideEffectImports": true,
+    "exactOptionalPropertyTypes": true
   },
   "include": ["src", "test"]
 }

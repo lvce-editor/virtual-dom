@@ -6,7 +6,7 @@ export const setProp = (
   value: any,
   eventMap: any,
   newEventMap?: any,
-) => {
+): void => {
   switch (key) {
     case 'maskImage':
       $Element.style.maskImage = `url('${value}')`
@@ -44,6 +44,13 @@ export const setProp = (
         $Element.removeAttribute('aria-owns')
       }
       break
+    case 'ariaActivedescendant':
+      if (value) {
+        $Element.setAttribute('aria-activedescendant', value)
+      } else {
+        $Element.removeAttribute('aria-activedescendant')
+      }
+      break
     case 'ariaControls':
       $Element.setAttribute('aria-controls', value)
       break
@@ -60,7 +67,6 @@ export const setProp = (
     case 'onContextMenu':
     case 'onDblClick':
     case 'onFocus':
-    case 'onFocusIn':
     case 'onFocusIn':
     case 'onFocusOut':
     case 'onInput':

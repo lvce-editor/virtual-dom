@@ -3,12 +3,12 @@ import * as IpcState from '../IpcState/IpcState.ts'
 import * as ListenerCache from '../ListenerCache/ListenerCache.ts'
 import * as NameAnonymousFunction from '../NameAnonymousFunction/NameAnonymousFunction.ts'
 
-export const getWrappedListener = (listener, returnValue) => {
+export const getWrappedListener = (listener, returnValue): any => {
   if (!returnValue) {
     return listener
   }
   if (!ListenerCache.has(listener)) {
-    const wrapped = (event) => {
+    const wrapped = (event): void => {
       const uid = ComponentUid.getComponentUidFromEvent(event)
       const result = listener(event)
       // TODO check for empty array by value

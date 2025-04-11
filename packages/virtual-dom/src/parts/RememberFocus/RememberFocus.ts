@@ -1,52 +1,57 @@
 import * as ComponentUid from '../ComponentUid/ComponentUid.ts'
+import * as QueryInputs from '../QueryInputs/QueryInputs.ts'
 import * as RegisterEventListeners from '../RegisterEventListeners/RegisterEventListeners.ts'
 import * as VirtualDom from '../VirtualDom/VirtualDom.ts'
-
-const queryInputs = ($Viewlet: HTMLElement) => {
-  return [...$Viewlet.querySelectorAll('input, textarea')]
-}
 
 export const rememberFocus = (
   $Viewlet: HTMLElement,
   dom: any[],
   eventMap: any,
   uid = 0,
-) => {
+): any => {
   const oldLeft = $Viewlet.style.left
   const oldTop = $Viewlet.style.top
   const oldWidth = $Viewlet.style.width
   const oldHeight = $Viewlet.style.height
-
-  const activeElement = document.activeElement
+  const { activeElement } = document
   const isTreeFocused = activeElement?.getAttribute('role') === 'tree'
   const isRootTree =
     $Viewlet.getAttribute('role') === 'tree' && activeElement === $Viewlet
-
   const focused = activeElement?.getAttribute('name')
-
-  const $$Inputs = queryInputs($Viewlet)
+  const $Hidden = document.createElement('div')
+  $Hidden.style.display = 'none'
+  if (focused) {
+    if (document.body) {
+      document.body.append($Hidden)
+    }
+    // @ts-ignore
+    $Hidden.append(activeElement)
+  }
+  const $$Inputs = QueryInputs.queryInputs($Viewlet)
   const inputMap = Object.create(null)
   for (const $Input of $$Inputs) {
-    // @ts-ignore
     inputMap[$Input.name] = $Input.value
   }
-
   if (uid) {
     const newEventMap = RegisterEventListeners.getEventListenerMap(uid)
-    const $New = VirtualDom.render(dom, eventMap, newEventMap).firstChild
+    const $New = VirtualDom.render(dom, eventMap, newEventMap)
+      .firstChild as HTMLElement
     ComponentUid.setComponentUid($New, uid)
-    // @ts-ignore
+    const $$NewInputs = QueryInputs.queryInputs($New)
+    for (const $Input of $$NewInputs) {
+      $Input.value = inputMap[$Input.name] || $Input.value || ''
+    }
     $Viewlet.replaceWith($New)
-    // @ts-ignore
+    if (focused) {
+      const $NewFocused = $Viewlet.querySelector(`[name="${focused}"]`)
+      if ($NewFocused) {
+        $NewFocused.replaceWith($Hidden.firstChild as HTMLElement)
+      }
+    }
+    $Hidden.remove()
     $Viewlet = $New
   } else {
     VirtualDom.renderInto($Viewlet, dom, eventMap)
-  }
-
-  const $$NewInputs = queryInputs($Viewlet)
-  for (const $Input of $$NewInputs) {
-    // @ts-ignore
-    $Input.value = inputMap[$Input.name] || $Input.value || ''
   }
 
   if (isRootTree) {
@@ -59,6 +64,7 @@ export const rememberFocus = (
     }
   } else if (focused) {
     const $Focused = $Viewlet.querySelector(`[name="${focused}"]`)
+
     if ($Focused) {
       // @ts-ignore
       $Focused.focus()

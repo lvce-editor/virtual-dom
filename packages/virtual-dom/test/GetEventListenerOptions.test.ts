@@ -2,19 +2,23 @@ import { expect, test } from '@jest/globals'
 import { getEventListenerOptions } from '../src/parts/GetEventListenerOptions/GetEventListenerOptions.ts'
 
 test('getEventListenerOptions - returns passive true for wheel event', () => {
-  expect(getEventListenerOptions('wheel')).toEqual({
+  const value = {}
+  expect(getEventListenerOptions('wheel', value)).toEqual({
     passive: true,
   })
 })
 
 test('getEventListenerOptions - returns undefined for click event', () => {
-  expect(getEventListenerOptions('click')).toBeUndefined()
+  const value = {}
+  expect(getEventListenerOptions('click', value)).toBeUndefined()
 })
 
 test('getEventListenerOptions - returns undefined for unknown event', () => {
-  expect(getEventListenerOptions('unknownEvent')).toBeUndefined()
+  const value = {}
+  expect(getEventListenerOptions('unknownEvent', value)).toBeUndefined()
 })
 
 test('getEventListenerOptions - returns undefined for empty string', () => {
-  expect(getEventListenerOptions('')).toBeUndefined()
+  const value = {}
+  expect(getEventListenerOptions('', value)).toBeUndefined()
 })
