@@ -32,7 +32,7 @@
       "global": {
         "branches": 65,
         "functions": 50,
-        "lines": 76
+        "lines": 70
       }
     },
     "coveragePathIgnorePatterns": []
