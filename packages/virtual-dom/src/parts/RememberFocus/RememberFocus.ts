@@ -43,7 +43,7 @@ export const rememberFocus = (
     }
     $Viewlet.replaceWith($New)
     if (focused) {
-      const $NewFocused = $Viewlet.querySelector(`[name="${focused}"]`)
+      const $NewFocused = $New.querySelector(`[name="${focused}"]`)
       if ($NewFocused) {
         $NewFocused.replaceWith($Hidden.firstChild as HTMLElement)
       }
