@@ -7,6 +7,10 @@ export const text: (data: string) => VirtualDomNode
 
 export const mergeClassNames: (...classNames: readonly string[]) => string
 
+export const px: (value: number) => string
+
+export const position: (x: number, y: number) => string
+
 export interface Patch {}
 
 export const diff: (
