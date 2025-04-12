@@ -14,6 +14,8 @@ export const getEventListenerArg = (param: string, event: any): any => {
       return event.target.value
     case 'event.isTrusted':
       return event.isTrusted
+    case 'event.dataTransfer.files':
+      return event.dataTransfer.files
     case 'event.target.className':
       return event.target.className
     case 'event.data':
