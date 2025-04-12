@@ -1,8 +1,6 @@
 import * as FileHandles from '../FileHandles/FileHandles.ts'
 
-const handleDataTransferFiles = async (
-  event: any,
-): Promise<readonly number[]> => {
+const handleDataTransferFiles = (event: any): readonly number[] => {
   const items = [...event.dataTransfer.items]
   const promises = items.map((item) => item.getAsFileSystemHandle())
   const ids = promises.map((promise) => FileHandles.add(promise))
