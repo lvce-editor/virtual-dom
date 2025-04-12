@@ -27,3 +27,7 @@ export const applyPatch: (
   $Element: HTMLElement,
   patches: readonly any[],
 ) => void
+
+export const getFileHandles: (
+  ids: readonly number[],
+) => Promise<readonly FileSystemHandle>
