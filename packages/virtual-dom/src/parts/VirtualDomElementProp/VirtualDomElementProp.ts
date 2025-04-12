@@ -66,6 +66,10 @@ export const setProp = (
     case 'onClick':
     case 'onContextMenu':
     case 'onDblClick':
+    case 'onDragEnd':
+    case 'onDragOver':
+    case 'onDragStart':
+    case 'onDrop':
     case 'onFocus':
     case 'onFocusIn':
     case 'onFocusOut':
