@@ -1,5 +1,18 @@
+import * as FileHandles from '../FileHandles/FileHandles.ts'
+
+const handleDataTransferFiles = async (
+  event: any,
+): Promise<readonly number[]> => {
+  const items = [...event.dataTransfer.items]
+  const promises = items.map((item) => item.getAsFileSystemHandle())
+  const ids = promises.map((promise) => FileHandles.add(promise))
+  return ids
+}
+
 export const getEventListenerArg = (param: string, event: any): any => {
   switch (param) {
+    case 'event.dataTransfer.files2':
+      return handleDataTransferFiles(event)
     case 'event.clientX':
       return event.clientX
     case 'event.x':
