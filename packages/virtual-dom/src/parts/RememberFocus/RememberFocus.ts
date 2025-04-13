@@ -45,7 +45,9 @@ export const rememberFocus = (
     if (focused) {
       const $NewFocused = $New.querySelector(`[name="${focused}"]`)
       if ($NewFocused) {
-        $NewFocused.replaceWith($Hidden.firstChild as HTMLElement)
+        const $Previous = $Hidden.firstChild as HTMLElement
+        $Previous.className = $NewFocused.className
+        $NewFocused.replaceWith($Previous)
       }
     }
     $Hidden.remove()
