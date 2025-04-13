@@ -1,4 +1,5 @@
 import * as ComponentUid from '../ComponentUid/ComponentUid.ts'
+import * as EventState from '../EventState/EventState.ts'
 import * as QueryInputs from '../QueryInputs/QueryInputs.ts'
 import * as RegisterEventListeners from '../RegisterEventListeners/RegisterEventListeners.ts'
 import * as VirtualDom from '../VirtualDom/VirtualDom.ts'
@@ -9,6 +10,7 @@ export const rememberFocus = (
   eventMap: any,
   uid = 0,
 ): any => {
+  EventState.startIgnore()
   const oldLeft = $Viewlet.style.left
   const oldTop = $Viewlet.style.top
   const oldWidth = $Viewlet.style.width
@@ -80,6 +82,8 @@ export const rememberFocus = (
   $Viewlet.style.left = oldLeft
   $Viewlet.style.height = oldHeight
   $Viewlet.style.width = oldWidth
+
+  EventState.stopIgnore()
 
   return $Viewlet
 }
