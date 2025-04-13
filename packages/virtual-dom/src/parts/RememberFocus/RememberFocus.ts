@@ -43,10 +43,13 @@ export const rememberFocus = (
     }
     $Viewlet.replaceWith($New)
     if (focused) {
-      const $NewFocused = $New.querySelector(`[name="${focused}"]`)
+      const $NewFocused = $New.querySelector(
+        `[name="${focused}"]`,
+      ) as HTMLInputElement
       if ($NewFocused) {
-        const $Previous = $Hidden.firstChild as HTMLElement
+        const $Previous = $Hidden.firstChild as HTMLInputElement
         $Previous.className = $NewFocused.className
+        $Previous.placeholder = $NewFocused.placeholder
         $NewFocused.replaceWith($Previous)
       }
     }
