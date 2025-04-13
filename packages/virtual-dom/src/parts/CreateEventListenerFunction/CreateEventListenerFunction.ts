@@ -1,10 +1,14 @@
 import * as ComponentUid from '../ComponentUid/ComponentUid.ts'
+import * as EventState from '../EventState/EventState.ts'
 import * as GetEventListenerArgs from '../GetEventListenerArgs/GetEventListenerArgs.ts'
 import * as IpcState from '../IpcState/IpcState.ts'
 import * as NameAnonymousFunction from '../NameAnonymousFunction/NameAnonymousFunction.ts'
 
 export const createFn = (info): any => {
   const fn = (event): void => {
+    if (EventState.enabled()) {
+      return
+    }
     if (info.preventDefault) {
       event.preventDefault(event)
     }
