@@ -31,3 +31,5 @@ export const applyPatch: (
 export const getFileHandles: (
   ids: readonly number[],
 ) => Promise<readonly FileSystemHandle[]>
+
+export const addFileHandle: (fileHandle: FileSystemHandle) => number
