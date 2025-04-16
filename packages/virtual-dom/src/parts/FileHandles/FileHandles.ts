@@ -21,3 +21,8 @@ export const add = (promise: Promise<FileSystemHandle>): number => {
   state[id] = promise
   return id
 }
+
+export const addFileHandle = (fileHandle: FileSystemHandle): number => {
+  const promise = Promise.resolve(fileHandle)
+  return add(promise)
+}
