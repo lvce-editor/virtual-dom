@@ -52,6 +52,9 @@ export const rememberFocus = (
         const $Previous = $Hidden.firstChild as HTMLInputElement
         $Previous.className = $NewFocused.className
         $Previous.placeholder = $NewFocused.placeholder
+        if ($NewFocused.childNodes) {
+          $Previous.append(...$NewFocused.childNodes)
+        }
         $NewFocused.replaceWith($Previous)
       }
     }
