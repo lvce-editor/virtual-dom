@@ -10,7 +10,10 @@ export const createFn = (info): any => {
       return
     }
     if (info.preventDefault) {
-      event.preventDefault(event)
+      event.preventDefault()
+    }
+    if (info.stopPropagation) {
+      event.stopPropagation()
     }
     const uid = ComponentUid.getComponentUidFromEvent(event)
     const args = GetEventListenerArgs.getEventListenerArgs(info.params, event)
