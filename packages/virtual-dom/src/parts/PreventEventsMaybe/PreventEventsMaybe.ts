@@ -1,4 +1,4 @@
-export const preventEventsMaybe = (info, event) => {
+export const preventEventsMaybe = (info: any, event: any): void => {
   if (info.preventDefault) {
     event.preventDefault()
   }
