@@ -3,6 +3,7 @@ import * as EventState from '../EventState/EventState.ts'
 import * as GetEventListenerArgs from '../GetEventListenerArgs/GetEventListenerArgs.ts'
 import * as IpcState from '../IpcState/IpcState.ts'
 import * as NameAnonymousFunction from '../NameAnonymousFunction/NameAnonymousFunction.ts'
+import { preventEventsMaybe } from '../PreventEventsMaybe/PreventEventsMaybe.ts'
 
 export const createFn = (info): any => {
   const fn = (event): void => {
@@ -17,6 +18,7 @@ export const createFn = (info): any => {
     }
     const uid = ComponentUid.getComponentUidFromEvent(event)
     const args = GetEventListenerArgs.getEventListenerArgs(info.params, event)
+    preventEventsMaybe(info, event)
     if (args.length === 0) {
       return
     }
