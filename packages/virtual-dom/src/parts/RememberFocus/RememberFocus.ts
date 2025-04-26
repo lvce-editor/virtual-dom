@@ -53,7 +53,7 @@ export const rememberFocus = (
         $Previous.className = $NewFocused.className
         $Previous.placeholder = $NewFocused.placeholder
         if ($NewFocused.childNodes) {
-          $Previous.append(...$NewFocused.childNodes)
+          $Previous.replaceChildren(...$NewFocused.childNodes)
         }
         $NewFocused.replaceWith($Previous)
       }
