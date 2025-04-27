@@ -57,6 +57,8 @@ export const getEventListenerArg = (param: string, event: any): any => {
       return event.inputType
     case 'event.defaultPrevented':
       return event.defaultPrevented
+    case 'event.target.dataset.name':
+      return event.target.dataset.name
     default:
       return param
   }
