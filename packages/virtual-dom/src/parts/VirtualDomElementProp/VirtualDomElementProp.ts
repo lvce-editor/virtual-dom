@@ -78,6 +78,8 @@ export const setProp = (
     case 'onInput':
     case 'onKeyDown':
     case 'onMouseDown':
+    case 'onMouseOver':
+    case 'onMouseOut':
     case 'onPointerDown':
     case 'onPointerOut':
     case 'onPointerOver':
