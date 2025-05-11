@@ -1,5 +1,6 @@
 import * as ComponentUid from '../ComponentUid/ComponentUid.ts'
 import * as EventState from '../EventState/EventState.ts'
+import { getActiveElementInside } from '../GetActiveElementInside/GetActiveElementInside.ts'
 import * as QueryInputs from '../QueryInputs/QueryInputs.ts'
 import * as RegisterEventListeners from '../RegisterEventListeners/RegisterEventListeners.ts'
 import * as VirtualDom from '../VirtualDom/VirtualDom.ts'
@@ -15,7 +16,7 @@ export const rememberFocus = (
   const oldTop = $Viewlet.style.top
   const oldWidth = $Viewlet.style.width
   const oldHeight = $Viewlet.style.height
-  const { activeElement } = document
+  const activeElement = getActiveElementInside($Viewlet)
   const isTreeFocused = activeElement?.getAttribute('role') === 'tree'
   const isRootTree =
     $Viewlet.getAttribute('role') === 'tree' && activeElement === $Viewlet
