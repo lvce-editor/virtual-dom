@@ -9,12 +9,12 @@
   "author": "",
   "license": "MIT",
   "devDependencies": {
-    "@types/node": "^22.14.1",
-    "esbuild": "^0.25.2",
-    "execa": "^9.5.2",
+    "@types/node": "^22.15.18",
+    "esbuild": "^0.25.4",
+    "execa": "^9.5.3",
     "@rollup/plugin-babel": "^6.0.4",
     "@rollup/plugin-node-resolve": "^16.0.1",
-    "rollup": "^4.40.0",
-    "@babel/preset-typescript": "^7.27.0"
+    "rollup": "^4.40.2",
+    "@babel/preset-typescript": "^7.27.1"
   }
 }
