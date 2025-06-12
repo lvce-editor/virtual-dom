@@ -41,6 +41,8 @@ export const getEventListenerArg = (param: string, event: any): any => {
       return event.detail
     case 'event.target.name':
       return event.target.name || ''
+    case 'event.target.dataset.name':
+      return event.target.dataset.name || ''
     case 'event.target.href':
       return event.target.href
     case 'event.target.src':
