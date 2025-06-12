@@ -197,3 +197,9 @@ test('ElementTagMap - maps structural elements', () => {
     ElementTags.Search,
   )
 })
+
+test('ElementTagMap - label', () => {
+  expect(ElementTagMap.getElementTag(VirtualDomElements.Label)).toBe(
+    ElementTags.Label,
+  )
+})

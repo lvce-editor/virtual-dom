@@ -107,6 +107,8 @@ export const getElementTag = (type: number): string => {
       return ElementTag.Option
     case VirtualDomElements.Code:
       return ElementTag.Code
+    case VirtualDomElements.Label:
+      return ElementTag.Label
     default:
       throw new Error(`element tag not found ${type}`)
   }
