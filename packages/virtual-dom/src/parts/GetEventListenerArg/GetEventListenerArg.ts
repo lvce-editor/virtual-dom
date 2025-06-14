@@ -59,6 +59,8 @@ export const getEventListenerArg = (param: string, event: any): any => {
       return event.defaultPrevented
     case 'event.target.dataset.name':
       return event.target.dataset.name
+    case 'event.target.dataset.index':
+      return event.target.dataset.index
     default:
       return param
   }
