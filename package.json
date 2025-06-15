@@ -17,7 +17,7 @@
   "devDependencies": {
     "@jest/globals": "^30.0.0",
     "@lerna/legacy-package-management": "^8.2.2",
-    "@lvce-editor/eslint-config": "^1.49.0",
+    "@lvce-editor/eslint-config": "^1.50.0",
     "eslint": "^9.29.0",
     "jest": "^30.0.0",
     "jest-environment-jsdom": "^30.0.0",
