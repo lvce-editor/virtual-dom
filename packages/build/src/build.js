@@ -1,12 +1,9 @@
 import { execa } from 'execa'
 import { cp, mkdir, readFile, rm, writeFile } from 'node:fs/promises'
-import { dirname, join } from 'node:path'
-import { fileURLToPath } from 'node:url'
+import { join } from 'node:path'
 import { bundleJs } from './bundleJs.js'
-import { root } from './root.js'
 import { generateApiTypes } from './generateApiTypes.js'
-
-const __dirname = dirname(fileURLToPath(import.meta.url))
+import { root } from './root.js'
 
 const dist = join(root, 'dist')
 
