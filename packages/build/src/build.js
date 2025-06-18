@@ -1,11 +1,9 @@
 import { execa } from 'execa'
 import { cp, mkdir, readFile, rm, writeFile } from 'node:fs/promises'
-import { dirname, join } from 'node:path'
-import { fileURLToPath } from 'node:url'
+import { join } from 'node:path'
 import { bundleJs } from './bundleJs.js'
+import { generateApiTypes } from './generateApiTypes.js'
 import { root } from './root.js'
-
-const __dirname = dirname(fileURLToPath(import.meta.url))
 
 const dist = join(root, 'dist')
 
@@ -95,12 +93,10 @@ for (const packageName of ['virtual-dom', 'virtual-dom-worker']) {
   })
 }
 
-await cp(
-  join(__dirname, 'types.d.ts'),
-  join(root, 'dist', 'virtual-dom', 'dist', 'index.d.ts'),
-)
+await generateApiTypes({
+  packageName: 'virtual-dom',
+})
 
-await cp(
-  join(__dirname, 'types-worker.d.ts'),
-  join(root, 'dist', 'virtual-dom-worker', 'dist', 'index.d.ts'),
-)
+await generateApiTypes({
+  packageName: 'virtual-dom-worker',
+})
