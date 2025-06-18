@@ -11,7 +11,7 @@ const getActualContent = (content) => {
   return newLines.join('\n')
 }
 
-export const generateApiTypes = async () => {
+export const generateApiTypes = async ({ packageName }) => {
   const ext = process.platform === 'win32' ? '' : ''
   const bundleGeneratorPath = join(
     root,
@@ -23,16 +23,20 @@ export const generateApiTypes = async () => {
   )
   await execa(
     bundleGeneratorPath,
-    ['-o', '../../virtual-dom-worker/dist/api.d.ts', 'src/parts/Main/Main.ts'],
+    [
+      '-o',
+      `../../dist/${packageName}/dist/index.d.ts`,
+      'src/parts/Main/Main.ts',
+    ],
     {
-      cwd: join(root, 'packages', 'virtual-dom-worker'),
-      // reject: false,
+      cwd: join(root, 'packages', packageName),
+      reject: false,
     },
   )
   const content = await readFile(
-    join(root, 'dist', 'virtual-dom-worker', 'dist', 'api.d.ts'),
+    join(root, 'dist', packageName, 'dist', 'index.d.ts'),
     'utf8',
   )
   const actual = getActualContent(content)
-  await writeFile(join(root, 'dist', 'dist', 'api.d.ts'), actual)
+  await writeFile(join(root, 'dist', packageName, 'dist', 'index.d.ts'), actual)
 }
