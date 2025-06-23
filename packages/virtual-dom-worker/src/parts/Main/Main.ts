@@ -1,5 +1,7 @@
 export * as ClassNames from '../ClassNames/ClassNames.ts'
 export type * from '../DomEventListener/DomEventListener.ts'
+export * as KeyCode from '../KeyCode/KeyCode.ts'
+export * as KeyModifier from '../KeyModifier/KeyModifier.ts'
 export * from '../MergeClassNames/MergeClassNames.ts'
 export * as MouseEventType from '../MouseEventType/MouseEventType.ts'
 export * from '../Px/Px.ts'
