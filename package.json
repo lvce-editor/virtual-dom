@@ -16,12 +16,12 @@
   "license": "MIT",
   "devDependencies": {
     "@jest/globals": "^30.0.3",
-    "@lerna/legacy-package-management": "^8.2.2",
-    "@lvce-editor/eslint-config": "^1.51.0",
+    "@lerna/legacy-package-management": "^8.2.3",
+    "@lvce-editor/eslint-config": "^1.52.0",
     "eslint": "^9.30.0",
     "jest": "^30.0.3",
     "jest-environment-jsdom": "^30.0.2",
-    "lerna": "^8.2.2",
+    "lerna": "^8.2.3",
     "prettier": "^3.6.2",
     "ts-jest": "^29.4.0",
     "typescript": "^5.8.3"
