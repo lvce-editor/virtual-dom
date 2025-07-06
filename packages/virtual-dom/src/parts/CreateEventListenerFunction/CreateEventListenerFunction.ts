@@ -1,3 +1,4 @@
+import { applyDragInfoMaybe } from '../ApplyDragInfoMaybe/ApplyDragInfoMaybe.ts'
 import * as ComponentUid from '../ComponentUid/ComponentUid.ts'
 import * as EventState from '../EventState/EventState.ts'
 import * as GetEventListenerArgs from '../GetEventListenerArgs/GetEventListenerArgs.ts'
@@ -13,6 +14,7 @@ export const createFn = (info): any => {
     const uid = ComponentUid.getComponentUidFromEvent(event)
     const args = GetEventListenerArgs.getEventListenerArgs(info.params, event)
     preventEventsMaybe(info, event)
+    applyDragInfoMaybe(event)
     if (args.length === 0) {
       return
     }
