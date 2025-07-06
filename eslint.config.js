@@ -10,6 +10,7 @@ export default [
       'tsconfig/no-implicit-any': 'off',
 
       '@typescript-eslint/no-deprecated': 'off',
+      'jest/no-restricted-jest-methods': 'off',
     },
   },
 ]
