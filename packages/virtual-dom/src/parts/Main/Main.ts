@@ -4,6 +4,11 @@ export {
   getComponentUidFromEvent,
   setComponentUid,
 } from '../ComponentUid/ComponentUid.ts'
+export {
+  getDragInfo,
+  removeDragInfo,
+  setDragInfo,
+} from '../DragInfo/DragInfo.ts'
 export { addFileHandle, getFileHandles } from '../FileHandles/FileHandles.ts'
 export { setIpc } from '../IpcState/IpcState.ts'
 export { registerEventListeners } from '../RegisterEventListeners/RegisterEventListeners.ts'
