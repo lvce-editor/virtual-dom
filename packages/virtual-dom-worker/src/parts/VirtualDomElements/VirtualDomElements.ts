@@ -54,3 +54,4 @@ export const Select = 63
 export const Option = 64
 export const Code = 65
 export const Label = 66
+export const Dt = 67
