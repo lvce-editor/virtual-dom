@@ -37,6 +37,8 @@ export const getEventListenerArg = (param: string, event: any): any => {
       return event.deltaX
     case 'event.deltaY':
       return event.deltaY
+    case 'event.target.scrollTop':
+      return event.target.scrollTop
     case 'event.detail':
       return event.detail
     case 'event.target.name':
