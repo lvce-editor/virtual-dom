@@ -1,4 +1,5 @@
 export * as AriaRoles from '../AriaRoles/AriaRoles.ts'
+export * as AriaLive from '../AriaLive/AriaLive.ts'
 export * as ClassNames from '../ClassNames/ClassNames.ts'
 export type * from '../DomEventListener/DomEventListener.ts'
 export * as KeyCode from '../KeyCode/KeyCode.ts'
