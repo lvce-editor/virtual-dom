@@ -94,7 +94,7 @@ const diffTree = (a: any, b: any, patches: Patch[]): void => {
         })
         patches.push({
           type: PatchType.Add,
-          nodes: b,
+          nodes: childB,
         })
         // remove node and replace it
       }
