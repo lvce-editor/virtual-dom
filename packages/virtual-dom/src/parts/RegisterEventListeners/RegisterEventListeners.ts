@@ -5,7 +5,7 @@ const listeners = Object.create(null)
 export const registerEventListeners = (id, eventListeners): void => {
   const map = Object.create(null)
   for (const info of eventListeners) {
-    const fn = CreateEventListenerFunction.createFn(info)
+    const fn = CreateEventListenerFunction.createFn(info, map)
     map[info.name] = fn
   }
   listeners[id] = map
