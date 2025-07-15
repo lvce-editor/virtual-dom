@@ -17,7 +17,7 @@ test('diff2 - text node changed', () => {
   ])
 })
 
-test.only('diff2 - attribute changed 1', () => {
+test('diff2 - attribute changed 1', () => {
   const oldNodes = [
     {
       type: VirtualDomElements.Div,
@@ -238,7 +238,7 @@ test('diff2 - remove all attributes', () => {
   ])
 })
 
-test('diff2 - change node type with attributes', () => {
+test.only('diff2 - change node type with attributes', () => {
   const oldNodes = [
     {
       type: VirtualDomElements.Div,
@@ -262,6 +262,7 @@ test('diff2 - change node type with attributes', () => {
     },
   ]
   const patches = diff2(oldNodes, newNodes)
+  console.log({ patches })
   expect(patches).toEqual([
     {
       type: PatchType.RemoveChild,

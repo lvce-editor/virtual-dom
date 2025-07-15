@@ -1,15 +1,9 @@
 import { createTree } from '../CreateTree/CreateTree.ts'
-import type { Patch } from '../Patch/Patch.ts'
-import * as PatchType from '../PatchType/PatchType.ts'
-import * as VirtualDomElements from '../VirtualDomElements/VirtualDomElements.ts'
-import type { VirtualDomNode } from '../VirtualDomNode/VirtualDomNode.ts'
-import type { Patch } from '../Patch/Patch.ts'
-import type { VirtualDomNode } from '../VirtualDomNode/VirtualDomNode.ts'
-import * as ApplyPendingPatches from '../ApplyPendingPatches/ApplyPendingPatches.ts'
 import * as GetKeys from '../GetKeys/GetKeys.ts'
-import * as GetTotalChildCount from '../GetTotalChildCount/GetTotalChildCount.ts'
+import type { Patch } from '../Patch/Patch.ts'
 import * as PatchType from '../PatchType/PatchType.ts'
 import * as VirtualDomElements from '../VirtualDomElements/VirtualDomElements.ts'
+import type { VirtualDomNode } from '../VirtualDomNode/VirtualDomNode.ts'
 
 const diffText = (a: any, b: any, patches: Patch[]): boolean => {
   if (
@@ -77,18 +71,29 @@ const diffTree = (a: any, b: any, patches: Patch[]): void => {
 
   checkAttributeChanges(a, b, patches)
 
-  if (a.children.length > b.children.length) {
+  const aChildren = a.children
+  const bChildren = b.children
+
+  if (aChildren.length > bChildren.length) {
     // children removed
-  } else if (a.children.length < b.children.length) {
+  } else if (aChildren.length < bChildren.length) {
     // children added
   } else {
-    const length = a.children.length
+    const length = aChildren.length
     for (let i = 0; i < length; i++) {
-      const childA = a.children[i]
-      const childB = b.children[i]
+      const childA = aChildren[i]
+      const childB = bChildren[i]
       if (a.type === b.type) {
         diffTree(childA, childB, patches)
       } else {
+        patches.push({
+          type: PatchType.RemoveChild,
+          index: i,
+        })
+        patches.push({
+          type: PatchType.Add,
+          nodes: b,
+        })
         // remove node and replace it
       }
     }
