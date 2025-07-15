@@ -1,11 +1,5 @@
 import * as AttachEvent from '../AttachEvent/AttachEvent.ts'
 
-const setPointerTrack = (
-  $Element: HTMLElement,
-  key: string,
-  eventMap: any,
-): void => {}
-
 export const setProp = (
   $Element: HTMLElement,
   key: string,
@@ -104,11 +98,6 @@ export const setProp = (
       } else {
         $Element.removeAttribute(key)
       }
-      break
-    case 'onPointerTrackDown':
-
-    case 'onPointerTrackMove':
-    case 'onPointerTrackEnd':
       break
     default:
       if (key.startsWith('data-')) {
