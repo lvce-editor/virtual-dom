@@ -1,8 +1,9 @@
+import type { VirtualDomNode } from '../VirtualDomNode/VirtualDomNode.ts'
 import * as VirtualDomElement from '../VirtualDomElement/VirtualDomElement.ts'
 
 export const renderInternal = (
   $Parent: HTMLElement,
-  elements: readonly any[],
+  elements: readonly VirtualDomNode[],
   eventMap: any,
   newEventMap?: any,
 ): void => {
