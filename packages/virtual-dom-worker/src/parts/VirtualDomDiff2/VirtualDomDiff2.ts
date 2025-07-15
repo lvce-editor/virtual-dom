@@ -74,6 +74,8 @@ const diffTree = (a: any, b: any, patches: Patch[]): void => {
   const aChildren = a.children
   const bChildren = b.children
 
+  console.log({ aChildren, bChildren })
+
   if (aChildren.length > bChildren.length) {
     // children removed
   } else if (aChildren.length < bChildren.length) {
@@ -83,7 +85,7 @@ const diffTree = (a: any, b: any, patches: Patch[]): void => {
     for (let i = 0; i < length; i++) {
       const childA = aChildren[i]
       const childB = bChildren[i]
-      if (a.type === b.type) {
+      if (childA.type === childB.type) {
         diffTree(childA, childB, patches)
       } else {
         patches.push({
@@ -106,6 +108,8 @@ export const diff2 = (
 ): readonly Patch[] => {
   const a = createTree(oldNodes)
   const b = createTree(newNodes)
+  console.log(JSON.stringify(a, null, 2))
+  console.log(JSON.stringify(b, null, 2))
   const patches: Patch[] = []
   diffTree(a, b, patches)
   return patches
