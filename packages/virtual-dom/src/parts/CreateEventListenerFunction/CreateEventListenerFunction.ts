@@ -1,11 +1,11 @@
 import { applyDragInfoMaybe } from '../ApplyDragInfoMaybe/ApplyDragInfoMaybe.ts'
 import * as ComponentUid from '../ComponentUid/ComponentUid.ts'
+import * as DomEventType from '../DomEventType/DomEventType.ts'
 import * as EventState from '../EventState/EventState.ts'
 import * as GetEventListenerArgs from '../GetEventListenerArgs/GetEventListenerArgs.ts'
 import * as IpcState from '../IpcState/IpcState.ts'
 import * as NameAnonymousFunction from '../NameAnonymousFunction/NameAnonymousFunction.ts'
 import { preventEventsMaybe } from '../PreventEventsMaybe/PreventEventsMaybe.ts'
-import * as DomEventType from '../DomEventType/DomEventType.ts'
 
 const applyPointerTrackMaybe = (info, map, event): void => {
   const { trackPointerEvents } = info
