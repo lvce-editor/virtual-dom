@@ -8,6 +8,7 @@ export const diff = (
 ): readonly Patch[] => {
   const a = createTree(oldNodes)
   const b = createTree(newNodes)
+  console.log({ a, b })
   const patches: Patch[] = []
   return patches
 }
