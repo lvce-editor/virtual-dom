@@ -7,7 +7,7 @@ import * as NameAnonymousFunction from '../NameAnonymousFunction/NameAnonymousFu
 import { preventEventsMaybe } from '../PreventEventsMaybe/PreventEventsMaybe.ts'
 import * as DomEventType from '../DomEventType/DomEventType.ts'
 
-const applyPointerTrackMaybe = (info, map, event) => {
+const applyPointerTrackMaybe = (info, map, event): void => {
   const { trackPointerEvents } = info
   if (!trackPointerEvents) {
     return
