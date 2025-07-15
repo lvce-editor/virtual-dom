@@ -5,7 +5,7 @@ import { text } from '../src/parts/Text/Text.ts'
 import * as VirtualDomElements from '../src/parts/VirtualDomElements/VirtualDomElements.ts'
 import { diff2 } from '../src/parts/VirtualDomDiff2/VirtualDomDiff2.ts'
 
-test('diff2 - text node changed', () => {
+test.only('diff2 - text node changed', () => {
   const oldNodes = [text('hello')]
   const newNodes = [text('world')]
   const patches = diff2(oldNodes, newNodes)
