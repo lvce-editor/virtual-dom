@@ -5,6 +5,10 @@ import * as QueryInputs from '../QueryInputs/QueryInputs.ts'
 import * as RegisterEventListeners from '../RegisterEventListeners/RegisterEventListeners.ts'
 import * as VirtualDom from '../VirtualDom/VirtualDom.ts'
 
+const focusElement = ($Element: HTMLElement): void => {
+  $Element.focus({ preventScroll: true })
+}
+
 export const rememberFocus = (
   $Viewlet: HTMLElement,
   dom: any[],
@@ -66,19 +70,19 @@ export const rememberFocus = (
   }
 
   if (isRootTree) {
-    $Viewlet.focus()
+    focusElement($Viewlet)
   } else if (isTreeFocused) {
     const $Tree = $Viewlet.querySelector('[role="tree"]')
     if ($Tree) {
       // @ts-ignore
-      $Tree.focus()
+      focusElement($Tree)
     }
   } else if (focused) {
     const $Focused = $Viewlet.querySelector(`[name="${focused}"]`)
 
     if ($Focused) {
       // @ts-ignore
-      $Focused.focus()
+      focusElement($Focused)
     }
   }
 
