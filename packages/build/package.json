@@ -9,8 +9,8 @@
   "author": "",
   "license": "MIT",
   "devDependencies": {
-    "@types/node": "^24.1.0",
-    "esbuild": "^0.25.8",
+    "@types/node": "^24.3.0",
+    "esbuild": "^0.25.9",
     "execa": "^9.6.0",
     "@rollup/plugin-babel": "^6.0.4",
     "@rollup/plugin-node-resolve": "^16.0.1",
