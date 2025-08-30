@@ -80,13 +80,7 @@ for (const packageName of ['virtual-dom', 'virtual-dom-worker']) {
   await writeJson(join(dist, packageName, 'package.json'), packageJson)
   await cp(join(root, 'README.md'), join(dist, packageName, 'README.md'))
   await cp(join(root, 'LICENSE'), join(dist, packageName, 'LICENSE'))
-  await cp(
-    join(root, 'packages', packageName, 'src'),
-    join(root, 'dist', packageName, 'src'),
-    {
-      recursive: true,
-    },
-  )
+
   if (packageName === 'virtual-dom') {
     await bundleJs({
       inFile: `packages/${packageName}/src/index.ts`,
