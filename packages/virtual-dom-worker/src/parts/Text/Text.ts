@@ -1,5 +1,5 @@
 import type { VirtualDomNode } from '../VirtualDomNode/VirtualDomNode.ts'
-import * as VirtualDomElements from '../VirtualDomElements/VirtualDomElements.ts'
+import { VirtualDomElements } from '@lvce-editor/constants'
 
 export const text = (data: string): VirtualDomNode => {
   return {

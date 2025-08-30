@@ -4,7 +4,7 @@ import * as ApplyPendingPatches from '../ApplyPendingPatches/ApplyPendingPatches
 import * as GetKeys from '../GetKeys/GetKeys.ts'
 import * as GetTotalChildCount from '../GetTotalChildCount/GetTotalChildCount.ts'
 import * as PatchType from '../PatchType/PatchType.ts'
-import * as VirtualDomElements from '../VirtualDomElements/VirtualDomElements.ts'
+import { VirtualDomElements } from '@lvce-editor/constants'
 
 export const diff = (
   oldNodes: readonly VirtualDomNode[],
