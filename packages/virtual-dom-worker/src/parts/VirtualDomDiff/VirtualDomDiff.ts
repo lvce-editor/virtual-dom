@@ -1,10 +1,10 @@
+import { VirtualDomElements } from '@lvce-editor/constants'
 import type { Patch } from '../Patch/Patch.ts'
 import type { VirtualDomNode } from '../VirtualDomNode/VirtualDomNode.ts'
 import * as ApplyPendingPatches from '../ApplyPendingPatches/ApplyPendingPatches.ts'
 import * as GetKeys from '../GetKeys/GetKeys.ts'
 import * as GetTotalChildCount from '../GetTotalChildCount/GetTotalChildCount.ts'
 import * as PatchType from '../PatchType/PatchType.ts'
-import { VirtualDomElements } from '@lvce-editor/constants'
 
 export const diff = (
   oldNodes: readonly VirtualDomNode[],

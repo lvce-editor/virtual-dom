@@ -1,9 +1,9 @@
 import { expect, test } from '@jest/globals'
+import { VirtualDomElements } from '@lvce-editor/constants'
 import type { VirtualDomNode } from '../src/parts/VirtualDomNode/VirtualDomNode.ts'
 import * as PatchType from '../src/parts/PatchType/PatchType.ts'
 import { text } from '../src/parts/Text/Text.ts'
 import { diff } from '../src/parts/VirtualDomDiff/VirtualDomDiff.ts'
-import { VirtualDomElements } from '@lvce-editor/constants'
 
 test('diff - text node changed', () => {
   const oldNodes = [text('hello')]
