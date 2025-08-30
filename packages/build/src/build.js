@@ -1,5 +1,5 @@
 import { execa } from 'execa'
-import { cp, mkdir, readFile, rm, writeFile } from 'node:fs/promises'
+import { cp, mkdir, readdir, readFile, rm, writeFile } from 'node:fs/promises'
 import { join } from 'node:path'
 import { bundleJs } from './bundleJs.js'
 import { generateApiTypes } from './generateApiTypes.js'
@@ -80,17 +80,29 @@ for (const packageName of ['virtual-dom', 'virtual-dom-worker']) {
   await writeJson(join(dist, packageName, 'package.json'), packageJson)
   await cp(join(root, 'README.md'), join(dist, packageName, 'README.md'))
   await cp(join(root, 'LICENSE'), join(dist, packageName, 'LICENSE'))
-  await cp(
-    join(root, 'packages', packageName, 'src'),
-    join(root, 'dist', packageName, 'src'),
-    {
+
+  if (packageName === 'virtual-dom') {
+    await bundleJs({
+      inFile: `packages/${packageName}/src/index.ts`,
+      outFile: `dist/${packageName}/dist/index.js`,
+    })
+  } else {
+    await execa(`npx`, ['tsc', '-b'], {
+      cwd: join(root, 'packages', 'virtual-dom-worker'),
+    })
+    const dirents = await readdir(join(root, '.tmp', 'tsc-dist'), {
       recursive: true,
-    },
-  )
-  await bundleJs({
-    inFile: `packages/${packageName}/src/index.ts`,
-    outFile: `dist/${packageName}/dist/index.js`,
-  })
+    })
+    const toRemove = dirents.filter((dirent) => dirent.endsWith('.d.ts'))
+    await Promise.all(
+      toRemove.map((item) => rm(join(root, '.tmp', 'tsc-dist', item))),
+    )
+    await cp(
+      join(root, '.tmp', 'tsc-dist', 'src'),
+      join(root, 'dist', 'virtual-dom-worker', 'dist'),
+      { recursive: true },
+    )
+  }
 }
 
 await generateApiTypes({

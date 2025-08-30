@@ -7,7 +7,6 @@
     "module": "NodeNext",
     "moduleResolution": "NodeNext",
     "skipLibCheck": true,
-    "noEmit": true,
     "allowSyntheticDefaultImports": true,
     "isolatedModules": true,
     "assumeChangesOnlyAffectDirectDependencies": true,
@@ -19,7 +18,9 @@
     "noUnusedLocals": true,
     "forceConsistentCasingInFileNames": true,
     "noUncheckedSideEffectImports": true,
-    "exactOptionalPropertyTypes": true
+    "exactOptionalPropertyTypes": true,
+    "rewriteRelativeImportExtensions": true,
+    "outDir": "../../.tmp/tsc-dist"
   },
   "include": ["src", "test"]
 }
