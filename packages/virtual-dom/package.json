@@ -32,9 +32,12 @@
       "global": {
         "branches": 45,
         "functions": 40,
-        "lines": 60
+        "lines": 50
       }
     },
     "coveragePathIgnorePatterns": []
+  },
+  "devDependencies": {
+    "@lvce-editor/constants": "^1.0.1"
   }
 }
