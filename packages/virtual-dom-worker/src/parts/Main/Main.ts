@@ -10,6 +10,7 @@ export {
 } from '@lvce-editor/constants'
 export * as AriaLive from '../AriaLive/AriaLive.ts'
 export type * from '../DomEventListener/DomEventListener.ts'
+export * from '../MeasureTextWidths/MeasureTextWidths.ts'
 export * from '../MergeClassNames/MergeClassNames.ts'
 export * from '../Px/Px.ts'
 export * from '../Text/Text.ts'
