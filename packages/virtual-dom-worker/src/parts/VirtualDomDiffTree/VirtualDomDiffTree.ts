@@ -12,11 +12,15 @@ export const diffTree = (
   // Step 1: Convert flat arrays to tree structures
   const oldTree = VirtualDomTree.arrayToTree(oldNodes)
   const newTree = VirtualDomTree.arrayToTree(newNodes)
-  
-  // Step 2: Compare the trees
+
+  // Step 2: Add fake root nodes to both trees
+  const oldRoot = { node: { type: 0, childCount: oldTree.length }, children: oldTree }
+  const newRoot = { node: { type: 0, childCount: newTree.length }, children: newTree }
+
+  // Step 3: Compare the trees
   const patches: Patch[] = []
-  diffTrees(oldTree, newTree, patches, [])
-  
+  diffTrees([oldRoot], [newRoot], patches, [])
+
   // Remove trailing navigation patches since they serve no purpose
   return removeTrailingNavigationPatches(patches)
 }
@@ -28,15 +32,15 @@ const diffTrees = (
   path: number[],
 ): void => {
   const maxLength = Math.max(oldTree.length, newTree.length)
-  
+
   for (let i = 0; i < maxLength; i++) {
     const oldNode = oldTree[i]
     const newNode = newTree[i]
-    
+
     if (!oldNode && !newNode) {
       continue
     }
-    
+
     if (!oldNode) {
       // Add new node
       addNavigationPatches(patches, path, i)
@@ -68,7 +72,7 @@ const diffTrees = (
         addNavigationPatches(patches, path, i)
         patches.push(...nodePatches)
       }
-      
+
       // Compare children
       if (oldNode.children.length > 0 || newNode.children.length > 0) {
         patches.push({
@@ -89,7 +93,7 @@ const compareNodes = (
   newNode: VirtualDomNode,
 ): Patch[] => {
   const patches: Patch[] = []
-  
+
   // Check if node type changed
   if (oldNode.type !== newNode.type) {
     patches.push({
@@ -102,7 +106,7 @@ const compareNodes = (
     })
     return patches
   }
-  
+
   // Handle text nodes
   if (
     oldNode.type === VirtualDomElements.Text &&
@@ -116,11 +120,11 @@ const compareNodes = (
     }
     return patches
   }
-  
+
   // Compare attributes
   const oldKeys = GetKeys.getKeys(oldNode)
   const newKeys = GetKeys.getKeys(newNode)
-  
+
   // Check for attribute changes
   for (const key of newKeys) {
     if (oldNode[key] !== newNode[key]) {
@@ -131,7 +135,7 @@ const compareNodes = (
       })
     }
   }
-  
+
   // Check for removed attributes
   for (const key of oldKeys) {
     if (!(key in newNode)) {
@@ -141,7 +145,7 @@ const compareNodes = (
       })
     }
   }
-  
+
   return patches
 }
 
@@ -154,7 +158,7 @@ const addNavigationPatches = (
   if (path.length === 0 && currentIndex === 0) {
     return
   }
-  
+
   // Navigate to the correct position
   for (let i = 0; i < path.length; i++) {
     patches.push({
@@ -162,7 +166,7 @@ const addNavigationPatches = (
       index: path[i],
     })
   }
-  
+
   // Navigate to sibling if needed
   if (currentIndex > 0) {
     patches.push({
@@ -186,7 +190,7 @@ const removeTrailingNavigationPatches = (patches: Patch[]): Patch[] => {
       break
     }
   }
-  
+
   // Return patches up to and including the last non-navigation patch
   return lastNonNavigationIndex === -1 ? [] : patches.slice(0, lastNonNavigationIndex + 1)
 }
