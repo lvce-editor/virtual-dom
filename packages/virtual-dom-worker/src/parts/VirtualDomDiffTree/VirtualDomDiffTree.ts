@@ -3,42 +3,57 @@ import type { Patch } from '../Patch/Patch.ts'
 import type { VirtualDomNode } from '../VirtualDomNode/VirtualDomNode.ts'
 import * as GetKeys from '../GetKeys/GetKeys.ts'
 import * as PatchType from '../PatchType/PatchType.ts'
+import * as VirtualDomTree from '../VirtualDomTree/VirtualDomTree.ts'
 
 export const diffTree = (
   oldNodes: readonly VirtualDomNode[],
   newNodes: readonly VirtualDomNode[],
 ): readonly Patch[] => {
+  // Step 1: Convert flat arrays to tree structures
+  const oldTree = VirtualDomTree.arrayToTree(oldNodes)
+  const newTree = VirtualDomTree.arrayToTree(newNodes)
+  
+  // Step 2: Compare the trees
   const patches: Patch[] = []
-
-  diffNodes(oldNodes, newNodes, patches, [])
-
+  diffTrees(oldTree, newTree, patches, [])
+  
   // Remove trailing navigation patches since they serve no purpose
   return removeTrailingNavigationPatches(patches)
 }
 
-const diffNodes = (
-  oldNodes: readonly VirtualDomNode[],
-  newNodes: readonly VirtualDomNode[],
+const diffTrees = (
+  oldTree: readonly VirtualDomTree.VirtualDomTreeNode[],
+  newTree: readonly VirtualDomTree.VirtualDomTreeNode[],
   patches: Patch[],
   path: number[],
 ): void => {
-  const maxLength = Math.max(oldNodes.length, newNodes.length)
-
+  const maxLength = Math.max(oldTree.length, newTree.length)
+  
   for (let i = 0; i < maxLength; i++) {
-    const oldNode = oldNodes[i]
-    const newNode = newNodes[i]
-
+    const oldNode = oldTree[i]
+    const newNode = newTree[i]
+    
     if (!oldNode && !newNode) {
       continue
     }
-
+    
     if (!oldNode) {
       // Add new node
       addNavigationPatches(patches, path, i)
       patches.push({
         type: PatchType.Add,
-        nodes: [newNode],
+        nodes: [newNode.node],
       })
+      if (newNode.children.length > 0) {
+        patches.push({
+          type: PatchType.NavigateChild,
+          index: 0,
+        })
+        diffTrees([], newNode.children, patches, [...path, 0])
+        patches.push({
+          type: PatchType.NavigateParent,
+        })
+      }
     } else if (!newNode) {
       // Remove old node
       addNavigationPatches(patches, path, i)
@@ -48,52 +63,25 @@ const diffNodes = (
       })
     } else {
       // Compare nodes
-      const nodePatches = compareNodes(oldNode, newNode)
+      const nodePatches = compareNodes(oldNode.node, newNode.node)
       if (nodePatches.length > 0) {
         addNavigationPatches(patches, path, i)
         patches.push(...nodePatches)
       }
-
-      // Compare children if both nodes have them
-      if (oldNode.childCount > 0 || newNode.childCount > 0) {
-        const oldChildren = getChildren(oldNodes, i)
-        const newChildren = getChildren(newNodes, i)
-
-        if (oldChildren.length > 0 || newChildren.length > 0) {
-          patches.push({
-            type: PatchType.NavigateChild,
-            index: 0,
-          })
-          diffNodes(oldChildren, newChildren, patches, [...path, 0])
-          patches.push({
-            type: PatchType.NavigateParent,
-          })
-        }
+      
+      // Compare children
+      if (oldNode.children.length > 0 || newNode.children.length > 0) {
+        patches.push({
+          type: PatchType.NavigateChild,
+          index: 0,
+        })
+        diffTrees(oldNode.children, newNode.children, patches, [...path, 0])
+        patches.push({
+          type: PatchType.NavigateParent,
+        })
       }
     }
   }
-}
-
-const getChildren = (nodes: readonly VirtualDomNode[], startIndex: number): VirtualDomNode[] => {
-  const parent = nodes[startIndex]
-  if (!parent || !parent.childCount) {
-    return []
-  }
-
-  const children: VirtualDomNode[] = []
-  let i = startIndex + 1
-  let remaining = parent.childCount
-
-  while (remaining > 0 && i < nodes.length) {
-    const node = nodes[i]
-    children.push(node)
-
-    // Skip the node and its children
-    i += 1 + (node.childCount || 0)
-    remaining--
-  }
-
-  return children
 }
 
 const compareNodes = (
@@ -101,7 +89,7 @@ const compareNodes = (
   newNode: VirtualDomNode,
 ): Patch[] => {
   const patches: Patch[] = []
-
+  
   // Check if node type changed
   if (oldNode.type !== newNode.type) {
     patches.push({
@@ -114,7 +102,7 @@ const compareNodes = (
     })
     return patches
   }
-
+  
   // Handle text nodes
   if (
     oldNode.type === VirtualDomElements.Text &&
@@ -128,11 +116,11 @@ const compareNodes = (
     }
     return patches
   }
-
+  
   // Compare attributes
   const oldKeys = GetKeys.getKeys(oldNode)
   const newKeys = GetKeys.getKeys(newNode)
-
+  
   // Check for attribute changes
   for (const key of newKeys) {
     if (oldNode[key] !== newNode[key]) {
@@ -143,7 +131,7 @@ const compareNodes = (
       })
     }
   }
-
+  
   // Check for removed attributes
   for (const key of oldKeys) {
     if (!(key in newNode)) {
@@ -153,7 +141,7 @@ const compareNodes = (
       })
     }
   }
-
+  
   return patches
 }
 
@@ -166,7 +154,7 @@ const addNavigationPatches = (
   if (path.length === 0 && currentIndex === 0) {
     return
   }
-
+  
   // Navigate to the correct position
   for (let i = 0; i < path.length; i++) {
     patches.push({
@@ -174,7 +162,7 @@ const addNavigationPatches = (
       index: path[i],
     })
   }
-
+  
   // Navigate to sibling if needed
   if (currentIndex > 0) {
     patches.push({
@@ -198,7 +186,7 @@ const removeTrailingNavigationPatches = (patches: Patch[]): Patch[] => {
       break
     }
   }
-
+  
   // Return patches up to and including the last non-navigation patch
   return lastNonNavigationIndex === -1 ? [] : patches.slice(0, lastNonNavigationIndex + 1)
 }
