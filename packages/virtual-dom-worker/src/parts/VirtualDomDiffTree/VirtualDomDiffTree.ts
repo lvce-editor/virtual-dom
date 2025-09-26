@@ -1,202 +1,170 @@
 import { VirtualDomElements } from '@lvce-editor/constants'
 import type { Patch } from '../Patch/Patch.ts'
 import type { VirtualDomNode } from '../VirtualDomNode/VirtualDomNode.ts'
-import * as ApplyPendingPatches from '../ApplyPendingPatches/ApplyPendingPatches.ts'
 import * as GetKeys from '../GetKeys/GetKeys.ts'
-import * as GetTotalChildCount from '../GetTotalChildCount/GetTotalChildCount.ts'
 import * as PatchType from '../PatchType/PatchType.ts'
+import * as VirtualDomTree from '../VirtualDomTree/VirtualDomTree.ts'
 
 export const diffTree = (
   oldNodes: readonly VirtualDomNode[],
   newNodes: readonly VirtualDomNode[],
 ): readonly Patch[] => {
+  const oldTree = VirtualDomTree.arrayToTree(oldNodes)
+  const newTree = VirtualDomTree.arrayToTree(newNodes)
+  
   const patches: Patch[] = []
-  const pendingPatches: number[] = []
-  let i = 0
-  let j = 0
-  let siblingOffset = 0
-  let maxSiblingOffset = 1
-  const indexStack: number[] = [0, 1]
-  while (i < oldNodes.length && j < newNodes.length) {
-    const oldNode = oldNodes[i]
-    const newNode = newNodes[j]
+  
+  diffTrees(oldTree, newTree, patches, [])
+  
+  return patches
+}
 
-    if (siblingOffset > 0) {
-      // pendingPatches.push(PatchType.NavigateSibling, siblingOffset)
+const diffTrees = (
+  oldTree: readonly VirtualDomTree.VirtualDomTreeNode[],
+  newTree: readonly VirtualDomTree.VirtualDomTreeNode[],
+  patches: Patch[],
+  path: number[],
+): void => {
+  const maxLength = Math.max(oldTree.length, newTree.length)
+  
+  for (let i = 0; i < maxLength; i++) {
+    const oldNode = oldTree[i]
+    const newNode = newTree[i]
+    
+    if (!oldNode && !newNode) {
+      continue
     }
-
-    // TODO maybe don't have the current element in indexstack
-    if (siblingOffset === maxSiblingOffset) {
-      indexStack.pop()
-      indexStack.pop()
-      pendingPatches.push(PatchType.NavigateParent, 0)
-      maxSiblingOffset = indexStack.pop() as number
-      siblingOffset = (indexStack.pop() as number) + 1
-    }
-
-    while (siblingOffset === maxSiblingOffset) {
-      pendingPatches.push(PatchType.NavigateParent, 0)
-      maxSiblingOffset = indexStack.pop() as number
-      siblingOffset = (indexStack.pop() as number) + 1
-    }
-
-    if (oldNode.type !== newNode.type) {
-      let skip = 0
-      if (
-        pendingPatches.length > 0 &&
-        pendingPatches.at(-2) === PatchType.NavigateChild
-      ) {
-        skip = 2
-      }
-      ApplyPendingPatches.applyPendingPatches(patches, pendingPatches, skip)
-      const oldTotal = GetTotalChildCount.getTotalChildCount(oldNodes, i)
-      const newTotal = GetTotalChildCount.getTotalChildCount(newNodes, j)
-
-      patches.push({
-        type: PatchType.RemoveChild,
-        index: siblingOffset,
-      })
+    
+    if (!oldNode) {
+      // Add new node
+      addNavigationPatches(patches, path, i)
       patches.push({
         type: PatchType.Add,
-        nodes: newNodes.slice(j, j + newTotal),
+        nodes: [newNode.node],
       })
-      siblingOffset++
-      i += oldTotal
-      j += newTotal
-      continue
-    }
-
-    if (
-      oldNode.type === VirtualDomElements.Text &&
-      newNode.type === VirtualDomElements.Text
-    ) {
-      if (oldNode.text !== newNode.text) {
-        if (siblingOffset !== 0) {
-          pendingPatches.push(PatchType.NavigateSibling, siblingOffset)
-        }
-        ApplyPendingPatches.applyPendingPatches(patches, pendingPatches, 0)
+      if (newNode.children.length > 0) {
         patches.push({
-          type: PatchType.SetText,
-          value: newNode.text,
-        })
-      }
-      i++
-      j++
-      siblingOffset++
-      continue
-    }
-
-    const oldKeys = GetKeys.getKeys(oldNode)
-    const newKeys = GetKeys.getKeys(newNode)
-    let hasAttributeChanges = false
-    for (const key of newKeys) {
-      if (oldNode[key] !== newNode[key]) {
-        hasAttributeChanges = true
-        break
-      }
-    }
-    for (const key of oldKeys) {
-      if (!(key in newNode)) {
-        hasAttributeChanges = true
-        break
-      }
-    }
-
-    if (hasAttributeChanges) {
-      if (siblingOffset > 0) {
-        pendingPatches.push(PatchType.NavigateSibling, siblingOffset)
-      }
-      ApplyPendingPatches.applyPendingPatches(patches, pendingPatches, 0)
-
-      for (const key of newKeys) {
-        if (oldNode[key] !== newNode[key]) {
-          patches.push({
-            type: PatchType.SetAttribute,
-            key,
-            value: newNode[key],
-          })
-        }
-      }
-      for (const key of oldKeys) {
-        if (!(key in newNode)) {
-          patches.push({
-            type: PatchType.RemoveAttribute,
-            key,
-          })
-        }
-      }
-    }
-
-    if (oldNode.childCount && newNode.childCount) {
-      maxSiblingOffset = oldNode.childCount
-      indexStack.push(0, maxSiblingOffset)
-      pendingPatches.push(PatchType.NavigateChild, 0)
-      i++
-      j++
-      continue
-    }
-
-    if (oldNode.childCount) {
-      ApplyPendingPatches.applyPendingPatches(patches, pendingPatches, 0)
-      for (let k = 0; k < oldNode.childCount; k++) {
-        patches.push({
-          type: PatchType.RemoveChild,
+          type: PatchType.NavigateChild,
           index: 0,
         })
+        diffTrees([], newNode.children, patches, [...path, 0])
+        patches.push({
+          type: PatchType.NavigateParent,
+        })
       }
-      i += GetTotalChildCount.getTotalChildCount(oldNodes, i)
-      j++
-      siblingOffset++
-      continue
-    }
-
-    if (newNode.childCount) {
-      ApplyPendingPatches.applyPendingPatches(patches, pendingPatches, 0)
-      const total = GetTotalChildCount.getTotalChildCount(newNodes, j)
+    } else if (!newNode) {
+      // Remove old node
+      addNavigationPatches(patches, path, i)
       patches.push({
-        type: PatchType.Add,
-        nodes: newNodes.slice(j + 1, j + total),
+        type: PatchType.RemoveChild,
+        index: i,
       })
-      i++
-      j += total
-      continue
+    } else {
+      // Compare nodes
+      const nodePatches = diffNodes(oldNode.node, newNode.node)
+      if (nodePatches.length > 0) {
+        addNavigationPatches(patches, path, i)
+        patches.push(...nodePatches)
+      }
+      
+      // Compare children
+      if (oldNode.children.length > 0 || newNode.children.length > 0) {
+        patches.push({
+          type: PatchType.NavigateChild,
+          index: 0,
+        })
+        diffTrees(oldNode.children, newNode.children, patches, [...path, 0])
+        patches.push({
+          type: PatchType.NavigateParent,
+        })
+      }
     }
-
-    i++
-    j++
-    siblingOffset++
   }
+}
 
-  while (i < oldNodes.length) {
-    if (indexStack.length !== 2) {
-      patches.push({
-        type: PatchType.NavigateParent,
-      })
-    }
+const diffNodes = (
+  oldNode: VirtualDomNode,
+  newNode: VirtualDomNode,
+): Patch[] => {
+  const patches: Patch[] = []
+  
+  // Check if node type changed
+  if (oldNode.type !== newNode.type) {
     patches.push({
       type: PatchType.RemoveChild,
-      index: siblingOffset,
+      index: 0,
     })
-    i += GetTotalChildCount.getTotalChildCount(oldNodes, i)
-    indexStack.pop()
-    indexStack.pop()
-  }
-
-  while (j < newNodes.length) {
-    if (siblingOffset > 0) {
-      patches.push({
-        type: PatchType.NavigateSibling,
-        index: siblingOffset,
-      })
-      siblingOffset = 0
-    }
-    const count = GetTotalChildCount.getTotalChildCount(newNodes, j)
     patches.push({
       type: PatchType.Add,
-      nodes: newNodes.slice(j, j + count),
+      nodes: [newNode],
     })
-    j += count
+    return patches
   }
-
+  
+  // Handle text nodes
+  if (
+    oldNode.type === VirtualDomElements.Text &&
+    newNode.type === VirtualDomElements.Text
+  ) {
+    if (oldNode.text !== newNode.text) {
+      patches.push({
+        type: PatchType.SetText,
+        value: newNode.text,
+      })
+    }
+    return patches
+  }
+  
+  // Compare attributes
+  const oldKeys = GetKeys.getKeys(oldNode)
+  const newKeys = GetKeys.getKeys(newNode)
+  
+  // Check for attribute changes
+  for (const key of newKeys) {
+    if (oldNode[key] !== newNode[key]) {
+      patches.push({
+        type: PatchType.SetAttribute,
+        key,
+        value: newNode[key],
+      })
+    }
+  }
+  
+  // Check for removed attributes
+  for (const key of oldKeys) {
+    if (!(key in newNode)) {
+      patches.push({
+        type: PatchType.RemoveAttribute,
+        key,
+      })
+    }
+  }
+  
   return patches
+}
+
+const addNavigationPatches = (
+  patches: Patch[],
+  path: number[],
+  currentIndex: number,
+): void => {
+  if (path.length === 0) {
+    return
+  }
+  
+  // Navigate to the correct position
+  for (let i = 0; i < path.length; i++) {
+    patches.push({
+      type: PatchType.NavigateChild,
+      index: path[i],
+    })
+  }
+  
+  // Navigate to sibling if needed
+  if (currentIndex > 0) {
+    patches.push({
+      type: PatchType.NavigateSibling,
+      index: currentIndex,
+    })
+  }
 }
