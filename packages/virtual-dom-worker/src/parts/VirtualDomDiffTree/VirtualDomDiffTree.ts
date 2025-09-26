@@ -11,11 +11,11 @@ export const diffTree = (
 ): readonly Patch[] => {
   const oldTree = VirtualDomTree.arrayToTree(oldNodes)
   const newTree = VirtualDomTree.arrayToTree(newNodes)
-  
+
   const patches: Patch[] = []
-  
+
   diffTrees(oldTree, newTree, patches, [])
-  
+
   return patches
 }
 
@@ -26,15 +26,15 @@ const diffTrees = (
   path: number[],
 ): void => {
   const maxLength = Math.max(oldTree.length, newTree.length)
-  
+
   for (let i = 0; i < maxLength; i++) {
     const oldNode = oldTree[i]
     const newNode = newTree[i]
-    
+
     if (!oldNode && !newNode) {
       continue
     }
-    
+
     if (!oldNode) {
       // Add new node
       addNavigationPatches(patches, path, i)
@@ -66,7 +66,7 @@ const diffTrees = (
         addNavigationPatches(patches, path, i)
         patches.push(...nodePatches)
       }
-      
+
       // Compare children
       if (oldNode.children.length > 0 || newNode.children.length > 0) {
         patches.push({
@@ -87,7 +87,7 @@ const diffNodes = (
   newNode: VirtualDomNode,
 ): Patch[] => {
   const patches: Patch[] = []
-  
+
   // Check if node type changed
   if (oldNode.type !== newNode.type) {
     patches.push({
@@ -100,7 +100,7 @@ const diffNodes = (
     })
     return patches
   }
-  
+
   // Handle text nodes
   if (
     oldNode.type === VirtualDomElements.Text &&
@@ -114,11 +114,11 @@ const diffNodes = (
     }
     return patches
   }
-  
+
   // Compare attributes
   const oldKeys = GetKeys.getKeys(oldNode)
   const newKeys = GetKeys.getKeys(newNode)
-  
+
   // Check for attribute changes
   for (const key of newKeys) {
     if (oldNode[key] !== newNode[key]) {
@@ -129,7 +129,7 @@ const diffNodes = (
       })
     }
   }
-  
+
   // Check for removed attributes
   for (const key of oldKeys) {
     if (!(key in newNode)) {
@@ -139,7 +139,7 @@ const diffNodes = (
       })
     }
   }
-  
+
   return patches
 }
 
@@ -151,7 +151,7 @@ const addNavigationPatches = (
   if (path.length === 0) {
     return
   }
-  
+
   // Navigate to the correct position
   for (let i = 0; i < path.length; i++) {
     patches.push({
@@ -159,7 +159,7 @@ const addNavigationPatches = (
       index: path[i],
     })
   }
-  
+
   // Navigate to sibling if needed
   if (currentIndex > 0) {
     patches.push({
