@@ -38,6 +38,6 @@
     "coveragePathIgnorePatterns": []
   },
   "devDependencies": {
-    "@lvce-editor/constants": "^1.27.0"
+    "@lvce-editor/constants": "^1.28.0"
   }
 }
