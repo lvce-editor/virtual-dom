@@ -39,5 +39,9 @@
   },
   "devDependencies": {
     "@lvce-editor/constants": "^1.25.0"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/lvce-editor/virtual-dom.git"
   }
 }
