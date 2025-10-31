@@ -63,6 +63,8 @@ export const getEventListenerArg = (param: string, event: any): any => {
       return event.target.dataset.name
     case 'event.target.dataset.index':
       return event.target.dataset.index
+    case 'event.target.nodeName':
+      return event.target.nodeName
     default:
       return param
   }
