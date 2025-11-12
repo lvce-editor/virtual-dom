@@ -38,7 +38,7 @@
     "coveragePathIgnorePatterns": []
   },
   "devDependencies": {
-    "@lvce-editor/constants": "^1.30.0"
+    "@lvce-editor/constants": "^1.31.0"
   },
   "repository": {
     "type": "git",
