@@ -1,16 +1,20 @@
 {
   "name": "@lvce-editor/virtual-dom-worker",
   "version": "0.0.0-dev",
-  "main": "src/index.ts",
+  "description": "",
+  "keywords": [],
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/lvce-editor/virtual-dom.git"
+  },
+  "license": "MIT",
+  "author": "",
   "type": "module",
+  "main": "src/index.ts",
   "scripts": {
     "test": "node --unhandled-rejections=warn --experimental-vm-modules ../../node_modules/jest/bin/jest.js --detectOpenHandles --forceExit",
     "test:watch": "node --unhandled-rejections=warn --experimental-vm-modules ../../node_modules/jest/bin/jest.js --watch"
   },
-  "keywords": [],
-  "author": "",
-  "license": "MIT",
-  "description": "",
   "jest": {
     "injectGlobals": false,
     "extensionsToTreatAsEsm": [
@@ -39,9 +43,5 @@
   },
   "dependencies": {
     "@lvce-editor/constants": "^1.24.0"
-  },
-  "repository": {
-    "type": "git",
-    "url": "git+https://github.com/lvce-editor/virtual-dom.git"
   }
 }
