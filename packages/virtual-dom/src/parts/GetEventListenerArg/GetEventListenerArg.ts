@@ -65,6 +65,10 @@ export const getEventListenerArg = (param: string, event: any): any => {
       return event.target.dataset.index
     case 'event.target.nodeName':
       return event.target.nodeName
+    case 'event.target.selectionStart':
+      return event.target.selectionStart
+    case 'event.target.selectionEnd':
+      return event.target.selectionEnd
     default:
       return param
   }
