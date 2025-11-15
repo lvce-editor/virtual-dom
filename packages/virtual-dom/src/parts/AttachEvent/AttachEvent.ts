@@ -17,11 +17,12 @@ export const attachEvent = (
   value: string,
   newEventMap?: any,
 ): void => {
+  const keyLower = key.toLowerCase()
   if (newEventMap && newEventMap[value]) {
     const fn = newEventMap[value]
     const options: any = getOptions(fn)
     // TODO support event listener options
-    $Node.addEventListener(key, newEventMap[value], options)
+    $Node.addEventListener(keyLower, newEventMap[value], options)
     return
   }
   const listener = eventMap[value]
@@ -34,5 +35,5 @@ export const attachEvent = (
     listener,
     eventMap.returnValue,
   )
-  $Node.addEventListener(key, wrapped, options)
+  $Node.addEventListener(keyLower, wrapped, options)
 }
