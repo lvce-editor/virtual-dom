@@ -38,8 +38,7 @@
         "functions": 50,
         "lines": 50
       }
-    },
-    "coveragePathIgnorePatterns": []
+    }
   },
   "dependencies": {
     "@lvce-editor/constants": "^1.24.0"

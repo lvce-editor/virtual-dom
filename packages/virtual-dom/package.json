@@ -1,14 +1,11 @@
 {
   "name": "@lvce-editor/virtual-dom",
   "version": "0.0.0-dev",
-  "description": "",
-  "keywords": [],
   "repository": {
     "type": "git",
     "url": "git+https://github.com/lvce-editor/virtual-dom.git"
   },
   "license": "MIT",
-  "author": "",
   "type": "module",
   "main": "src/index.ts",
   "scripts": {
