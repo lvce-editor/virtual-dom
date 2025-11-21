@@ -16,8 +16,7 @@ const applyPointerTrackMaybe = (info, map, event): void => {
   target.setPointerCapture(pointerId)
   const [pointerMoveKey, pointerUpKey] = trackPointerEvents
   target.addEventListener(DomEventType.PointerMove, map[pointerMoveKey])
-  // TODO use pointerlost event instead
-  target.addEventListener(DomEventType.PointerUp, map[pointerUpKey])
+  target.addEventListener(DomEventType.lostpointercapture, map[pointerUpKey])
 }
 
 export const createFn = (info, map): any => {
