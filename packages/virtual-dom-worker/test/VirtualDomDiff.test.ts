@@ -20,23 +20,23 @@ test('diff - text node changed', () => {
 test('diff - attribute changed 1', () => {
   const oldNodes = [
     {
-      childCount: 0,
-      className: 'old-class',
       type: VirtualDomElements.Div,
+      className: 'old-class',
+      childCount: 0,
     },
   ]
   const newNodes = [
     {
-      childCount: 0,
-      className: 'new-class',
       type: VirtualDomElements.Div,
+      className: 'new-class',
+      childCount: 0,
     },
   ]
   const patches = diff(oldNodes, newNodes)
   expect(patches).toEqual([
     {
-      key: 'className',
       type: PatchType.SetAttribute,
+      key: 'className',
       value: 'new-class',
     },
   ])
@@ -45,22 +45,22 @@ test('diff - attribute changed 1', () => {
 test('diff - attribute removed', () => {
   const oldNodes = [
     {
-      childCount: 0,
-      className: 'old-class',
       type: VirtualDomElements.Div,
+      className: 'old-class',
+      childCount: 0,
     },
   ]
   const newNodes = [
     {
-      childCount: 0,
       type: VirtualDomElements.Div,
+      childCount: 0,
     },
   ]
   const patches = diff(oldNodes, newNodes)
   expect(patches).toEqual([
     {
-      key: 'className',
       type: PatchType.RemoveAttribute,
+      key: 'className',
     },
   ])
 })
@@ -68,23 +68,23 @@ test('diff - attribute removed', () => {
 test('diff - nested nodes', () => {
   const oldNodes = [
     {
-      childCount: 1,
       type: VirtualDomElements.Div,
+      childCount: 1,
     },
     text('hello'),
   ]
   const newNodes = [
     {
-      childCount: 1,
       type: VirtualDomElements.Div,
+      childCount: 1,
     },
     text('world'),
   ]
   const patches = diff(oldNodes, newNodes)
   expect(patches).toEqual([
     {
-      index: 0,
       type: PatchType.NavigateChild,
+      index: 0,
     },
     {
       type: PatchType.SetText,
@@ -96,30 +96,30 @@ test('diff - nested nodes', () => {
 test('diff - multiple attributes changed', () => {
   const oldNodes = [
     {
-      childCount: 0,
+      type: VirtualDomElements.Div,
       className: 'old-class',
       id: 'old-id',
-      type: VirtualDomElements.Div,
+      childCount: 0,
     },
   ]
   const newNodes = [
     {
-      childCount: 0,
+      type: VirtualDomElements.Div,
       className: 'new-class',
       id: 'new-id',
-      type: VirtualDomElements.Div,
+      childCount: 0,
     },
   ]
   const patches = diff(oldNodes, newNodes)
   expect(patches).toEqual([
     {
-      key: 'className',
       type: PatchType.SetAttribute,
+      key: 'className',
       value: 'new-class',
     },
     {
-      key: 'id',
       type: PatchType.SetAttribute,
+      key: 'id',
       value: 'new-id',
     },
   ])
@@ -128,14 +128,14 @@ test('diff - multiple attributes changed', () => {
 test('diff - empty nodes', () => {
   const oldNodes = [
     {
-      childCount: 0,
       type: VirtualDomElements.Div,
+      childCount: 0,
     },
   ]
   const newNodes = [
     {
-      childCount: 0,
       type: VirtualDomElements.Div,
+      childCount: 0,
     },
   ]
   const patches = diff(oldNodes, newNodes)
@@ -145,38 +145,38 @@ test('diff - empty nodes', () => {
 test('diff - node type changed from div to span', () => {
   const oldNodes = [
     {
-      childCount: 1,
       type: VirtualDomElements.Div,
+      childCount: 1,
     },
     {
-      childCount: 0,
       type: VirtualDomElements.Div,
+      childCount: 0,
     },
   ]
   const newNodes = [
     {
-      childCount: 1,
       type: VirtualDomElements.Div,
+      childCount: 1,
     },
     {
-      childCount: 0,
       type: VirtualDomElements.Span,
+      childCount: 0,
     },
   ]
   const patches = diff(oldNodes, newNodes)
   expect(patches).toEqual([
     {
-      index: 0,
       type: PatchType.RemoveChild,
+      index: 0,
     },
     {
+      type: PatchType.Add,
       nodes: [
         {
-          childCount: 0,
           type: VirtualDomElements.Span,
+          childCount: 0,
         },
       ],
-      type: PatchType.Add,
     },
   ])
 })
@@ -184,22 +184,22 @@ test('diff - node type changed from div to span', () => {
 test('diff - add new attribute', () => {
   const oldNodes = [
     {
-      childCount: 0,
       type: VirtualDomElements.Div,
+      childCount: 0,
     },
   ]
   const newNodes = [
     {
-      childCount: 0,
-      className: 'new-class',
       type: VirtualDomElements.Div,
+      className: 'new-class',
+      childCount: 0,
     },
   ]
   const patches = diff(oldNodes, newNodes)
   expect(patches).toEqual([
     {
-      key: 'className',
       type: PatchType.SetAttribute,
+      key: 'className',
       value: 'new-class',
     },
   ])
@@ -208,32 +208,32 @@ test('diff - add new attribute', () => {
 test('diff - remove all attributes', () => {
   const oldNodes = [
     {
-      childCount: 0,
+      type: VirtualDomElements.Div,
       className: 'old-class',
       id: 'old-id',
       title: 'old-title',
-      type: VirtualDomElements.Div,
+      childCount: 0,
     },
   ]
   const newNodes = [
     {
-      childCount: 0,
       type: VirtualDomElements.Div,
+      childCount: 0,
     },
   ]
   const patches = diff(oldNodes, newNodes)
   expect(patches).toEqual([
     {
+      type: PatchType.RemoveAttribute,
       key: 'className',
-      type: PatchType.RemoveAttribute,
     },
     {
+      type: PatchType.RemoveAttribute,
       key: 'id',
-      type: PatchType.RemoveAttribute,
     },
     {
-      key: 'title',
       type: PatchType.RemoveAttribute,
+      key: 'title',
     },
   ])
 })
@@ -241,41 +241,41 @@ test('diff - remove all attributes', () => {
 test('diff - change node type with attributes', () => {
   const oldNodes = [
     {
-      childCount: 1,
       type: VirtualDomElements.Div,
+      childCount: 1,
     },
     {
-      childCount: 0,
-      className: 'old-class',
       type: VirtualDomElements.Div,
+      className: 'old-class',
+      childCount: 0,
     },
   ]
   const newNodes = [
     {
-      childCount: 1,
       type: VirtualDomElements.Div,
+      childCount: 1,
     },
     {
-      childCount: 0,
-      id: 'new-id',
       type: VirtualDomElements.Span,
+      id: 'new-id',
+      childCount: 0,
     },
   ]
   const patches = diff(oldNodes, newNodes)
   expect(patches).toEqual([
     {
-      index: 0,
       type: PatchType.RemoveChild,
+      index: 0,
     },
     {
+      type: PatchType.Add,
       nodes: [
         {
-          childCount: 0,
-          id: 'new-id',
           type: VirtualDomElements.Span,
+          id: 'new-id',
+          childCount: 0,
         },
       ],
-      type: PatchType.Add,
     },
   ])
 })
@@ -295,35 +295,35 @@ test('diff - empty text to non-empty text', () => {
 test('diff - text node to div node', () => {
   const oldNodes = [
     {
-      childCount: 1,
       type: VirtualDomElements.Div,
+      childCount: 1,
     },
     text('hello'),
   ]
   const newNodes = [
     {
-      childCount: 1,
       type: VirtualDomElements.Div,
+      childCount: 1,
     },
     {
-      childCount: 0,
       type: VirtualDomElements.Div,
+      childCount: 0,
     },
   ]
   const patches = diff(oldNodes, newNodes)
   expect(patches).toEqual([
     {
-      index: 0,
       type: PatchType.RemoveChild,
+      index: 0,
     },
     {
+      type: PatchType.Add,
       nodes: [
         {
-          childCount: 0,
           type: VirtualDomElements.Div,
+          childCount: 0,
         },
       ],
-      type: PatchType.Add,
     },
   ])
 })
@@ -331,59 +331,59 @@ test('diff - text node to div node', () => {
 test('diff - two node type changes', () => {
   const oldNodes = [
     {
+      type: VirtualDomElements.Div,
       childCount: 2,
-      type: VirtualDomElements.Div,
     },
     {
-      childCount: 0,
       type: VirtualDomElements.Div,
+      childCount: 0,
     },
     {
-      childCount: 0,
       type: VirtualDomElements.Div,
+      childCount: 0,
     },
   ]
   const newNodes = [
     {
-      childCount: 2,
       type: VirtualDomElements.Div,
+      childCount: 2,
     },
     {
-      childCount: 0,
       type: VirtualDomElements.Span,
+      childCount: 0,
     },
     {
-      childCount: 0,
       type: VirtualDomElements.Span,
+      childCount: 0,
     },
   ]
   const patches = diff(oldNodes, newNodes)
   expect(patches).toEqual([
     {
+      type: PatchType.RemoveChild,
       index: 0,
-      type: PatchType.RemoveChild,
     },
     {
+      type: PatchType.Add,
       nodes: [
         {
-          childCount: 0,
           type: VirtualDomElements.Span,
+          childCount: 0,
         },
       ],
-      type: PatchType.Add,
     },
     {
+      type: PatchType.RemoveChild,
       index: 1,
-      type: PatchType.RemoveChild,
     },
     {
+      type: PatchType.Add,
       nodes: [
         {
-          childCount: 0,
           type: VirtualDomElements.Span,
+          childCount: 0,
         },
       ],
-      type: PatchType.Add,
     },
   ])
 })
@@ -391,74 +391,74 @@ test('diff - two node type changes', () => {
 test('diff - two nested node type changes', () => {
   const oldNodes = [
     {
+      type: VirtualDomElements.Div,
       childCount: 2,
-      type: VirtualDomElements.Div,
     },
     {
+      type: VirtualDomElements.Div,
       childCount: 1,
-      type: VirtualDomElements.Div,
     },
     {
-      childCount: 0,
       type: VirtualDomElements.Div,
+      childCount: 0,
     },
     {
-      childCount: 0,
       type: VirtualDomElements.Div,
+      childCount: 0,
     },
   ]
   const newNodes = [
     {
+      type: VirtualDomElements.Div,
       childCount: 2,
-      type: VirtualDomElements.Div,
     },
     {
+      type: VirtualDomElements.Div,
       childCount: 1,
-      type: VirtualDomElements.Div,
     },
     {
-      childCount: 0,
       type: VirtualDomElements.Span,
+      childCount: 0,
     },
     {
-      childCount: 0,
       type: VirtualDomElements.Span,
+      childCount: 0,
     },
   ]
   const patches = diff(oldNodes, newNodes)
   expect(patches).toEqual([
     {
-      index: 0,
       type: PatchType.NavigateChild,
-    },
-    {
       index: 0,
-      type: PatchType.RemoveChild,
     },
     {
+      type: PatchType.RemoveChild,
+      index: 0,
+    },
+    {
+      type: PatchType.Add,
       nodes: [
         {
-          childCount: 0,
           type: VirtualDomElements.Span,
+          childCount: 0,
         },
       ],
-      type: PatchType.Add,
     },
     {
       type: PatchType.NavigateParent,
     },
     {
-      index: 1,
       type: PatchType.RemoveChild,
+      index: 1,
     },
     {
+      type: PatchType.Add,
       nodes: [
         {
-          childCount: 0,
           type: VirtualDomElements.Span,
+          childCount: 0,
         },
       ],
-      type: PatchType.Add,
     },
   ])
 })
@@ -466,80 +466,80 @@ test('diff - two nested node type changes', () => {
 test('diff - three node type changes', () => {
   const oldNodes = [
     {
+      type: VirtualDomElements.Div,
       childCount: 3,
-      type: VirtualDomElements.Div,
     },
     {
-      childCount: 0,
       type: VirtualDomElements.Div,
+      childCount: 0,
     },
     {
-      childCount: 0,
       type: VirtualDomElements.Div,
+      childCount: 0,
     },
     {
-      childCount: 0,
       type: VirtualDomElements.Div,
+      childCount: 0,
     },
   ]
   const newNodes = [
     {
-      childCount: 3,
       type: VirtualDomElements.Div,
+      childCount: 3,
     },
     {
-      childCount: 0,
       type: VirtualDomElements.Span,
+      childCount: 0,
     },
     {
-      childCount: 0,
       type: VirtualDomElements.Span,
+      childCount: 0,
     },
     {
-      childCount: 0,
       type: VirtualDomElements.Span,
+      childCount: 0,
     },
   ]
   const patches = diff(oldNodes, newNodes)
   expect(patches).toEqual([
     {
+      type: PatchType.RemoveChild,
       index: 0,
-      type: PatchType.RemoveChild,
     },
     {
+      type: PatchType.Add,
       nodes: [
         {
-          childCount: 0,
           type: VirtualDomElements.Span,
+          childCount: 0,
         },
       ],
-      type: PatchType.Add,
     },
     {
+      type: PatchType.RemoveChild,
       index: 1,
-      type: PatchType.RemoveChild,
     },
     {
+      type: PatchType.Add,
       nodes: [
         {
-          childCount: 0,
           type: VirtualDomElements.Span,
+          childCount: 0,
         },
       ],
-      type: PatchType.Add,
     },
     {
+      type: PatchType.RemoveChild,
       index: 2,
-      type: PatchType.RemoveChild,
     },
     {
+      type: PatchType.Add,
       nodes: [
         {
-          childCount: 0,
           type: VirtualDomElements.Span,
+          childCount: 0,
         },
       ],
-      type: PatchType.Add,
     },
   ])
 })
@@ -547,18 +547,18 @@ test('diff - three node type changes', () => {
 test('diff - same attribute values should not generate patches', () => {
   const oldNodes = [
     {
-      childCount: 0,
+      type: VirtualDomElements.Div,
       className: 'same-class',
       id: 'same-id',
-      type: VirtualDomElements.Div,
+      childCount: 0,
     },
   ]
   const newNodes = [
     {
-      childCount: 0,
+      type: VirtualDomElements.Div,
       className: 'same-class',
       id: 'same-id',
-      type: VirtualDomElements.Div,
+      childCount: 0,
     },
   ]
   const patches = diff(oldNodes, newNodes)
@@ -568,37 +568,37 @@ test('diff - same attribute values should not generate patches', () => {
 test('diff - mixed attribute changes', () => {
   const oldNodes = [
     {
-      childCount: 0,
+      type: VirtualDomElements.Div,
       className: 'keep-class',
       id: 'old-id',
       title: 'to-remove',
-      type: VirtualDomElements.Div,
+      childCount: 0,
     },
   ]
   const newNodes = [
     {
-      childCount: 0,
-      className: 'keep-class',
-      'data-new': 'added',
-      id: 'new-id',
       type: VirtualDomElements.Div,
+      className: 'keep-class',
+      id: 'new-id',
+      'data-new': 'added',
+      childCount: 0,
     },
   ]
   const patches = diff(oldNodes, newNodes)
   expect(patches).toEqual([
     {
-      key: 'id',
       type: PatchType.SetAttribute,
+      key: 'id',
       value: 'new-id',
     },
     {
-      key: 'data-new',
       type: PatchType.SetAttribute,
+      key: 'data-new',
       value: 'added',
     },
     {
-      key: 'title',
       type: PatchType.RemoveAttribute,
+      key: 'title',
     },
   ])
 })
@@ -606,41 +606,41 @@ test('diff - mixed attribute changes', () => {
 test('diff - button to input conversion', () => {
   const oldNodes = [
     {
-      childCount: 1,
       type: VirtualDomElements.Div,
+      childCount: 1,
     },
     {
-      childCount: 0,
-      className: 'btn',
       type: VirtualDomElements.Button,
+      className: 'btn',
+      childCount: 0,
     },
   ]
   const newNodes = [
     {
-      childCount: 1,
       type: VirtualDomElements.Div,
+      childCount: 1,
     },
     {
-      childCount: 0,
-      className: 'input',
       type: VirtualDomElements.Input,
+      className: 'input',
+      childCount: 0,
     },
   ]
   const patches = diff(oldNodes, newNodes)
   expect(patches).toEqual([
     {
-      index: 0,
       type: PatchType.RemoveChild,
+      index: 0,
     },
     {
+      type: PatchType.Add,
       nodes: [
         {
-          childCount: 0,
-          className: 'input',
           type: VirtualDomElements.Input,
+          className: 'input',
+          childCount: 0,
         },
       ],
-      type: PatchType.Add,
     },
   ])
 })
@@ -655,16 +655,16 @@ test('diff - same text content should not generate patches', () => {
 test('diff - multiple text nodes in sequence', () => {
   const oldNodes = [
     {
-      childCount: 2,
       type: VirtualDomElements.Div,
+      childCount: 2,
     },
     text('hello'),
     text('world'),
   ]
   const newNodes = [
     {
-      childCount: 2,
       type: VirtualDomElements.Div,
+      childCount: 2,
     },
     text('hi'),
     text('earth'),
@@ -672,16 +672,16 @@ test('diff - multiple text nodes in sequence', () => {
   const patches = diff(oldNodes, newNodes)
   expect(patches).toEqual([
     {
-      index: 0,
       type: PatchType.NavigateChild,
+      index: 0,
     },
     {
       type: PatchType.SetText,
       value: 'hi',
     },
     {
-      index: 1,
       type: PatchType.NavigateSibling,
+      index: 1,
     },
     {
       type: PatchType.SetText,
@@ -693,35 +693,35 @@ test('diff - multiple text nodes in sequence', () => {
 test('diff - table structure', () => {
   const oldNodes = [
     {
-      childCount: 1,
       type: VirtualDomElements.Table,
+      childCount: 1,
     },
     {
-      childCount: 1,
       type: VirtualDomElements.Tr,
+      childCount: 1,
     },
     text('old'),
   ]
   const newNodes = [
     {
-      childCount: 1,
       type: VirtualDomElements.Table,
+      childCount: 1,
     },
     {
-      childCount: 1,
       type: VirtualDomElements.Tr,
+      childCount: 1,
     },
     text('new'),
   ]
   const patches = diff(oldNodes, newNodes)
   expect(patches).toEqual([
     {
-      index: 0,
       type: PatchType.NavigateChild,
+      index: 0,
     },
     {
-      index: 0,
       type: PatchType.NavigateChild,
+      index: 0,
     },
     {
       type: PatchType.SetText,
@@ -733,47 +733,47 @@ test('diff - table structure', () => {
 test('diff - deep nested structure', () => {
   const oldNodes = [
     {
-      childCount: 1,
       type: VirtualDomElements.Div,
+      childCount: 1,
     },
     {
-      childCount: 1,
       type: VirtualDomElements.Div,
+      childCount: 1,
     },
     {
-      childCount: 1,
       type: VirtualDomElements.Div,
+      childCount: 1,
     },
     text('deep'),
   ]
   const newNodes = [
     {
-      childCount: 1,
       type: VirtualDomElements.Div,
+      childCount: 1,
     },
     {
-      childCount: 1,
       type: VirtualDomElements.Div,
+      childCount: 1,
     },
     {
-      childCount: 1,
       type: VirtualDomElements.Div,
+      childCount: 1,
     },
     text('deeper'),
   ]
   const patches = diff(oldNodes, newNodes)
   expect(patches).toEqual([
     {
-      index: 0,
       type: PatchType.NavigateChild,
+      index: 0,
     },
     {
-      index: 0,
       type: PatchType.NavigateChild,
+      index: 0,
     },
     {
-      index: 0,
       type: PatchType.NavigateChild,
+      index: 0,
     },
     {
       type: PatchType.SetText,
@@ -785,8 +785,8 @@ test('diff - deep nested structure', () => {
 test('diff - node with multiple children', () => {
   const oldNodes = [
     {
-      childCount: 3,
       type: VirtualDomElements.Div,
+      childCount: 3,
     },
     text('one'),
     text('two'),
@@ -794,8 +794,8 @@ test('diff - node with multiple children', () => {
   ]
   const newNodes = [
     {
-      childCount: 3,
       type: VirtualDomElements.Div,
+      childCount: 3,
     },
     text('uno'),
     text('dos'),
@@ -804,24 +804,24 @@ test('diff - node with multiple children', () => {
   const patches = diff(oldNodes, newNodes)
   expect(patches).toEqual([
     {
-      index: 0,
       type: PatchType.NavigateChild,
+      index: 0,
     },
     {
       type: PatchType.SetText,
       value: 'uno',
     },
     {
-      index: 1,
       type: PatchType.NavigateSibling,
+      index: 1,
     },
     {
       type: PatchType.SetText,
       value: 'dos',
     },
     {
-      index: 2,
       type: PatchType.NavigateSibling,
+      index: 2,
     },
     {
       type: PatchType.SetText,
@@ -833,28 +833,28 @@ test('diff - node with multiple children', () => {
 test('diff - add data attributes', () => {
   const oldNodes = [
     {
-      childCount: 0,
       type: VirtualDomElements.Div,
+      childCount: 0,
     },
   ]
   const newNodes = [
     {
-      childCount: 0,
+      type: VirtualDomElements.Div,
       'data-testid': 'test',
       'data-value': '123',
-      type: VirtualDomElements.Div,
+      childCount: 0,
     },
   ]
   const patches = diff(oldNodes, newNodes)
   expect(patches).toEqual([
     {
-      key: 'data-testid',
       type: PatchType.SetAttribute,
+      key: 'data-testid',
       value: 'test',
     },
     {
-      key: 'data-value',
       type: PatchType.SetAttribute,
+      key: 'data-value',
       value: '123',
     },
   ])
@@ -863,30 +863,30 @@ test('diff - add data attributes', () => {
 test('diff - change element with ARIA attributes', () => {
   const oldNodes = [
     {
-      'aria-expanded': false,
-      'aria-label': 'Old Label',
-      childCount: 0,
       type: VirtualDomElements.Button,
+      'aria-label': 'Old Label',
+      'aria-expanded': false,
+      childCount: 0,
     },
   ]
   const newNodes = [
     {
-      'aria-expanded': true,
-      'aria-label': 'New Label',
-      childCount: 0,
       type: VirtualDomElements.Button,
+      'aria-label': 'New Label',
+      'aria-expanded': true,
+      childCount: 0,
     },
   ]
   const patches = diff(oldNodes, newNodes)
   expect(patches).toEqual([
     {
-      key: 'aria-label',
       type: PatchType.SetAttribute,
+      key: 'aria-label',
       value: 'New Label',
     },
     {
-      key: 'aria-expanded',
       type: PatchType.SetAttribute,
+      key: 'aria-expanded',
       value: true,
     },
   ])
@@ -895,30 +895,30 @@ test('diff - change element with ARIA attributes', () => {
 test('diff - form elements', () => {
   const oldNodes = [
     {
-      childCount: 0,
-      inputType: 'text',
       type: VirtualDomElements.Input,
       value: 'old',
+      inputType: 'text',
+      childCount: 0,
     },
   ]
   const newNodes = [
     {
-      childCount: 0,
-      inputType: 'password',
       type: VirtualDomElements.Input,
       value: 'new',
+      inputType: 'password',
+      childCount: 0,
     },
   ]
   const patches = diff(oldNodes, newNodes)
   expect(patches).toEqual([
     {
-      key: 'value',
       type: PatchType.SetAttribute,
+      key: 'value',
       value: 'new',
     },
     {
-      key: 'inputType',
       type: PatchType.SetAttribute,
+      key: 'inputType',
       value: 'password',
     },
   ])
@@ -927,62 +927,62 @@ test('diff - form elements', () => {
 test('diff - child removed, sibling added', () => {
   const oldNodes = [
     {
+      type: VirtualDomElements.Div,
       childCount: 2,
-      type: VirtualDomElements.Div,
     },
     {
+      type: VirtualDomElements.Div,
       childCount: 1,
-      type: VirtualDomElements.Div,
     },
     {
-      childCount: 0,
       type: VirtualDomElements.Div,
+      childCount: 0,
     },
     {
-      childCount: 0,
       type: VirtualDomElements.Div,
+      childCount: 0,
     },
   ]
   const newNodes = [
     {
+      type: VirtualDomElements.Div,
       childCount: 3,
-      type: VirtualDomElements.Div,
     },
     {
-      childCount: 0,
       type: VirtualDomElements.Div,
+      childCount: 0,
     },
     {
-      childCount: 0,
       type: VirtualDomElements.Div,
+      childCount: 0,
     },
     {
-      childCount: 0,
       type: VirtualDomElements.Div,
+      childCount: 0,
     },
   ]
   const patches = diff(oldNodes, newNodes)
   expect(patches).toEqual([
     {
-      index: 0,
       type: PatchType.NavigateChild,
-    },
-    {
       index: 0,
+    },
+    {
       type: PatchType.RemoveChild,
+      index: 0,
     },
     {
-      index: 2,
       type: PatchType.NavigateSibling,
+      index: 2,
     },
     {
+      type: PatchType.Add,
       nodes: [
         {
-          childCount: 0,
           type: VirtualDomElements.Div,
+          childCount: 0,
         },
       ],
-      type: PatchType.Add,
     },
   ])
 })
@@ -990,61 +990,61 @@ test('diff - child removed, sibling added', () => {
 test('diff - child added, sibling removed', () => {
   const oldNodes = [
     {
+      type: VirtualDomElements.Div,
       childCount: 3,
-      type: VirtualDomElements.Div,
     },
     {
-      childCount: 0,
       type: VirtualDomElements.Div,
+      childCount: 0,
     },
     {
-      childCount: 0,
       type: VirtualDomElements.Div,
+      childCount: 0,
     },
     {
-      childCount: 0,
       type: VirtualDomElements.Div,
+      childCount: 0,
     },
   ]
   const newNodes = [
     {
+      type: VirtualDomElements.Div,
       childCount: 2,
-      type: VirtualDomElements.Div,
     },
     {
+      type: VirtualDomElements.Div,
       childCount: 1,
-      type: VirtualDomElements.Div,
     },
     {
-      childCount: 0,
       type: VirtualDomElements.Div,
+      childCount: 0,
     },
     {
-      childCount: 0,
       type: VirtualDomElements.Div,
+      childCount: 0,
     },
   ]
   const patches = diff(oldNodes, newNodes)
   expect(patches).toEqual([
     {
-      index: 0,
       type: PatchType.NavigateChild,
+      index: 0,
     },
     {
+      type: PatchType.Add,
       nodes: [
         {
-          childCount: 0,
           type: VirtualDomElements.Div,
+          childCount: 0,
         },
       ],
-      type: PatchType.Add,
     },
     {
       type: PatchType.NavigateParent,
     },
     {
-      index: 1,
       type: PatchType.RemoveChild,
+      index: 1,
     },
   ])
 })
@@ -1064,23 +1064,23 @@ test('diff - text node changed 1', () => {
 test('diff - attribute changed', () => {
   const oldNodes = [
     {
-      childCount: 0,
-      className: 'old-class',
       type: VirtualDomElements.Div,
+      className: 'old-class',
+      childCount: 0,
     },
   ]
   const newNodes = [
     {
-      childCount: 0,
-      className: 'new-class',
       type: VirtualDomElements.Div,
+      className: 'new-class',
+      childCount: 0,
     },
   ]
   const patches = diff(oldNodes, newNodes)
   expect(patches).toEqual([
     {
-      key: 'className',
       type: PatchType.SetAttribute,
+      key: 'className',
       value: 'new-class',
     },
   ])
@@ -1089,45 +1089,45 @@ test('diff - attribute changed', () => {
 test('diff - attribute removed 1', () => {
   const oldNodes = [
     {
-      childCount: 0,
-      className: 'old-class',
       type: VirtualDomElements.Div,
+      className: 'old-class',
+      childCount: 0,
     },
   ]
   const newNodes = [
     {
-      childCount: 0,
       type: VirtualDomElements.Div,
+      childCount: 0,
     },
   ]
   const patches = diff(oldNodes, newNodes)
   expect(patches).toEqual([
     {
-      key: 'className',
       type: PatchType.RemoveAttribute,
+      key: 'className',
     },
   ])
 })
 test('diff - nested nodes 1', () => {
   const oldNodes = [
     {
-      childCount: 1,
       type: VirtualDomElements.Div,
+      childCount: 1,
     },
     text('hello'),
   ]
   const newNodes = [
     {
-      childCount: 1,
       type: VirtualDomElements.Div,
+      childCount: 1,
     },
     text('world'),
   ]
   const patches = diff(oldNodes, newNodes)
   expect(patches).toEqual([
     {
-      index: 0,
       type: PatchType.NavigateChild,
+      index: 0,
     },
     {
       type: PatchType.SetText,
@@ -1139,30 +1139,30 @@ test('diff - nested nodes 1', () => {
 test('diff - multiple attributes changed 1', () => {
   const oldNodes = [
     {
-      childCount: 0,
+      type: VirtualDomElements.Div,
       className: 'old-class',
       id: 'old-id',
-      type: VirtualDomElements.Div,
+      childCount: 0,
     },
   ]
   const newNodes = [
     {
-      childCount: 0,
+      type: VirtualDomElements.Div,
       className: 'new-class',
       id: 'new-id',
-      type: VirtualDomElements.Div,
+      childCount: 0,
     },
   ]
   const patches = diff(oldNodes, newNodes)
   expect(patches).toEqual([
     {
-      key: 'className',
       type: PatchType.SetAttribute,
+      key: 'className',
       value: 'new-class',
     },
     {
-      key: 'id',
       type: PatchType.SetAttribute,
+      key: 'id',
       value: 'new-id',
     },
   ])
@@ -1171,33 +1171,33 @@ test('diff - multiple attributes changed 1', () => {
 test('diff - first child and nested child removed', () => {
   const oldNodes = [
     {
+      type: VirtualDomElements.Div,
       childCount: 1,
-      type: VirtualDomElements.Div,
     },
     {
-      childCount: 0,
       type: VirtualDomElements.Div,
+      childCount: 0,
     },
     {
-      childCount: 0,
       type: VirtualDomElements.Div,
+      childCount: 0,
     },
   ]
   const newNodes = [
     {
-      childCount: 0,
       type: VirtualDomElements.Div,
+      childCount: 0,
     },
   ]
   const patches = diff(oldNodes, newNodes)
   expect(patches).toEqual([
     {
-      index: 0,
       type: PatchType.RemoveChild,
+      index: 0,
     },
     {
-      index: 1, // TODO due to the first child removed, this should be zero
       type: PatchType.RemoveChild,
+      index: 1, // TODO due to the first child removed, this should be zero
     },
   ])
 })
@@ -1205,43 +1205,43 @@ test('diff - first child and nested child removed', () => {
 test('diff - two children added', () => {
   const oldNodes = [
     {
-      childCount: 0,
       type: VirtualDomElements.Div,
+      childCount: 0,
     },
   ]
   const newNodes = [
     {
+      type: VirtualDomElements.Div,
       childCount: 1,
-      type: VirtualDomElements.Div,
     },
     {
-      childCount: 0,
       type: VirtualDomElements.Div,
+      childCount: 0,
     },
     {
-      childCount: 0,
       type: VirtualDomElements.Div,
+      childCount: 0,
     },
   ]
   const patches = diff(oldNodes, newNodes)
   expect(patches).toEqual([
     {
+      type: PatchType.Add,
       nodes: [
         {
-          childCount: 0,
           type: VirtualDomElements.Div,
+          childCount: 0,
         },
       ],
-      type: PatchType.Add,
     },
     {
+      type: PatchType.Add,
       nodes: [
         {
-          childCount: 0,
           type: VirtualDomElements.Div,
+          childCount: 0,
         },
       ],
-      type: PatchType.Add,
     },
   ])
 })
@@ -1249,33 +1249,33 @@ test('diff - two children added', () => {
 test('diff - two children removed', () => {
   const oldNodes = [
     {
+      type: VirtualDomElements.Div,
       childCount: 2,
-      type: VirtualDomElements.Div,
     },
     {
-      childCount: 0,
       type: VirtualDomElements.Div,
+      childCount: 0,
     },
     {
-      childCount: 0,
       type: VirtualDomElements.Div,
+      childCount: 0,
     },
   ]
   const newNodes = [
     {
-      childCount: 0,
       type: VirtualDomElements.Div,
+      childCount: 0,
     },
   ]
   const patches = diff(oldNodes, newNodes)
   expect(patches).toEqual([
     {
-      index: 0,
       type: PatchType.RemoveChild,
+      index: 0,
     },
     {
-      index: 0,
       type: PatchType.RemoveChild,
+      index: 0,
     },
   ])
 })
@@ -1283,41 +1283,41 @@ test('diff - two children removed', () => {
 test('diff - three children removed', () => {
   const oldNodes = [
     {
+      type: VirtualDomElements.Div,
       childCount: 3,
-      type: VirtualDomElements.Div,
     },
     {
-      childCount: 0,
       type: VirtualDomElements.Div,
+      childCount: 0,
     },
     {
-      childCount: 0,
       type: VirtualDomElements.Div,
+      childCount: 0,
     },
     {
-      childCount: 0,
       type: VirtualDomElements.Div,
+      childCount: 0,
     },
   ]
   const newNodes = [
     {
-      childCount: 0,
       type: VirtualDomElements.Div,
+      childCount: 0,
     },
   ]
   const patches = diff(oldNodes, newNodes)
   expect(patches).toEqual([
     {
-      index: 0,
       type: PatchType.RemoveChild,
+      index: 0,
     },
     {
-      index: 0,
       type: PatchType.RemoveChild,
+      index: 0,
     },
     {
-      index: 0,
       type: PatchType.RemoveChild,
+      index: 0,
     },
   ])
 })
@@ -1325,49 +1325,49 @@ test('diff - three children removed', () => {
 test('diff - four children removed', () => {
   const oldNodes = [
     {
+      type: VirtualDomElements.Div,
       childCount: 4,
-      type: VirtualDomElements.Div,
     },
     {
-      childCount: 0,
       type: VirtualDomElements.Div,
+      childCount: 0,
     },
     {
-      childCount: 0,
       type: VirtualDomElements.Div,
+      childCount: 0,
     },
     {
-      childCount: 0,
       type: VirtualDomElements.Div,
+      childCount: 0,
     },
     {
-      childCount: 0,
       type: VirtualDomElements.Div,
+      childCount: 0,
     },
   ]
   const newNodes = [
     {
-      childCount: 0,
       type: VirtualDomElements.Div,
+      childCount: 0,
     },
   ]
   const patches = diff(oldNodes, newNodes)
   expect(patches).toEqual([
     {
-      index: 0,
       type: PatchType.RemoveChild,
+      index: 0,
     },
     {
-      index: 0,
       type: PatchType.RemoveChild,
+      index: 0,
     },
     {
-      index: 0,
       type: PatchType.RemoveChild,
+      index: 0,
     },
     {
-      index: 0,
       type: PatchType.RemoveChild,
+      index: 0,
     },
   ])
 })
@@ -1375,34 +1375,34 @@ test('diff - four children removed', () => {
 test('nested elements removed', () => {
   const oldNodes: readonly VirtualDomNode[] = [
     {
+      type: VirtualDomElements.Div,
       childCount: 2,
-      type: VirtualDomElements.Div,
     },
     {
+      type: VirtualDomElements.Div,
       childCount: 1,
-      type: VirtualDomElements.Div,
     },
     {
+      type: VirtualDomElements.Div,
       childCount: 0,
-      type: VirtualDomElements.Div,
     },
     {
-      className: 'a',
       type: VirtualDomElements.Div,
+      className: 'a',
     },
   ]
   const newNodes: readonly VirtualDomNode[] = [
     {
+      type: VirtualDomElements.Div,
       childCount: 2,
-      type: VirtualDomElements.Div,
     },
     {
+      type: VirtualDomElements.Div,
       childCount: 0,
-      type: VirtualDomElements.Div,
     },
     {
-      className: 'b',
       type: VirtualDomElements.Div,
+      className: 'b',
     },
   ]
   const patches = diff(oldNodes, newNodes)
@@ -1416,12 +1416,12 @@ test('nested elements removed', () => {
       type: PatchType.RemoveChild,
     },
     {
-      index: 1,
       type: PatchType.NavigateSibling,
+      index: 1,
     },
     {
-      key: 'className',
       type: PatchType.SetAttribute,
+      key: 'className',
       value: 'b',
     },
   ])
@@ -1430,42 +1430,42 @@ test('nested elements removed', () => {
 test('nested elements removed 2', () => {
   const oldNodes: readonly VirtualDomNode[] = [
     {
+      type: VirtualDomElements.Div,
       childCount: 2,
-      type: VirtualDomElements.Div,
     },
     {
+      type: VirtualDomElements.Div,
       childCount: 1,
-      type: VirtualDomElements.Div,
     },
     {
+      type: VirtualDomElements.Div,
       childCount: 1,
-      type: VirtualDomElements.Div,
     },
     {
+      type: VirtualDomElements.Div,
       childCount: 0,
-      type: VirtualDomElements.Div,
     },
     {
-      className: 'a',
       type: VirtualDomElements.Div,
+      className: 'a',
     },
   ]
   const newNodes: readonly VirtualDomNode[] = [
     {
+      type: VirtualDomElements.Div,
       childCount: 2,
-      type: VirtualDomElements.Div,
     },
     {
+      type: VirtualDomElements.Div,
       childCount: 1,
-      type: VirtualDomElements.Div,
     },
     {
+      type: VirtualDomElements.Div,
       childCount: 0,
-      type: VirtualDomElements.Div,
     },
     {
-      className: 'b',
       type: VirtualDomElements.Div,
+      className: 'b',
     },
   ]
   const patches = diff(oldNodes, newNodes)
@@ -1486,12 +1486,12 @@ test('nested elements removed 2', () => {
       type: PatchType.NavigateParent,
     },
     {
-      index: 1,
       type: PatchType.NavigateSibling,
+      index: 1,
     },
     {
-      key: 'className',
       type: PatchType.SetAttribute,
+      key: 'className',
       value: 'b',
     },
   ])
@@ -1500,412 +1500,412 @@ test('nested elements removed 2', () => {
 test('large diff', () => {
   const oldNodes: readonly VirtualDomNode[] = [
     {
-      childCount: 2,
-      className: 'Viewlet Search',
       type: VirtualDomElements.Div,
+      className: 'Viewlet Search',
+      childCount: 2,
     },
     {
-      childCount: 2,
+      type: VirtualDomElements.Div,
       className: 'SearchHeader',
+      role: 'none',
+      childCount: 2,
       onClick: 'handleHeaderClick2',
       onFocusIn: 'handleHeaderFocusIn',
-      role: 'none',
-      type: VirtualDomElements.Div,
     },
     {
-      childCount: 2,
+      type: VirtualDomElements.Div,
       className: 'SearchHeaderTop',
       role: 'none',
-      type: VirtualDomElements.Div,
+      childCount: 2,
     },
     {
-      ariaExpanded: true,
-      ariaLabel: 'Toggle Replace',
-      childCount: 1,
+      type: 1,
       className: 'IconButton SearchToggleButton SearchToggleButtonExpanded',
+      title: 'Toggle Replace',
+      ariaLabel: 'Toggle Replace',
+      ariaExpanded: true,
+      childCount: 1,
       'data-command': 'toggleReplace',
       name: 'ToggleReplace',
-      title: 'Toggle Replace',
-      type: 1,
     },
     {
-      childCount: 0,
-      className: 'MaskIcon MaskIconChevronDown',
       type: VirtualDomElements.Div,
+      className: 'MaskIcon MaskIconChevronDown',
+      childCount: 0,
     },
     {
-      childCount: 2,
+      type: VirtualDomElements.Div,
       className: 'SearchHeaderTopRight',
       role: 'none',
-      type: VirtualDomElements.Div,
+      childCount: 2,
     },
     {
-      childCount: 2,
+      type: VirtualDomElements.Div,
       className: 'SearchField',
       role: 'none',
-      type: VirtualDomElements.Div,
+      childCount: 2,
     },
     {
+      type: VirtualDomElements.TextArea,
+      className: 'MultilineInputBox',
+      spellcheck: false,
       autocapitalize: 'off',
       autocorrect: 'off',
-      childCount: 0,
-      className: 'MultilineInputBox',
-      name: 'SearchValue',
-      onFocus: '',
-      onInput: 'handleInput',
       placeholder: 'Search',
-      spellcheck: false,
-      type: VirtualDomElements.TextArea,
+      name: 'SearchValue',
+      onInput: 'handleInput',
+      onFocus: '',
+      childCount: 0,
     },
     {
-      childCount: 3,
-      className: 'SearchFieldButtons',
       type: VirtualDomElements.Div,
+      className: 'SearchFieldButtons',
+      childCount: 3,
     },
     {
-      ariaChecked: false,
-      childCount: 1,
+      type: 1,
       className: 'SearchFieldButton',
       name: 'MatchCase',
-      role: 'checkbox',
-      tabIndex: 0,
       title: 'Match Case',
-      type: 1,
-    },
-    {
-      childCount: 0,
-      className: 'MaskIcon MaskIconCaseSensitive',
-      type: VirtualDomElements.Span,
-    },
-    {
+      role: 'checkbox',
       ariaChecked: false,
+      tabIndex: 0,
       childCount: 1,
+    },
+    {
+      type: VirtualDomElements.Span,
+      className: 'MaskIcon MaskIconCaseSensitive',
+      childCount: 0,
+    },
+    {
+      type: 1,
       className: 'SearchFieldButton',
       name: 'MatchWholeWord',
-      role: 'checkbox',
-      tabIndex: 0,
       title: 'Match Whole Word',
-      type: 1,
-    },
-    {
-      childCount: 0,
-      className: 'MaskIcon MaskIconWholeWord',
-      type: VirtualDomElements.Span,
-    },
-    {
+      role: 'checkbox',
       ariaChecked: false,
+      tabIndex: 0,
       childCount: 1,
+    },
+    {
+      type: VirtualDomElements.Span,
+      className: 'MaskIcon MaskIconWholeWord',
+      childCount: 0,
+    },
+    {
+      type: 1,
       className: 'SearchFieldButton',
       name: 'UseRegularExpression',
-      role: 'checkbox',
-      tabIndex: 0,
       title: 'Use Regular Expression',
-      type: 1,
+      role: 'checkbox',
+      ariaChecked: false,
+      tabIndex: 0,
+      childCount: 1,
     },
     {
-      childCount: 0,
-      className: 'MaskIcon MaskIconRegex',
       type: VirtualDomElements.Span,
+      className: 'MaskIcon MaskIconRegex',
+      childCount: 0,
     },
     {
-      childCount: 2,
+      type: VirtualDomElements.Div,
       className: 'SearchFieldContainer',
       role: 'none',
-      type: VirtualDomElements.Div,
+      childCount: 2,
     },
     {
-      childCount: 2,
+      type: VirtualDomElements.Div,
       className: 'SearchField',
       role: 'none',
-      type: VirtualDomElements.Div,
+      childCount: 2,
     },
     {
+      type: VirtualDomElements.TextArea,
+      className: 'MultilineInputBox',
+      spellcheck: false,
       autocapitalize: 'off',
       autocorrect: 'off',
-      childCount: 0,
-      className: 'MultilineInputBox',
-      name: 'ReplaceValue',
-      onFocus: '',
-      onInput: 'handleReplaceInput',
       placeholder: 'Replace',
-      spellcheck: false,
-      type: VirtualDomElements.TextArea,
+      name: 'ReplaceValue',
+      onInput: 'handleReplaceInput',
+      onFocus: '',
+      childCount: 0,
     },
     {
-      childCount: 1,
-      className: 'SearchFieldButtons',
       type: VirtualDomElements.Div,
+      className: 'SearchFieldButtons',
+      childCount: 1,
     },
     {
-      ariaChecked: false,
-      childCount: 1,
+      type: 1,
       className: 'SearchFieldButton',
       name: 'PreserveCase',
-      role: 'checkbox',
-      tabIndex: 0,
       title: 'Preserve Case',
-      type: 1,
-    },
-    {
-      childCount: 0,
-      className: 'MaskIcon MaskIconPreserveCase',
-      type: VirtualDomElements.Span,
-    },
-    {
+      role: 'checkbox',
       ariaChecked: false,
+      tabIndex: 0,
       childCount: 1,
+    },
+    {
+      type: VirtualDomElements.Span,
+      className: 'MaskIcon MaskIconPreserveCase',
+      childCount: 0,
+    },
+    {
+      type: 1,
       className: 'SearchFieldButton SearchFieldButtonDisabled',
       name: 'ReplaceAll',
-      role: 'checkbox',
-      tabIndex: 0,
       title: 'Replace All',
-      type: 1,
-    },
-    {
-      childCount: 0,
-      className: 'MaskIcon MaskIconReplaceAll',
-      type: VirtualDomElements.Span,
-    },
-    {
-      childCount: 2,
-      className: 'SearchHeaderDetails',
-      type: VirtualDomElements.Div,
-    },
-    {
+      role: 'checkbox',
+      ariaChecked: false,
+      tabIndex: 0,
       childCount: 1,
+    },
+    {
+      type: VirtualDomElements.Span,
+      className: 'MaskIcon MaskIconReplaceAll',
+      childCount: 0,
+    },
+    {
+      type: VirtualDomElements.Div,
+      className: 'SearchHeaderDetails',
+      childCount: 2,
+    },
+    {
+      type: VirtualDomElements.Div,
       className: 'ViewletSearchMessage',
       role: 'status',
       tabIndex: 0,
-      type: VirtualDomElements.Div,
-    },
-    {
-      childCount: 0,
-      text: '',
-      type: VirtualDomElements.Text,
-    },
-    {
-      ariaLabel: 'Toggle Search Details',
       childCount: 1,
+    },
+    {
+      type: VirtualDomElements.Text,
+      text: '',
+      childCount: 0,
+    },
+    {
+      type: VirtualDomElements.Div,
       className: 'ToggleDetails',
-      name: 'ToggleSearchDetails',
       role: 'button',
       tabIndex: 0,
+      ariaLabel: 'Toggle Search Details',
       title: 'Toggle Search Details',
-      type: VirtualDomElements.Div,
-    },
-    {
-      childCount: 0,
-      className: 'MaskIcon MaskIconEllipsis',
-      type: VirtualDomElements.Div,
-    },
-    {
+      name: 'ToggleSearchDetails',
       childCount: 1,
+    },
+    {
+      type: VirtualDomElements.Div,
+      className: 'MaskIcon MaskIconEllipsis',
+      childCount: 0,
+    },
+    {
+      type: VirtualDomElements.Div,
       className: 'Viewlet List Tree',
       role: 'tree',
       tabIndex: 0,
-      type: VirtualDomElements.Div,
+      childCount: 1,
     },
     {
-      childCount: 0,
-      className: 'TreeItems',
-      id: 'TreeItems',
-      onBlur: 'handleListBlur',
-      onClick: 'handleClick',
-      onWheel: 'handleWheel',
-      top: '0px',
       type: VirtualDomElements.Div,
+      className: 'TreeItems',
+      childCount: 0,
+      onClick: 'handleClick',
+      onBlur: 'handleListBlur',
+      onWheel: 'handleWheel',
+      id: 'TreeItems',
+      top: '0px',
     },
   ]
   const newNodes: readonly VirtualDomNode[] = [
     {
-      childCount: 2,
-      className: 'Viewlet Search',
       type: VirtualDomElements.Div,
+      className: 'Viewlet Search',
+      childCount: 2,
     },
     {
-      childCount: 2,
+      type: VirtualDomElements.Div,
       className: 'SearchHeader',
+      role: 'none',
+      childCount: 2,
       onClick: 'handleHeaderClick2',
       onFocusIn: 'handleHeaderFocusIn',
-      role: 'none',
-      type: VirtualDomElements.Div,
     },
     {
-      childCount: 2,
+      type: VirtualDomElements.Div,
       className: 'SearchHeaderTop',
       role: 'none',
-      type: VirtualDomElements.Div,
+      childCount: 2,
     },
     {
-      ariaExpanded: false,
-      ariaLabel: 'Toggle Replace',
-      childCount: 1,
+      type: 1,
       className: 'IconButton SearchToggleButton',
+      title: 'Toggle Replace',
+      ariaLabel: 'Toggle Replace',
+      ariaExpanded: false,
+      childCount: 1,
       'data-command': 'toggleReplace',
       name: 'ToggleReplace',
-      title: 'Toggle Replace',
-      type: 1,
     },
     {
-      childCount: 0,
-      className: 'MaskIcon MaskIconChevronRight',
       type: VirtualDomElements.Div,
+      className: 'MaskIcon MaskIconChevronRight',
+      childCount: 0,
     },
     {
-      childCount: 1,
+      type: VirtualDomElements.Div,
       className: 'SearchHeaderTopRight',
       role: 'none',
-      type: VirtualDomElements.Div,
+      childCount: 1,
     },
     {
-      childCount: 2,
+      type: VirtualDomElements.Div,
       className: 'SearchField',
       role: 'none',
-      type: VirtualDomElements.Div,
+      childCount: 2,
     },
     {
+      type: VirtualDomElements.TextArea,
+      className: 'MultilineInputBox',
+      spellcheck: false,
       autocapitalize: 'off',
       autocorrect: 'off',
-      childCount: 0,
-      className: 'MultilineInputBox',
-      name: 'SearchValue',
-      onFocus: '',
-      onInput: 'handleInput',
       placeholder: 'Search',
-      spellcheck: false,
-      type: VirtualDomElements.TextArea,
+      name: 'SearchValue',
+      onInput: 'handleInput',
+      onFocus: '',
+      childCount: 0,
     },
     {
-      childCount: 3,
-      className: 'SearchFieldButtons',
       type: VirtualDomElements.Div,
+      className: 'SearchFieldButtons',
+      childCount: 3,
     },
     {
-      ariaChecked: false,
-      childCount: 1,
+      type: 1,
       className: 'SearchFieldButton',
       name: 'MatchCase',
-      role: 'checkbox',
-      tabIndex: 0,
       title: 'Match Case',
-      type: 1,
-    },
-    {
-      childCount: 0,
-      className: 'MaskIcon MaskIconCaseSensitive',
-      type: VirtualDomElements.Span,
-    },
-    {
+      role: 'checkbox',
       ariaChecked: false,
+      tabIndex: 0,
       childCount: 1,
+    },
+    {
+      type: VirtualDomElements.Span,
+      className: 'MaskIcon MaskIconCaseSensitive',
+      childCount: 0,
+    },
+    {
+      type: 1,
       className: 'SearchFieldButton',
       name: 'MatchWholeWord',
-      role: 'checkbox',
-      tabIndex: 0,
       title: 'Match Whole Word',
-      type: 1,
-    },
-    {
-      childCount: 0,
-      className: 'MaskIcon MaskIconWholeWord',
-      type: VirtualDomElements.Span,
-    },
-    {
+      role: 'checkbox',
       ariaChecked: false,
+      tabIndex: 0,
       childCount: 1,
+    },
+    {
+      type: VirtualDomElements.Span,
+      className: 'MaskIcon MaskIconWholeWord',
+      childCount: 0,
+    },
+    {
+      type: 1,
       className: 'SearchFieldButton',
       name: 'UseRegularExpression',
-      role: 'checkbox',
-      tabIndex: 0,
       title: 'Use Regular Expression',
-      type: 1,
-    },
-    {
-      childCount: 0,
-      className: 'MaskIcon MaskIconRegex',
-      type: VirtualDomElements.Span,
-    },
-    {
-      childCount: 2,
-      className: 'SearchHeaderDetails',
-      type: VirtualDomElements.Div,
-    },
-    {
+      role: 'checkbox',
+      ariaChecked: false,
+      tabIndex: 0,
       childCount: 1,
+    },
+    {
+      type: VirtualDomElements.Span,
+      className: 'MaskIcon MaskIconRegex',
+      childCount: 0,
+    },
+    {
+      type: VirtualDomElements.Div,
+      className: 'SearchHeaderDetails',
+      childCount: 2,
+    },
+    {
+      type: VirtualDomElements.Div,
       className: 'ViewletSearchMessage',
       role: 'status',
       tabIndex: 0,
-      type: VirtualDomElements.Div,
-    },
-    {
-      childCount: 0,
-      text: '',
-      type: VirtualDomElements.Text,
-    },
-    {
-      ariaLabel: 'Toggle Search Details',
       childCount: 1,
+    },
+    {
+      type: VirtualDomElements.Text,
+      text: '',
+      childCount: 0,
+    },
+    {
+      type: VirtualDomElements.Div,
       className: 'ToggleDetails',
-      name: 'ToggleSearchDetails',
       role: 'button',
       tabIndex: 0,
+      ariaLabel: 'Toggle Search Details',
       title: 'Toggle Search Details',
-      type: VirtualDomElements.Div,
-    },
-    {
-      childCount: 0,
-      className: 'MaskIcon MaskIconEllipsis',
-      type: VirtualDomElements.Div,
-    },
-    {
+      name: 'ToggleSearchDetails',
       childCount: 1,
+    },
+    {
+      type: VirtualDomElements.Div,
+      className: 'MaskIcon MaskIconEllipsis',
+      childCount: 0,
+    },
+    {
+      type: VirtualDomElements.Div,
       className: 'Viewlet List Tree',
       role: 'tree',
       tabIndex: 0,
-      type: VirtualDomElements.Div,
+      childCount: 1,
     },
     {
-      childCount: 0,
-      className: 'TreeItems',
-      id: 'TreeItems',
-      onBlur: 'handleListBlur',
-      onClick: 'handleClick',
-      onWheel: 'handleWheel',
-      top: '0px',
       type: VirtualDomElements.Div,
+      className: 'TreeItems',
+      childCount: 0,
+      onClick: 'handleClick',
+      onBlur: 'handleListBlur',
+      onWheel: 'handleWheel',
+      id: 'TreeItems',
+      top: '0px',
     },
   ]
   const patches = diff(oldNodes, newNodes)
   expect(patches).toEqual([
     {
-      index: 0,
       type: PatchType.NavigateChild,
+      index: 0,
     },
     {
-      index: 0,
       type: PatchType.NavigateChild,
+      index: 0,
     },
     {
-      index: 0,
       type: PatchType.NavigateChild,
+      index: 0,
     },
     {
-      key: 'className',
       type: PatchType.SetAttribute,
+      key: 'className',
       value: 'IconButton SearchToggleButton',
     },
     {
-      key: 'ariaExpanded',
       type: PatchType.SetAttribute,
+      key: 'ariaExpanded',
       value: false,
     },
     {
-      index: 0,
       type: PatchType.NavigateChild,
+      index: 0,
     },
     {
-      key: 'className',
       type: PatchType.SetAttribute,
+      key: 'className',
       value: 'MaskIcon MaskIconChevronRight',
     },
 
@@ -1914,173 +1914,173 @@ test('large diff', () => {
       type: PatchType.NavigateParent,
     },
     {
-      index: 0,
       type: PatchType.NavigateChild,
+      index: 0,
     },
     {
-      index: 0,
       type: PatchType.NavigateChild,
+      index: 0,
     },
     {
       type: PatchType.NavigateParent,
     },
     {
-      index: 0,
       type: PatchType.NavigateChild,
+      index: 0,
     },
     {
-      index: 0,
       type: PatchType.NavigateChild,
+      index: 0,
     },
     {
       type: PatchType.NavigateParent,
     },
     {
-      index: 0,
       type: PatchType.NavigateChild,
+      index: 0,
     },
     {
-      index: 0,
       type: PatchType.NavigateChild,
+      index: 0,
     },
     {
-      index: 4,
       type: PatchType.NavigateSibling,
+      index: 4,
     },
     // TODO this should not be in the diff, search header details hasn't changed
     {
-      key: 'className',
       type: PatchType.SetAttribute,
+      key: 'className',
       value: 'SearchHeaderDetails',
     },
     {
-      key: 'role',
       type: PatchType.RemoveAttribute,
+      key: 'role',
     },
     {
-      index: 0,
       type: PatchType.NavigateChild,
+      index: 0,
     },
     {
-      index: 4,
       type: PatchType.NavigateSibling,
+      index: 4,
     },
     {
-      key: 'className',
       type: PatchType.SetAttribute,
+      key: 'className',
       value: 'ViewletSearchMessage',
     },
     {
-      key: 'role',
       type: PatchType.SetAttribute,
+      key: 'role',
       value: 'status',
     },
     {
-      key: 'tabIndex',
       type: PatchType.SetAttribute,
+      key: 'tabIndex',
       value: 0,
     },
     {
-      index: 4,
       type: PatchType.RemoveChild,
+      index: 4,
     },
     {
+      type: PatchType.Add,
       nodes: [
         {
-          childCount: 0,
-          text: '',
           type: VirtualDomElements.Text,
+          text: '',
+          childCount: 0,
         },
       ],
-      type: PatchType.Add,
     },
     {
-      index: 5,
       type: PatchType.NavigateSibling,
+      index: 5,
     },
     {
-      key: 'className',
       type: PatchType.SetAttribute,
+      key: 'className',
       value: 'ToggleDetails',
     },
     {
-      key: 'role',
       type: PatchType.SetAttribute,
+      key: 'role',
       value: 'button',
     },
     {
-      key: 'tabIndex',
       type: PatchType.SetAttribute,
+      key: 'tabIndex',
       value: 0,
     },
     {
+      type: PatchType.SetAttribute,
       key: 'ariaLabel',
-      type: PatchType.SetAttribute,
       value: 'Toggle Search Details',
     },
     {
+      type: PatchType.SetAttribute,
       key: 'title',
-      type: PatchType.SetAttribute,
       value: 'Toggle Search Details',
     },
     {
-      key: 'name',
       type: PatchType.SetAttribute,
+      key: 'name',
       value: 'ToggleSearchDetails',
     },
     {
-      index: 5,
       type: PatchType.RemoveChild,
+      index: 5,
     },
     {
+      type: PatchType.Add,
       nodes: [
         {
-          childCount: 0,
-          className: 'MaskIcon MaskIconEllipsis',
           type: VirtualDomElements.Div,
+          className: 'MaskIcon MaskIconEllipsis',
+          childCount: 0,
         },
       ],
-      type: PatchType.Add,
     },
     {
-      index: 6,
       type: PatchType.RemoveChild,
+      index: 6,
     },
     {
+      type: PatchType.Add,
       nodes: [
         {
-          childCount: 1,
+          type: VirtualDomElements.Div,
           className: 'Viewlet List Tree',
           role: 'tree',
           tabIndex: 0,
-          type: VirtualDomElements.Div,
+          childCount: 1,
         },
         {
-          childCount: 0,
-          className: 'TreeItems',
-          id: 'TreeItems',
-          onBlur: 'handleListBlur',
-          onClick: 'handleClick',
-          onWheel: 'handleWheel',
-          top: '0px',
           type: VirtualDomElements.Div,
+          className: 'TreeItems',
+          childCount: 0,
+          onClick: 'handleClick',
+          onBlur: 'handleListBlur',
+          onWheel: 'handleWheel',
+          id: 'TreeItems',
+          top: '0px',
         },
       ],
-      type: PatchType.Add,
     },
     {
       type: PatchType.NavigateParent,
     },
     {
-      index: 7,
       type: PatchType.RemoveChild,
+      index: 7,
     },
     {
       type: PatchType.NavigateParent,
     },
     {
-      index: 7,
       type: PatchType.RemoveChild,
+      index: 7,
     },
   ])
 })
