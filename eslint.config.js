@@ -14,6 +14,7 @@ export default [
       '@typescript-eslint/no-deprecated': 'off',
       'jest/no-restricted-jest-methods': 'off',
       'github-actions/ci-versions': 'off',
+      'perfectionist/sort-objects': 'off',
     },
   },
 ]
