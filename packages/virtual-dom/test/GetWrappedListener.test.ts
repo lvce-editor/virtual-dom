@@ -12,8 +12,8 @@ const mockIpcState = {
 }
 
 const mockListenerCache = {
-  has: jest.fn(),
   get: jest.fn(),
+  has: jest.fn(),
   set: jest.fn(),
 }
 

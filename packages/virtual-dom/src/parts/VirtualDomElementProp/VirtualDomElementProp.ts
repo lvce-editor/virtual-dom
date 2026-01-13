@@ -8,42 +8,6 @@ export const setProp = (
   newEventMap?: any,
 ): void => {
   switch (key) {
-    case 'maskImage':
-      $Element.style.maskImage = `url('${value}')`
-      $Element.style.webkitMaskImage = `url('${value}')`
-      break
-    case 'paddingLeft':
-    case 'paddingRight':
-    case 'top':
-    case 'left':
-    case 'marginTop':
-      $Element.style[key] = typeof value === 'number' ? `${value}px` : value
-      break
-    case 'translate':
-      $Element.style[key] = value
-      break
-    case 'width':
-    case 'height':
-      if ($Element instanceof HTMLImageElement) {
-        $Element[key] = value
-      } else if (typeof value === 'number') {
-        $Element.style[key] = `${value}px`
-      } else {
-        $Element.style[key] = value
-      }
-      break
-    case 'style':
-      throw new Error('style property is not supported')
-    case 'childCount':
-    case 'type':
-      break
-    case 'ariaOwns': // TODO remove this once idl is supported
-      if (value) {
-        $Element.setAttribute('aria-owns', value)
-      } else {
-        $Element.removeAttribute('aria-owns')
-      }
-      break
     case 'ariaActivedescendant':
       if (value) {
         $Element.setAttribute('aria-activedescendant', value)
@@ -54,12 +18,47 @@ export const setProp = (
     case 'ariaControls':
       $Element.setAttribute('aria-controls', value)
       break
+    case 'ariaLabelledBy':
+      $Element.setAttribute('aria-labelledby', value)
+      break
+    case 'ariaOwns': // TODO remove this once idl is supported
+      if (value) {
+        $Element.setAttribute('aria-owns', value)
+      } else {
+        $Element.removeAttribute('aria-owns')
+      }
+      break
+    case 'height':
+    case 'width':
+      if ($Element instanceof HTMLImageElement) {
+        $Element[key] = value
+      } else if (typeof value === 'number') {
+        $Element.style[key] = `${value}px`
+      } else {
+        $Element.style[key] = value
+      }
+      break
+    case 'id':
+      if (value) {
+        $Element[key] = value
+      } else {
+        $Element.removeAttribute(key)
+      }
+      break
     case 'inputType':
       // @ts-ignore
       $Element.type = value
       break
-    case 'ariaLabelledBy':
-      $Element.setAttribute('aria-labelledby', value)
+    case 'left':
+    case 'marginTop':
+    case 'paddingLeft':
+    case 'paddingRight':
+    case 'top':
+      $Element.style[key] = typeof value === 'number' ? `${value}px` : value
+      break
+    case 'maskImage':
+      $Element.style.maskImage = `url('${value}')`
+      $Element.style.webkitMaskImage = `url('${value}')`
       break
     case 'onBlur':
     case 'onChange':
@@ -93,12 +92,13 @@ export const setProp = (
       }
       AttachEvent.attachEvent($Element, eventMap, eventName, value, newEventMap)
       break
-    case 'id':
-      if (value) {
-        $Element[key] = value
-      } else {
-        $Element.removeAttribute(key)
-      }
+    case 'style':
+      throw new Error('style property is not supported')
+    case 'childCount':
+    case 'type':
+      break
+    case 'translate':
+      $Element.style[key] = value
       break
     default:
       if (key.startsWith('data-')) {

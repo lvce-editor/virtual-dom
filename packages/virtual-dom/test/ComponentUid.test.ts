@@ -49,8 +49,8 @@ test('getComponentUidFromEvent - gets uid from currentTarget if available', () =
   setComponentUid($Target, 102)
   setComponentUid($CurrentTarget, 103)
   const event = {
-    target: $Target,
     currentTarget: $CurrentTarget,
+    target: $Target,
   }
   expect(getComponentUidFromEvent(event)).toBe(103)
 })

@@ -10,8 +10,8 @@ import * as VirtualDomElements from '../src/parts/VirtualDomElements/VirtualDomE
 test('attribute change', () => {
   const patches: readonly Patch[] = [
     {
-      type: PatchType.SetAttribute,
       key: 'id',
+      type: PatchType.SetAttribute,
       value: 'test',
     },
   ]
@@ -23,8 +23,8 @@ test('attribute change', () => {
 test('attribute remove', () => {
   const patches: readonly Patch[] = [
     {
-      type: PatchType.RemoveAttribute,
       key: 'id',
+      type: PatchType.RemoveAttribute,
     },
   ]
   const $Node = document.createElement('div')
@@ -48,8 +48,8 @@ test('text change', () => {
 test('text change of second node', () => {
   const patches: readonly Patch[] = [
     {
-      type: PatchType.NavigateSibling,
       index: 1,
+      type: PatchType.NavigateSibling,
     },
     {
       type: PatchType.SetText,
@@ -67,8 +67,8 @@ test('text change of second node', () => {
 test('text change of third node', () => {
   const patches: readonly Patch[] = [
     {
-      type: PatchType.NavigateSibling,
       index: 2,
+      type: PatchType.NavigateSibling,
     },
     {
       type: PatchType.SetText,
@@ -87,12 +87,12 @@ test('text change of third node', () => {
 test('text change of nested node', () => {
   const patches: readonly Patch[] = [
     {
-      type: PatchType.NavigateChild,
       index: 0,
+      type: PatchType.NavigateChild,
     },
     {
-      type: PatchType.NavigateChild,
       index: 0,
+      type: PatchType.NavigateChild,
     },
     {
       type: PatchType.SetText,
@@ -111,8 +111,8 @@ test('text change of nested node', () => {
 test('element removeChild', () => {
   const patches: readonly Patch[] = [
     {
-      type: PatchType.RemoveChild,
       index: 0,
+      type: PatchType.RemoveChild,
     },
   ]
   const $Node = document.createElement('div')
@@ -125,14 +125,14 @@ test('element removeChild', () => {
 test('element add', () => {
   const patches: readonly Patch[] = [
     {
-      type: PatchType.Add,
       nodes: [
         {
-          type: VirtualDomElements.Div,
           childCount: 0,
           className: 'test',
+          type: VirtualDomElements.Div,
         },
       ],
+      type: PatchType.Add,
     },
   ]
   const $Node = document.createElement('div')
@@ -144,18 +144,18 @@ test('element add', () => {
 test('remove and add element', () => {
   const patches: readonly Patch[] = [
     {
-      type: PatchType.RemoveChild,
       index: 0,
+      type: PatchType.RemoveChild,
     },
     {
-      type: PatchType.Add,
       nodes: [
         {
-          type: VirtualDomElements.Div,
           childCount: 0,
           className: 'test',
+          type: VirtualDomElements.Div,
         },
       ],
+      type: PatchType.Add,
     },
   ]
   const $Root = document.createElement('div')
@@ -169,17 +169,17 @@ test('remove and add element', () => {
 test('expand search details', () => {
   const patches: readonly Patch[] = [
     {
-      type: PatchType.NavigateChild,
       index: 1,
+      type: PatchType.NavigateChild,
     },
     {
-      type: PatchType.Add,
       nodes: [
         {
-          type: VirtualDomElements.Input,
           className: 'Replace',
+          type: VirtualDomElements.Input,
         },
       ],
+      type: PatchType.Add,
     },
   ]
   const $Root = document.createElement('div')
@@ -201,12 +201,12 @@ test('expand search details', () => {
 test('collapse search details', () => {
   const patches: readonly Patch[] = [
     {
-      type: PatchType.NavigateChild,
       index: 1,
+      type: PatchType.NavigateChild,
     },
     {
-      type: PatchType.RemoveChild,
       index: 1,
+      type: PatchType.RemoveChild,
     },
   ]
   const $Root = document.createElement('div')
@@ -230,12 +230,12 @@ test('collapse search details', () => {
 test('remove nested child node', () => {
   const patches: readonly Patch[] = [
     {
-      type: PatchType.NavigateChild,
       index: 0,
+      type: PatchType.NavigateChild,
     },
     {
-      type: PatchType.RemoveChild,
       index: 0,
+      type: PatchType.RemoveChild,
     },
   ]
   const $Root = document.createElement('div')
@@ -258,21 +258,21 @@ test('remove nested child node', () => {
 test('remove and add node', () => {
   const patches: readonly Patch[] = [
     {
+      index: 0,
       type: PatchType.NavigateChild,
-      index: 0,
     },
     {
+      index: 0,
       type: PatchType.RemoveChild,
-      index: 0,
     },
     {
-      type: PatchType.Add,
       nodes: [
         {
-          type: VirtualDomElements.Span,
           childCount: 0,
+          type: VirtualDomElements.Span,
         },
       ],
+      type: PatchType.Add,
     },
   ]
   const $Root = document.createElement('div')
@@ -293,37 +293,37 @@ test('remove and add node', () => {
 test('multiple changes', () => {
   const patches: readonly Patch[] = [
     {
+      index: 0,
       type: PatchType.NavigateChild,
-      index: 0,
     },
     {
+      index: 0,
       type: PatchType.RemoveChild,
-      index: 0,
     },
     {
-      type: PatchType.Add,
       nodes: [
         {
-          type: VirtualDomElements.Span,
           childCount: 0,
+          type: VirtualDomElements.Span,
         },
       ],
+      type: PatchType.Add,
     },
     {
       type: PatchType.NavigateParent,
     },
     {
-      type: PatchType.RemoveChild,
       index: 1,
+      type: PatchType.RemoveChild,
     },
     {
-      type: PatchType.Add,
       nodes: [
         {
-          type: VirtualDomElements.Span,
           childCount: 0,
+          type: VirtualDomElements.Span,
         },
       ],
+      type: PatchType.Add,
     },
   ]
   const $Root = document.createElement('div')
@@ -346,34 +346,34 @@ test.skip('large patch', () => {
   $Root.innerHTML = `<div class="Viewlet Search"><div class="SearchHeader" role="none"><div class="SearchHeaderTop" role="none"><button class="IconButton SearchToggleButton SearchToggleButtonExpanded" title="Toggle Replace" aria-label="Toggle Replace" aria-expanded="true" data-command="toggleReplace" name="ToggleReplace" classname="IconButton SearchToggleButton" ariaexpanded="false"><div class="MaskIcon MaskIconChevronDown" classname="MaskIcon MaskIconChevronRight"></div></button><div class="SearchHeaderTopRight" role="none"><div class="SearchField" role="none"><textarea class="MultilineInputBox" spellcheck="false" autocapitalize="off" placeholder="Search" name="SearchValue"></textarea><div class="SearchFieldButtons"><button class="SearchFieldButton" name="MatchCase" title="Match Case" role="checkbox" aria-checked="false" tabindex="0"><span class="MaskIcon MaskIconCaseSensitive"></span></button><button class="SearchFieldButton" name="MatchWholeWord" title="Match Whole Word" role="checkbox" aria-checked="false" tabindex="0"><span class="MaskIcon MaskIconWholeWord"></span></button><button class="SearchFieldButton" name="UseRegularExpression" title="Use Regular Expression" role="checkbox" aria-checked="false" tabindex="0"><span class="MaskIcon MaskIconRegex"></span></button></div></div><div class="SearchFieldContainer" role="none"><div class="SearchField" role="none"><textarea class="MultilineInputBox" spellcheck="false" autocapitalize="off" placeholder="Replace" name="ReplaceValue"></textarea><div class="SearchFieldButtons"><button class="SearchFieldButton" name="PreserveCase" title="Preserve Case" role="checkbox" aria-checked="false" tabindex="0"><span class="MaskIcon MaskIconPreserveCase"></span></button></div></div><button class="SearchFieldButton SearchFieldButtonDisabled" name="ReplaceAll" title="Replace All" role="checkbox" aria-checked="false" tabindex="0"><span class="MaskIcon MaskIconReplaceAll"></span></button></div></div></div><div class="SearchHeaderDetails"><div class="ViewletSearchMessage" role="status" tabindex="0">No results found</div><div class="ToggleDetails" role="button" tabindex="0" aria-label="Toggle Search Details" title="Toggle Search Details"><div class="MaskIcon MaskIconEllipsis"></div></div></div></div><div class="Viewlet List Tree" role="tree" tabindex="0"><div class="TreeItems" id="TreeItems" style="top: 0px;"></div></div></div>`
   const patches: readonly Patch[] = [
     {
-      type: PatchType.NavigateChild,
       index: 0,
+      type: PatchType.NavigateChild,
     },
     {
-      type: PatchType.NavigateChild,
       index: 0,
+      type: PatchType.NavigateChild,
     },
     {
-      type: PatchType.NavigateChild,
       index: 0,
+      type: PatchType.NavigateChild,
     },
     {
-      type: PatchType.SetAttribute,
       key: 'className',
+      type: PatchType.SetAttribute,
       value: 'IconButton SearchToggleButton',
     },
     {
-      type: PatchType.SetAttribute,
       key: 'ariaExpanded',
+      type: PatchType.SetAttribute,
       value: false,
     },
     {
-      type: PatchType.NavigateChild,
       index: 0,
+      type: PatchType.NavigateChild,
     },
     {
-      type: PatchType.SetAttribute,
       key: 'className',
+      type: PatchType.SetAttribute,
       value: 'MaskIcon MaskIconChevronRight',
     },
 
@@ -382,173 +382,173 @@ test.skip('large patch', () => {
       type: PatchType.NavigateParent,
     },
     {
-      type: PatchType.NavigateChild,
       index: 0,
+      type: PatchType.NavigateChild,
     },
     {
-      type: PatchType.NavigateChild,
       index: 0,
+      type: PatchType.NavigateChild,
     },
     {
       type: PatchType.NavigateParent,
     },
     {
-      type: PatchType.NavigateChild,
       index: 0,
+      type: PatchType.NavigateChild,
     },
     {
-      type: PatchType.NavigateChild,
       index: 0,
+      type: PatchType.NavigateChild,
     },
     {
       type: PatchType.NavigateParent,
     },
     {
-      type: PatchType.NavigateChild,
       index: 0,
+      type: PatchType.NavigateChild,
     },
     {
-      type: PatchType.NavigateChild,
       index: 0,
+      type: PatchType.NavigateChild,
     },
     {
-      type: PatchType.NavigateSibling,
       index: 4,
+      type: PatchType.NavigateSibling,
     },
     // TODO this should not be in the diff, search header details hasn't changed
     {
-      type: PatchType.SetAttribute,
       key: 'className',
+      type: PatchType.SetAttribute,
       value: 'SearchHeaderDetails',
     },
     {
-      type: PatchType.RemoveAttribute,
       key: 'role',
+      type: PatchType.RemoveAttribute,
     },
     {
-      type: PatchType.NavigateChild,
       index: 0,
+      type: PatchType.NavigateChild,
     },
     {
-      type: PatchType.NavigateSibling,
       index: 4,
+      type: PatchType.NavigateSibling,
     },
     {
-      type: PatchType.SetAttribute,
       key: 'className',
+      type: PatchType.SetAttribute,
       value: 'ViewletSearchMessage',
     },
     {
-      type: PatchType.SetAttribute,
       key: 'role',
+      type: PatchType.SetAttribute,
       value: 'status',
     },
     {
-      type: PatchType.SetAttribute,
       key: 'tabIndex',
+      type: PatchType.SetAttribute,
       value: 0,
     },
     {
-      type: PatchType.RemoveChild,
       index: 4,
+      type: PatchType.RemoveChild,
     },
     {
-      type: PatchType.Add,
       nodes: [
         {
-          type: VirtualDomElements.Text,
-          text: 'No results found',
           childCount: 0,
+          text: 'No results found',
+          type: VirtualDomElements.Text,
         },
       ],
+      type: PatchType.Add,
     },
     {
-      type: PatchType.NavigateSibling,
       index: 5,
+      type: PatchType.NavigateSibling,
     },
     {
-      type: PatchType.SetAttribute,
       key: 'className',
+      type: PatchType.SetAttribute,
       value: 'ToggleDetails',
     },
     {
-      type: PatchType.SetAttribute,
       key: 'role',
+      type: PatchType.SetAttribute,
       value: 'button',
     },
     {
-      type: PatchType.SetAttribute,
       key: 'tabIndex',
+      type: PatchType.SetAttribute,
       value: 0,
     },
     {
-      type: PatchType.SetAttribute,
       key: 'ariaLabel',
+      type: PatchType.SetAttribute,
       value: 'Toggle Search Details',
     },
     {
-      type: PatchType.SetAttribute,
       key: 'title',
+      type: PatchType.SetAttribute,
       value: 'Toggle Search Details',
     },
     {
-      type: PatchType.SetAttribute,
       key: 'name',
+      type: PatchType.SetAttribute,
       value: 'ToggleSearchDetails',
     },
     {
-      type: PatchType.RemoveChild,
       index: 5,
+      type: PatchType.RemoveChild,
     },
     {
-      type: PatchType.Add,
       nodes: [
         {
-          type: VirtualDomElements.Div,
-          className: 'MaskIcon MaskIconEllipsis',
           childCount: 0,
+          className: 'MaskIcon MaskIconEllipsis',
+          type: VirtualDomElements.Div,
         },
       ],
-    },
-    {
-      type: PatchType.RemoveChild,
-      index: 6,
-    },
-    {
       type: PatchType.Add,
+    },
+    {
+      index: 6,
+      type: PatchType.RemoveChild,
+    },
+    {
       nodes: [
         {
-          type: VirtualDomElements.Div,
+          childCount: 1,
           className: 'Viewlet List Tree',
           role: 'tree',
           tabIndex: 0,
-          childCount: 1,
+          type: VirtualDomElements.Div,
         },
         {
-          type: VirtualDomElements.Div,
-          className: 'TreeItems',
           childCount: 0,
-          onClick: 'handleClick',
-          onBlur: 'handleListBlur',
-          onWheel: 'handleWheel',
+          className: 'TreeItems',
           id: 'TreeItems',
+          onBlur: 'handleListBlur',
+          onClick: 'handleClick',
+          onWheel: 'handleWheel',
           top: '0px',
+          type: VirtualDomElements.Div,
         },
       ],
+      type: PatchType.Add,
     },
     {
       type: PatchType.NavigateParent,
     },
     {
-      type: PatchType.RemoveChild,
       index: 7,
+      type: PatchType.RemoveChild,
     },
     {
       type: PatchType.NavigateParent,
     },
     {
-      type: PatchType.RemoveChild,
       index: 7,
+      type: PatchType.RemoveChild,
     },
   ]
   ApplyPatch.applyPatch($Root.firstChild as HTMLElement, patches)

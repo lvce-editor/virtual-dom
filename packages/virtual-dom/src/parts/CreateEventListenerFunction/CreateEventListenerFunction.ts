@@ -12,7 +12,7 @@ const applyPointerTrackMaybe = (info, map, event): void => {
   if (!trackPointerEvents) {
     return
   }
-  const { target, pointerId } = event
+  const { pointerId, target } = event
   target.setPointerCapture(pointerId)
   const [pointerMoveKey, pointerUpKey] = trackPointerEvents
   target.addEventListener(DomEventType.PointerMove, map[pointerMoveKey])

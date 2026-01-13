@@ -5,8 +5,8 @@ import * as GetTotalChildCount from '../src/parts/GetTotalChildCount/GetTotalChi
 test('single node', () => {
   const nodes: readonly VirtualDomNode[] = [
     {
-      type: 4,
       childCount: 0,
+      type: 4,
     },
   ]
   const index = 0
@@ -16,12 +16,12 @@ test('single node', () => {
 test('one child node', () => {
   const nodes: readonly VirtualDomNode[] = [
     {
-      type: 4,
       childCount: 1,
+      type: 4,
     },
     {
-      type: 4,
       childCount: 0,
+      type: 4,
     },
   ]
   const index = 0
@@ -31,16 +31,16 @@ test('one child node', () => {
 test('nested nodes', () => {
   const nodes: readonly VirtualDomNode[] = [
     {
-      type: 4,
       childCount: 1,
+      type: 4,
     },
     {
-      type: 4,
       childCount: 1,
+      type: 4,
     },
     {
-      type: 4,
       childCount: 0,
+      type: 4,
     },
   ]
   const index = 0

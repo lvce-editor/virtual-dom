@@ -13,8 +13,8 @@ export const applyPendingPatches = (
       patches.push({ type })
     } else {
       patches.push({
-        type,
         index,
+        type,
       } as Patch)
     }
   }
