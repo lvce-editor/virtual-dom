@@ -18,11 +18,11 @@ test('rememberFocus - preserves focus on tree element', () => {
   // Create new virtual DOM
   const dom = [
     {
-      type: 4, // Div
       childCount: 0,
+      className: 'tree',
       role: 'tree',
       tabIndex: 0,
-      className: 'tree',
+      type: 4, // Div
     },
   ]
 

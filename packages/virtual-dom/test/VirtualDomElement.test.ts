@@ -7,8 +7,8 @@ import * as VirtualDomElements from '../src/parts/VirtualDomElements/VirtualDomE
 
 test('render - creates text node', () => {
   const element = {
-    type: VirtualDomElements.Text,
     text: 'Hello World',
+    type: VirtualDomElements.Text,
   }
   const result = VirtualDomElement.render(element, {})
   expect(result).toBeInstanceOf(Text)
@@ -17,9 +17,9 @@ test('render - creates text node', () => {
 
 test('render - creates DOM element with props', () => {
   const element = {
-    type: VirtualDomElements.Div,
     className: 'test-class',
     id: 'test-id',
+    type: VirtualDomElements.Div,
   }
   const result = VirtualDomElement.render(element, {})
   expect(result).toBeInstanceOf(HTMLDivElement)
@@ -31,9 +31,9 @@ test('render - creates DOM element with props', () => {
 
 test('render - creates input element with type', () => {
   const element = {
-    type: VirtualDomElements.Input,
-    inputType: 'checkbox',
     checked: true,
+    inputType: 'checkbox',
+    type: VirtualDomElements.Input,
   }
   const result = VirtualDomElement.render(element, {})
   expect(result).toBeInstanceOf(HTMLInputElement)
@@ -49,8 +49,8 @@ test('render - creates element with event listeners', () => {
     'test-handler': mockHandler,
   }
   const element = {
-    type: VirtualDomElements.Button,
     onClick: 'test-handler',
+    type: VirtualDomElements.Button,
   }
   const result = VirtualDomElement.render(element, eventMap)
   expect(result).toBeInstanceOf(HTMLButtonElement)

@@ -14,6 +14,6 @@ export const getComponentUid = ($Element): number => {
 }
 
 export const getComponentUidFromEvent = (event): number => {
-  const { target, currentTarget } = event
+  const { currentTarget, target } = event
   return getComponentUid(currentTarget || target)
 }

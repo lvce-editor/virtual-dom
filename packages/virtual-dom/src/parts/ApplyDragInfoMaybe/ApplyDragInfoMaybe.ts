@@ -3,7 +3,7 @@ import { getDragInfo } from '../DragInfo/DragInfo.ts'
 import { setDragImage } from '../SetDragImage/SetDragImage.ts'
 
 export const applyDragInfoMaybe = (event: any): void => {
-  const { target, dataTransfer } = event
+  const { dataTransfer, target } = event
   if (dataTransfer) {
     const uid = getComponentUid(target)
     const dragInfo = getDragInfo(uid)

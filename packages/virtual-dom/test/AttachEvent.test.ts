@@ -31,8 +31,8 @@ test('attachEvent - attaches event listener with correct parameters', () => {
   const mockListener = jest.fn()
   const mockWrappedListener = jest.fn()
   const eventMap = {
-    'test-handler': mockListener,
     returnValue: false,
+    'test-handler': mockListener,
   }
 
   mockGetWrappedListener.getWrappedListener.mockReturnValue(mockWrappedListener)
@@ -70,8 +70,8 @@ test('attachEvent - uses event options from GetEventListenerOptions', () => {
   const mockListener = jest.fn()
   const mockWrappedListener = jest.fn()
   const eventMap = {
-    'test-handler': mockListener,
     returnValue: true,
+    'test-handler': mockListener,
   }
   const mockOptions = { passive: true }
 
