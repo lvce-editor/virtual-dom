@@ -1,8 +1,8 @@
 import { getComponentUid } from '../ComponentUid/ComponentUid.ts'
-import { getDragInfo } from '../DragInfo/DragInfo.ts'
+import { getDragInfo, isDragInfoOld } from '../DragInfo/DragInfo.ts'
 import { setDragImage } from '../SetDragImage/SetDragImage.ts'
 
-export const applyDragInfoMaybe = (event: any): void => {
+export const applyDragInfoMaybe = (event: DragEvent): void => {
   const { dataTransfer, target } = event
   if (dataTransfer) {
     const uid = getComponentUid(target)
@@ -10,11 +10,17 @@ export const applyDragInfoMaybe = (event: any): void => {
     if (!dragInfo) {
       return
     }
-    for (const item of dragInfo) {
-      dataTransfer.setData(item.type, item.data)
-    }
-    if (dragInfo.label) {
-      setDragImage(dataTransfer, dragInfo.label)
+    if (isDragInfoOld(dragInfo)) {
+      for (const item of dragInfo) {
+        dataTransfer.setData(item.type, item.data)
+      }
+    } else {
+      for (const item of dragInfo.items) {
+        dataTransfer.items.add(item.data, item.data)
+      }
+      if (dragInfo.label) {
+        setDragImage(dataTransfer, dragInfo.label)
+      }
     }
   }
 }
