@@ -9,13 +9,13 @@
   "author": "",
   "license": "MIT",
   "devDependencies": {
-    "@types/node": "^24.5.2",
-    "esbuild": "^0.25.10",
-    "execa": "^9.6.0",
-    "@rollup/plugin-babel": "^6.0.4",
-    "@rollup/plugin-node-resolve": "^16.0.1",
-    "rollup": "^4.52.2",
-    "@babel/preset-typescript": "^7.27.1",
+    "@types/node": "^25.0.8",
+    "esbuild": "^0.27.2",
+    "execa": "^9.6.1",
+    "@rollup/plugin-babel": "^6.1.0",
+    "@rollup/plugin-node-resolve": "^16.0.3",
+    "rollup": "^4.55.1",
+    "@babel/preset-typescript": "^7.28.5",
     "dts-bundle-generator": "^9.5.1"
   }
 }
