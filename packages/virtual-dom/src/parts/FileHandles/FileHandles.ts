@@ -11,7 +11,7 @@ export const acquire = (id: number): Promise<FileSystemHandle> => {
 export const getFileHandles = async (
   ids: readonly number[],
 ): Promise<readonly FileSystemHandle[]> => {
-  const promises = ids.map((id) => acquire(id))
+  const promises = ids.map(acquire)
   const handles = await Promise.all(promises)
   return handles
 }
