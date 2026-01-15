@@ -1,8 +1,49 @@
 import * as FileHandles from '../FileHandles/FileHandles.ts'
 
-const handleDataTransferFiles = (event: any): readonly number[] => {
+const unwrapItemString = async (item: DataTransferItem): Promise<any> => {
+  const { resolve, promise } = Promise.withResolvers()
+  item.getAsString(resolve)
+  const value = await promise
+  return {
+    kind: 'string',
+    type: item.type,
+    value,
+  }
+}
+
+const unwrapItemFile = async (item: DataTransferItem): Promise<any> => {
+  // @ts-ignore
+  const file = await item.getAsFileSystemHandle()
+  return {
+    kind: 'file',
+    type: item.type,
+    value: file,
+  }
+}
+
+const unknownItem = {
+  kind: 'unknown',
+  type: '',
+  value: '',
+}
+
+const unwrapItem = (item: DataTransferItem): any => {
+  switch (item.kind) {
+    case 'file':
+      return unwrapItemFile(item)
+    case 'string':
+      return unwrapItemString(item)
+    default:
+      return unknownItem
+  }
+}
+
+const handleDataTransferFiles = (event: DragEvent): readonly number[] => {
+  if (!event.dataTransfer) {
+    return []
+  }
   const items = [...event.dataTransfer.items]
-  const promises = items.map((item) => item.getAsFileSystemHandle())
+  const promises = items.map(unwrapItem)
   const ids = promises.map((promise) => FileHandles.add(promise))
   return ids
 }
