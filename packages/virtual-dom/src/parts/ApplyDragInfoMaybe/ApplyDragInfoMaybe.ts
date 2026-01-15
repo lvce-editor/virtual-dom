@@ -16,7 +16,7 @@ export const applyDragInfoMaybe = (event: DragEvent): void => {
       }
     } else {
       for (const item of dragInfo.items) {
-        dataTransfer.items.add(item.data, item.data)
+        dataTransfer.items.add(item.data, item.type)
       }
       if (dragInfo.label) {
         setDragImage(dataTransfer, dragInfo.label)
