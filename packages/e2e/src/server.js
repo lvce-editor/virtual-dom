@@ -48,12 +48,7 @@ const server = createServer(async (req, res) => {
         return
       } catch (error) {
         // Try package-specific node_modules (for lerna hoisted dependencies)
-        filePath = join(
-          root,
-          'packages',
-          'virtual-dom-worker',
-          url,
-        )
+        filePath = join(root, 'packages', 'virtual-dom-worker', url)
         try {
           const content = await readFile(filePath, 'utf8')
           res.writeHead(200, { 'Content-Type': getMimeType(filePath) })
