@@ -36,6 +36,21 @@ const server = createServer(async (req, res) => {
       }
     }
 
+    // Serve node_modules packages (for unbundled dependencies like @lvce-editor/constants)
+    if (url.startsWith('/node_modules/')) {
+      const filePath = join(root, url)
+      try {
+        const content = await readFile(filePath, 'utf8')
+        res.writeHead(200, { 'Content-Type': getMimeType(filePath) })
+        res.end(content)
+        return
+      } catch (error) {
+        res.writeHead(404, { 'Content-Type': 'text/plain' })
+        res.end('Not Found')
+        return
+      }
+    }
+
     // Serve fixture files
     const filePath = join(root, 'packages', 'e2e', 'fixtures', url)
 
