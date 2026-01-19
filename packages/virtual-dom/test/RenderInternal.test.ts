@@ -9,9 +9,9 @@ test('renderInternal - renders single element', () => {
   const $Parent = document.createElement('div')
   const elements = [
     {
-      type: VirtualDomElements.Div,
       childCount: 0,
       className: 'test',
+      type: VirtualDomElements.Div,
     },
   ]
   renderInternal($Parent, elements, {})
@@ -23,9 +23,9 @@ test('renderInternal - renders text node', () => {
   const $Parent = document.createElement('div')
   const elements = [
     {
-      type: VirtualDomElements.Text,
-      text: 'Hello World',
       childCount: 0,
+      text: 'Hello World',
+      type: VirtualDomElements.Text,
     },
   ]
   renderInternal($Parent, elements, {})
@@ -36,14 +36,14 @@ test('renderInternal - renders nested elements', () => {
   const $Parent = document.createElement('div')
   const elements = [
     {
-      type: VirtualDomElements.Div,
       childCount: 1,
       className: 'parent',
+      type: VirtualDomElements.Div,
     },
     {
-      type: VirtualDomElements.Div,
       childCount: 0,
       className: 'child',
+      type: VirtualDomElements.Div,
     },
   ]
   renderInternal($Parent, elements, {})
@@ -58,24 +58,24 @@ test('renderInternal - renders multiple nested elements', () => {
   const $Parent = document.createElement('div')
   const elements = [
     {
-      type: VirtualDomElements.Div,
       childCount: 2,
       className: 'parent',
+      type: VirtualDomElements.Div,
     },
     {
-      type: VirtualDomElements.Div,
       childCount: 1,
       className: 'child1',
+      type: VirtualDomElements.Div,
     },
     {
-      type: VirtualDomElements.Span,
       childCount: 0,
       className: 'grandchild',
+      type: VirtualDomElements.Span,
     },
     {
-      type: VirtualDomElements.Div,
       childCount: 0,
       className: 'child2',
+      type: VirtualDomElements.Div,
     },
   ]
   renderInternal($Parent, elements, {})

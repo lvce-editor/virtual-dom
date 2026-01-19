@@ -1,4 +1,4 @@
 export interface RemoveAttributePatch {
-  readonly type: 4
   readonly key: string
+  readonly type: 4
 }

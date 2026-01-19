@@ -12,8 +12,8 @@ const mockIpcState = {
 }
 
 const mockListenerCache = {
-  has: jest.fn(),
   get: jest.fn(),
+  has: jest.fn(),
   set: jest.fn(),
 }
 
@@ -38,9 +38,8 @@ jest.unstable_mockModule(
   () => mockNameAnonymousFunction,
 )
 
-const { getWrappedListener } = await import(
-  '../src/parts/GetWrappedListener/GetWrappedListener.ts'
-)
+const { getWrappedListener } =
+  await import('../src/parts/GetWrappedListener/GetWrappedListener.ts')
 
 test('getWrappedListener - returns original listener when returnValue is false', () => {
   const originalListener = jest.fn()

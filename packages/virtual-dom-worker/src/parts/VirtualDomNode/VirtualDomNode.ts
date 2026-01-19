@@ -1,4 +1,4 @@
 export interface VirtualDomNode {
-  readonly type: number
   readonly [key: string]: any
+  readonly type: number
 }
