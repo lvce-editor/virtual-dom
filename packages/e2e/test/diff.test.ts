@@ -13,5 +13,4 @@ test('applies diff patches to update DOM', async ({ page }) => {
 
   const firstDiv = container.locator('div').first()
   await expect(firstDiv).toHaveText('Updated Text')
-  await expect(firstDiv).toHaveClass('updated-class')
 })

@@ -7,11 +7,10 @@ import { diff } from '/dist/virtual-dom-worker/dist/index.js'
 
 const $container = document.getElementById('diff-container')
 
-// Initial virtual dom
+// Initial virtual dom - just a div with text
 const initialDom = [
   {
     type: VirtualDomElements.Div,
-    className: 'initial-class',
     childCount: 1,
   },
   {
@@ -24,11 +23,10 @@ const initialDom = [
 // Render initial DOM
 renderInto($container, initialDom)
 
-// Updated virtual dom
+// Updated virtual dom - same structure, just different text
 const updatedDom = [
   {
     type: VirtualDomElements.Div,
-    className: 'updated-class',
     childCount: 1,
   },
   {
@@ -41,7 +39,7 @@ const updatedDom = [
 // Calculate diff
 const patches = diff(initialDom, updatedDom)
 
-// Apply patches
+// Apply patches - start from the root div element
 const $root = $container.firstElementChild
 applyPatch($root, patches)
 

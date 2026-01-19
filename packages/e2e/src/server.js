@@ -2,6 +2,7 @@ import { createServer } from 'node:http'
 import { readFile } from 'node:fs/promises'
 import { join } from 'node:path'
 import { fileURLToPath } from 'node:url'
+import { stat } from 'node:fs/promises'
 import { ensureBuild } from './ensureBuild.js'
 
 const __dirname = fileURLToPath(new URL('.', import.meta.url))
@@ -67,7 +68,19 @@ const server = createServer(async (req, res) => {
     }
 
     // Serve fixture files
-    const filePath = join(root, 'packages', 'e2e', 'fixtures', url)
+    let filePath = join(root, 'packages', 'e2e', 'fixtures', url)
+
+    // If URL ends with /, try to serve index.html from that directory
+    if (url.endsWith('/')) {
+      try {
+        const stats = await stat(filePath)
+        if (stats.isDirectory()) {
+          filePath = join(filePath, 'index.html')
+        }
+      } catch (error) {
+        // Directory doesn't exist, will be handled below
+      }
+    }
 
     try {
       const content = await readFile(filePath, 'utf8')
