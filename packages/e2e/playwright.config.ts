@@ -25,6 +25,6 @@ export default defineConfig({
     command: 'node src/server.js',
     url: 'http://localhost:3000',
     reuseExistingServer: !process.env.CI,
-    cwd: join(__dirname, '..'),
+    cwd: __dirname,
   },
 })

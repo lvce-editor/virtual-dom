@@ -38,16 +38,31 @@ const server = createServer(async (req, res) => {
 
     // Serve node_modules packages (for unbundled dependencies like @lvce-editor/constants)
     if (url.startsWith('/node_modules/')) {
-      const filePath = join(root, url)
+      // Try root node_modules first
+      let filePath = join(root, url)
       try {
         const content = await readFile(filePath, 'utf8')
         res.writeHead(200, { 'Content-Type': getMimeType(filePath) })
         res.end(content)
         return
       } catch (error) {
-        res.writeHead(404, { 'Content-Type': 'text/plain' })
-        res.end('Not Found')
-        return
+        // Try package-specific node_modules (for lerna hoisted dependencies)
+        filePath = join(
+          root,
+          'packages',
+          'virtual-dom-worker',
+          url,
+        )
+        try {
+          const content = await readFile(filePath, 'utf8')
+          res.writeHead(200, { 'Content-Type': getMimeType(filePath) })
+          res.end(content)
+          return
+        } catch (error2) {
+          res.writeHead(404, { 'Content-Type': 'text/plain' })
+          res.end('Not Found')
+          return
+        }
       }
     }
 
