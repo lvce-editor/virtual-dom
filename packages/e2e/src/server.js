@@ -19,7 +19,7 @@ const getMimeType = (path) => {
 
 const server = createServer(async (req, res) => {
   try {
-    let url = req.url === '/' ? '/index.html' : req.url
+    let url = req.url === '/' ? '/index.html' : req.url || '/index.html'
 
     // Serve dist files for virtual-dom packages
     if (url.startsWith('/dist/')) {
