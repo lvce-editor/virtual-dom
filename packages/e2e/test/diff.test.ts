@@ -5,7 +5,7 @@ test('applies diff patches to update DOM', async ({ page }) => {
 
   await page.waitForFunction(() => {
     // @ts-ignore
-    return window.__virtualDomDiffTestComplete === true
+    return globalThis.__virtualDomDiffTestComplete === true
   })
 
   const container = page.locator('#diff-container')

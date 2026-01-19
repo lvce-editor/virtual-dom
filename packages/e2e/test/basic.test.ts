@@ -5,7 +5,7 @@ test('renders virtual dom into root element', async ({ page }) => {
 
   await page.waitForFunction(() => {
     // @ts-ignore
-    return window.__virtualDomTestComplete === true
+    return globalThis.__virtualDomTestComplete === true
   })
 
   const testDiv = page.locator('#test-div')
