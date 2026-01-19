@@ -4,6 +4,7 @@ test('renders virtual dom into root element', async ({ page }) => {
   await page.goto('/')
 
   await page.waitForFunction(() => {
+    // @ts-ignore
     return window.__virtualDomTestComplete === true
   })
 

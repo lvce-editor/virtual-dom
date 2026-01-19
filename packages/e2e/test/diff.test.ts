@@ -4,6 +4,7 @@ test('applies diff patches to update DOM', async ({ page }) => {
   await page.goto('/diff.html')
 
   await page.waitForFunction(() => {
+    // @ts-ignore
     return window.__virtualDomDiffTestComplete === true
   })
 
