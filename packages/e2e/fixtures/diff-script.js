@@ -11,8 +11,12 @@ const $container = document.getElementById('diff-container')
 const initialDom = [
   {
     type: VirtualDomElements.Div,
-    text: 'Initial Text',
     className: 'initial-class',
+    childCount: 1,
+  },
+  {
+    type: VirtualDomElements.Text,
+    text: 'Initial Text',
     childCount: 0,
   },
 ]
@@ -24,8 +28,12 @@ renderInto($container, initialDom)
 const updatedDom = [
   {
     type: VirtualDomElements.Div,
-    text: 'Updated Text',
     className: 'updated-class',
+    childCount: 1,
+  },
+  {
+    type: VirtualDomElements.Text,
+    text: 'Updated Text',
     childCount: 0,
   },
 ]

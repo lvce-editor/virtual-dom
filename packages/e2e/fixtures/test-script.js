@@ -11,11 +11,19 @@ const virtualDom = [
   },
   {
     type: VirtualDomElements.Span,
+    childCount: 1,
+  },
+  {
+    type: VirtualDomElements.Text,
     text: 'Hello',
     childCount: 0,
   },
   {
     type: VirtualDomElements.Span,
+    childCount: 1,
+  },
+  {
+    type: VirtualDomElements.Text,
     text: 'World',
     childCount: 0,
   },
