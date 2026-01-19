@@ -2,6 +2,7 @@
   "name": "@lvce-editor/virtual-dom-e2e",
   "version": "0.0.0-dev",
   "type": "module",
+  "license": "MIT",
   "scripts": {
     "test": "playwright test",
     "test:ui": "playwright test --ui"

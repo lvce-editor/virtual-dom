@@ -5,6 +5,7 @@
   "type": "module",
   "scripts": {
     "build": "node packages/build/src/build.js",
+    "e2e": "lerna run test --scope @lvce-editor/virtual-dom-e2e",
     "format": "prettier --write .",
     "postinstall": "lerna bootstrap --ci",
     "lint": "eslint .",

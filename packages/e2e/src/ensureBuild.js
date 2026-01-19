@@ -7,13 +7,7 @@ const root = join(__dirname, '../../..')
 
 export const ensureBuild = async () => {
   // Check that .tmp files exist (ensures build has run)
-  const virtualDomWorkerTmp = join(
-    root,
-    '.tmp',
-    'tsc-dist',
-    'src',
-    'index.js',
-  )
+  const virtualDomWorkerTmp = join(root, '.tmp', 'tsc-dist', 'src', 'index.js')
   // Check that dist files exist (what we'll actually serve)
   const virtualDomWorkerDist = join(
     root,
