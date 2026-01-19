@@ -65,7 +65,7 @@ test('diffTree - attribute removed', () => {
   ])
 })
 
-test.only('diffTree - nested nodes', () => {
+test('diffTree - nested nodes', () => {
   const oldNodes = [
     {
       type: VirtualDomElements.Div,
