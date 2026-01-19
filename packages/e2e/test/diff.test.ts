@@ -1,7 +1,7 @@
 import { test, expect } from '@playwright/test'
 
 test('applies diff patches to update DOM', async ({ page }) => {
-  await page.goto('/diff.html')
+  await page.goto('/diff/diff.html')
 
   await page.waitForFunction(() => {
     // @ts-ignore
