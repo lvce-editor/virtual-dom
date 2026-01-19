@@ -92,6 +92,10 @@ test('diffTrees - add node with children', () => {
       index: 0,
     },
     {
+      type: PatchType.NavigateChild,
+      index: 0,
+    },
+    {
       type: PatchType.Add,
       nodes: [text('hello')],
     },
@@ -133,6 +137,10 @@ test('diffTrees - compare nested trees', () => {
   const patches: Patch[] = []
   DiffTrees.diffTrees(oldTree, newTree, patches, [])
   expect(patches).toEqual([
+    {
+      type: PatchType.NavigateChild,
+      index: 0,
+    },
     {
       type: PatchType.NavigateChild,
       index: 0,
@@ -216,10 +224,6 @@ test('diffTrees - with path context', () => {
     {
       type: PatchType.NavigateChild,
       index: 1,
-    },
-    {
-      type: PatchType.NavigateSibling,
-      index: 0,
     },
     {
       type: PatchType.RemoveChild,
