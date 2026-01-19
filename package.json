@@ -9,6 +9,7 @@
     "postinstall": "lerna bootstrap --ci",
     "lint": "eslint .",
     "test": "lerna run test",
+    "test:e2e": "lerna run test --scope @lvce-editor/virtual-dom-e2e",
     "type-check": "tsc -b"
   },
   "prettier": {

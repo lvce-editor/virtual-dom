@@ -9,7 +9,7 @@ const root = join(__dirname, '../../..')
 
 const PORT = 3000
 
-const getMimeType = (path: string): string => {
+const getMimeType = (path) => {
   if (path.endsWith('.html')) return 'text/html'
   if (path.endsWith('.js')) return 'application/javascript'
   if (path.endsWith('.css')) return 'text/css'
@@ -19,7 +19,24 @@ const getMimeType = (path: string): string => {
 
 const server = createServer(async (req, res) => {
   try {
-    const url = req.url === '/' ? '/index.html' : req.url
+    let url = req.url === '/' ? '/index.html' : req.url
+
+    // Serve dist files for virtual-dom packages
+    if (url.startsWith('/dist/')) {
+      const filePath = join(root, url)
+      try {
+        const content = await readFile(filePath, 'utf8')
+        res.writeHead(200, { 'Content-Type': getMimeType(filePath) })
+        res.end(content)
+        return
+      } catch (error) {
+        res.writeHead(404, { 'Content-Type': 'text/plain' })
+        res.end('Not Found')
+        return
+      }
+    }
+
+    // Serve fixture files
     const filePath = join(root, 'packages', 'e2e', 'src', 'fixtures', url)
 
     try {
@@ -36,7 +53,7 @@ const server = createServer(async (req, res) => {
   }
 })
 
-const start = async (): Promise<void> => {
+const start = async () => {
   await ensureBuild()
   server.listen(PORT, () => {
     console.log(`Server running at http://localhost:${PORT}`)
