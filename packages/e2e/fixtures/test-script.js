@@ -1,5 +1,4 @@
-import { renderInto } from '/dist/virtual-dom/dist/index.js'
-import { VirtualDomElements } from '/dist/virtual-dom-worker/dist/index.js'
+import { renderInto, VirtualDomElements } from '/dist/virtual-dom/dist/index.js'
 
 const $root = document.getElementById('root')
 

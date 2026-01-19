@@ -37,7 +37,7 @@ const server = createServer(async (req, res) => {
     }
 
     // Serve fixture files
-    const filePath = join(root, 'packages', 'e2e', 'src', 'fixtures', url)
+    const filePath = join(root, 'packages', 'e2e', 'fixtures', url)
 
     try {
       const content = await readFile(filePath, 'utf8')

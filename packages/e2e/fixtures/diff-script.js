@@ -1,6 +1,9 @@
-import { renderInto, applyPatch } from '/dist/virtual-dom/dist/index.js'
+import {
+  renderInto,
+  applyPatch,
+  VirtualDomElements,
+} from '/dist/virtual-dom/dist/index.js'
 import { diff } from '/dist/virtual-dom-worker/dist/index.js'
-import { VirtualDomElements } from '/dist/virtual-dom-worker/dist/index.js'
 
 const $container = document.getElementById('diff-container')
 
