@@ -1,0 +1,13 @@
+{
+  "name": "@lvce-editor/virtual-dom-e2e",
+  "version": "0.0.0-dev",
+  "type": "module",
+  "scripts": {
+    "test": "playwright test",
+    "test:ui": "playwright test --ui"
+  },
+  "devDependencies": {
+    "@playwright/test": "^1.48.0",
+    "@types/node": "^25.0.8"
+  }
+}
