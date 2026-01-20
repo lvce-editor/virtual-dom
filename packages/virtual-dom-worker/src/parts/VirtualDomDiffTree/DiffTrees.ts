@@ -17,8 +17,6 @@ export const diffTrees = (
     const oldNode = oldTree[i]
     const newNode = newTree[i]
 
-    console.log({ oldNode, newNode })
-
     if (!oldNode && !newNode) {
       continue
     }
@@ -85,7 +83,6 @@ export const diffTrees = (
         //   })
       }
     } else {
-      console.log({ patches, path, i, currentPath })
       // Remove old node
       AddNavigationPatches.addNavigationPatches(patches, path, i, currentPath)
       // Navigate to parent to remove the child
