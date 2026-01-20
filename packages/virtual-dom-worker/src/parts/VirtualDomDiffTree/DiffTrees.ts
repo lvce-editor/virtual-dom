@@ -42,6 +42,7 @@ export const diffTrees = (
     } else if (newNode) {
       // Compare nodes
       const nodePatches = CompareNodes.compareNodes(oldNode.node, newNode.node)
+      console.log({ nodePatches, oldNode, newNode })
       if (nodePatches.length > 0) {
         AddNavigationPatches.addNavigationPatches(patches, path, i, currentPath)
         patches.push(...nodePatches)
@@ -61,12 +62,19 @@ export const diffTrees = (
         // After navigating to child, we're now at childPath
         // When comparing children, we're already at the correct position,
         // so we don't need to add navigation patches - we pass childPath as currentPath
-        diffTrees(oldNode.children, newNode.children, patches, childPath, childPath)
+        diffTrees(
+          oldNode.children,
+          newNode.children,
+          patches,
+          childPath,
+          childPath,
+        )
         patches.push({
           type: PatchType.NavigateParent,
         })
       }
     } else {
+      console.log({ patches, path, i, currentPath })
       // Remove old node
       AddNavigationPatches.addNavigationPatches(patches, path, i, currentPath)
       // Navigate to parent to remove the child

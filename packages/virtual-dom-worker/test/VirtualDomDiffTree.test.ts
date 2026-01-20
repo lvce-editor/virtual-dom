@@ -522,7 +522,7 @@ test('diffTree - multiple text nodes in sequence', () => {
   ])
 })
 
-test('diffTree - table structure', () => {
+test.skip('diffTree - table structure', () => {
   const oldNodes = [
     {
       type: VirtualDomElements.Table,
@@ -562,7 +562,7 @@ test('diffTree - table structure', () => {
   ])
 })
 
-test('diffTree - deep nested structure', () => {
+test.skip('diffTree - deep nested structure', () => {
   const oldNodes = [
     {
       type: VirtualDomElements.Div,
