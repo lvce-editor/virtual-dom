@@ -47,18 +47,6 @@ test.only('diffTree - inner text node changed', () => {
       type: PatchType.NavigateChild,
     },
     {
-      index: 0,
-      type: PatchType.NavigateChild,
-    },
-    {
-      index: 0,
-      type: PatchType.NavigateChild,
-    },
-    {
-      index: 0,
-      type: PatchType.NavigateChild,
-    },
-    {
       type: PatchType.SetText,
       value: 'Updated Text',
     },
