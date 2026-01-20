@@ -17,6 +17,8 @@ export const diffTrees = (
     const oldNode = oldTree[i]
     const newNode = newTree[i]
 
+    console.log({ oldNode, newNode })
+
     if (!oldNode && !newNode) {
       continue
     }
