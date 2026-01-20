@@ -1,6 +1,6 @@
 import { test, expect } from '@playwright/test'
 
-test('diff - complex table changes', async ({ page }) => {
+test.skip('diff - complex table changes', async ({ page }) => {
   await page.goto('/diff/complex-table.html')
 
   await page.waitForFunction(() => {

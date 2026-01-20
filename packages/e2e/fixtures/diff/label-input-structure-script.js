@@ -32,7 +32,7 @@ const updatedDom = [
   },
   {
     type: VirtualDomElements.Label,
-    htmlFor: 'input-field',
+    for: 'input-field',
     childCount: 1,
   },
   {
