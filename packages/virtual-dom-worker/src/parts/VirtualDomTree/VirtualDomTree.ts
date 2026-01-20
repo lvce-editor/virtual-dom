@@ -1,11 +1,13 @@
 import type { VirtualDomNode } from '../VirtualDomNode/VirtualDomNode.ts'
 
 export interface VirtualDomTreeNode {
-  readonly node: VirtualDomNode
   readonly children: readonly VirtualDomTreeNode[]
+  readonly node: VirtualDomNode
 }
 
-export const arrayToTree = (nodes: readonly VirtualDomNode[]): readonly VirtualDomTreeNode[] => {
+export const arrayToTree = (
+  nodes: readonly VirtualDomNode[],
+): readonly VirtualDomTreeNode[] => {
   const result: VirtualDomTreeNode[] = []
   let i = 0
 

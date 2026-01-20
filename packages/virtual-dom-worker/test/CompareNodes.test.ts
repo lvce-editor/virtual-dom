@@ -3,8 +3,8 @@ import { VirtualDomElements } from '@lvce-editor/constants'
 import type { Patch } from '../src/parts/Patch/Patch.ts'
 import type { VirtualDomNode } from '../src/parts/VirtualDomNode/VirtualDomNode.ts'
 import * as PatchType from '../src/parts/PatchType/PatchType.ts'
-import * as CompareNodes from '../src/parts/VirtualDomDiffTree/CompareNodes.ts'
 import { text } from '../src/parts/Text/Text.ts'
+import * as CompareNodes from '../src/parts/VirtualDomDiffTree/CompareNodes.ts'
 
 test('compareNodes - identical nodes', () => {
   const oldNode: VirtualDomNode = {

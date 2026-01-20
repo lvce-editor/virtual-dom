@@ -1,8 +1,8 @@
 import type { Patch } from '../Patch/Patch.ts'
+import type * as VirtualDomTree from '../VirtualDomTree/VirtualDomTree.ts'
 import * as PatchType from '../PatchType/PatchType.ts'
-import * as VirtualDomTree from '../VirtualDomTree/VirtualDomTree.ts'
-import * as CompareNodes from './CompareNodes.ts'
 import * as AddNavigationPatches from './AddNavigationPatches.ts'
+import * as CompareNodes from './CompareNodes.ts'
 
 export const diffTrees = (
   oldTree: readonly VirtualDomTree.VirtualDomTreeNode[],
@@ -37,14 +37,7 @@ export const diffTrees = (
           type: PatchType.NavigateParent,
         })
       }
-    } else if (!newNode) {
-      // Remove old node
-      AddNavigationPatches.addNavigationPatches(patches, path, i)
-      patches.push({
-        type: PatchType.RemoveChild,
-        index: i,
-      })
-    } else {
+    } else if (newNode) {
       // Compare nodes
       const nodePatches = CompareNodes.compareNodes(oldNode.node, newNode.node)
       if (nodePatches.length > 0) {
@@ -63,6 +56,13 @@ export const diffTrees = (
           type: PatchType.NavigateParent,
         })
       }
+    } else {
+      // Remove old node
+      AddNavigationPatches.addNavigationPatches(patches, path, i)
+      patches.push({
+        type: PatchType.RemoveChild,
+        index: i,
+      })
     }
   }
 }

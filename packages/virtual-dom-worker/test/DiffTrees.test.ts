@@ -3,8 +3,8 @@ import { VirtualDomElements } from '@lvce-editor/constants'
 import type { Patch } from '../src/parts/Patch/Patch.ts'
 import type { VirtualDomTreeNode } from '../src/parts/VirtualDomTree/VirtualDomTree.ts'
 import * as PatchType from '../src/parts/PatchType/PatchType.ts'
-import * as DiffTrees from '../src/parts/VirtualDomDiffTree/DiffTrees.ts'
 import { text } from '../src/parts/Text/Text.ts'
+import * as DiffTrees from '../src/parts/VirtualDomDiffTree/DiffTrees.ts'
 
 test('diffTrees - empty trees', () => {
   const patches: Patch[] = []
