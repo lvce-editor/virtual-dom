@@ -13,7 +13,13 @@ export const addNavigationPatches = (
   }
 
   // If we're already at the target path, don't add navigation
-  const targetPath = [...path, currentIndex]
+  // The target path is the path to the node we want to patch
+  // If path is [0, 0] and currentIndex is 0, we're patching the node at [0, 0]
+  // (not [0, 0, 0] - that would be a child of [0, 0])
+  const targetPath = path.length > 0 ? [...path.slice(0, -1), path[path.length - 1] + currentIndex] : [currentIndex]
+  if (currentPath.length === 0 && path.length === 0 && currentIndex === 0) {
+    return
+  }
   if (
     currentPath.length === targetPath.length &&
     currentPath.every((val, idx) => val === targetPath[idx])
