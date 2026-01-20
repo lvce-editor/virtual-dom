@@ -1,6 +1,6 @@
 import { test, expect } from '@playwright/test'
 
-test.skip('diff - heading elements changes', async ({ page }) => {
+test('diff - heading elements changes', async ({ page }) => {
   await page.goto('/diff/heading-elements.html')
 
   await page.waitForFunction(() => {

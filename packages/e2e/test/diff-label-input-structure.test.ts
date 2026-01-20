@@ -1,6 +1,6 @@
 import { test, expect } from '@playwright/test'
 
-test.skip('diff - label input structure changes', async ({ page }) => {
+test('diff - label input structure changes', async ({ page }) => {
   await page.goto('/diff/label-input-structure.html')
 
   await page.waitForFunction(() => {

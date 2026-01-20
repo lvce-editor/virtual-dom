@@ -1,6 +1,6 @@
 import { test, expect } from '@playwright/test'
 
-test.skip('diff - pre code structure changes', async ({ page }) => {
+test('diff - pre code structure changes', async ({ page }) => {
   await page.goto('/diff/pre-code-structure.html')
 
   await page.waitForFunction(() => {

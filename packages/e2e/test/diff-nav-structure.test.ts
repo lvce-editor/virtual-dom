@@ -1,6 +1,6 @@
 import { test, expect } from '@playwright/test'
 
-test.skip('diff - nav structure changes', async ({ page }) => {
+test('diff - nav structure changes', async ({ page }) => {
   await page.goto('/diff/nav-structure.html')
 
   await page.waitForFunction(() => {

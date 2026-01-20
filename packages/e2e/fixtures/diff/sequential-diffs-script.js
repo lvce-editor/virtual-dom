@@ -64,7 +64,7 @@ const secondDom = [
   },
 ]
 
-patches = diff(currentDom, secondDom)
+patches = diffTree(currentDom, secondDom)
 applyPatch($root, patches)
 currentDom = secondDom
 
@@ -95,7 +95,7 @@ const thirdDom = [
   },
 ]
 
-patches = diff(currentDom, thirdDom)
+patches = diffTree(currentDom, thirdDom)
 applyPatch($root, patches)
 
 window.__virtualDomDiffTestComplete = true

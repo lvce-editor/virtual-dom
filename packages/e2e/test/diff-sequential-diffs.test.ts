@@ -1,6 +1,6 @@
 import { test, expect } from '@playwright/test'
 
-test.skip('diff - sequential diffs', async ({ page }) => {
+test('diff - sequential diffs', async ({ page }) => {
   await page.goto('/diff/sequential-diffs.html')
 
   await page.waitForFunction(() => {
