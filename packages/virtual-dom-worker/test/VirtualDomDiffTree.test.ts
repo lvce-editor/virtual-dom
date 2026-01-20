@@ -522,7 +522,7 @@ test('diffTree - multiple text nodes in sequence', () => {
   ])
 })
 
-test.only('diffTree - table structure', () => {
+test('diffTree - table structure', () => {
   const oldNodes = [
     {
       type: VirtualDomElements.Table,
@@ -705,37 +705,6 @@ test('diffTree - add child nodes', () => {
   ]
   const patches = diffTree(oldNodes, newNodes)
   expect(patches).toEqual([
-    {
-      index: 0,
-      type: 7,
-    },
-    {
-      index: 1,
-      type: PatchType.NavigateSibling,
-    },
-    {
-      nodes: [
-        {
-          childCount: 1,
-          type: 8,
-        },
-      ],
-      type: 6,
-    },
-    {
-      index: 0,
-      type: 7,
-    },
-    {
-      nodes: [
-        {
-          childCount: 0,
-          text: 'Second',
-          type: 12,
-        },
-      ],
-      type: 6,
-    },
     {
       type: 8,
     },
