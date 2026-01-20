@@ -11,7 +11,7 @@ test('diff - style attributes changes', async ({ page }) => {
   const container = page.locator('#diff-container')
   const span = container.locator('span')
   await expect(span).toBeVisible()
-  const style = await span.evaluate((el) => window.getComputedStyle(el))
+  const style = await span.evaluate((el) => globalThis.getComputedStyle(el))
   expect(style.width).toBe('100px')
   expect(style.height).toBe('50px')
   expect(style.top).toBe('10px')
