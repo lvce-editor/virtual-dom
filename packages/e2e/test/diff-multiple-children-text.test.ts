@@ -1,6 +1,6 @@
-import { test, expect } from '@playwright/test'
+import { test, expect } from '../src/fixtures.ts'
 
-test.skip('diff - multiple children text changes', async ({ page }) => {
+test('diff - multiple children text changes', async ({ page }) => {
   await page.goto('/diff/multiple-children-text.html')
 
   await page.waitForFunction(() => {

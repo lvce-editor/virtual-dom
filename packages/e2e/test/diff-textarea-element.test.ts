@@ -1,6 +1,6 @@
-import { test, expect } from '@playwright/test'
+import { test, expect } from '../src/fixtures.ts'
 
-test.skip('diff - textarea element changes', async ({ page }) => {
+test('diff - textarea element changes', async ({ page }) => {
   await page.goto('/diff/textarea-element.html')
 
   await page.waitForFunction(() => {

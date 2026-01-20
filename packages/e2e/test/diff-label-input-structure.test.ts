@@ -1,6 +1,6 @@
-import { test, expect } from '@playwright/test'
+import { test, expect } from '../src/fixtures.ts'
 
-test.skip('diff - label input structure changes', async ({ page }) => {
+test('diff - label input structure changes', async ({ page }) => {
   await page.goto('/diff/label-input-structure.html')
 
   await page.waitForFunction(() => {

@@ -1,4 +1,4 @@
-import { test, expect } from '@playwright/test'
+import { test, expect } from '../src/fixtures.ts'
 
 test('diff - nested text change', async ({ page }) => {
   await page.goto('/diff/nested-text-change.html')

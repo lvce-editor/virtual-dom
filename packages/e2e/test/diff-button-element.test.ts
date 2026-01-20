@@ -1,6 +1,6 @@
-import { test, expect } from '@playwright/test'
+import { test, expect } from '../src/fixtures.ts'
 
-test.skip('diff - button element changes', async ({ page }) => {
+test('diff - button element changes', async ({ page }) => {
   await page.goto('/diff/button-element.html')
 
   await page.waitForFunction(() => {

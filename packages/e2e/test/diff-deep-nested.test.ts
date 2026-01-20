@@ -1,4 +1,4 @@
-import { test, expect } from '@playwright/test'
+import { test, expect } from '../src/fixtures.ts'
 
 test('diff - deep nested structure', async ({ page }) => {
   await page.goto('/diff/deep-nested.html')

@@ -1,6 +1,6 @@
-import { test, expect } from '@playwright/test'
+import { test, expect } from '../src/fixtures.ts'
 
-test.skip('diff - image element changes', async ({ page }) => {
+test('diff - image element changes', async ({ page }) => {
   await page.goto('/diff/image-element.html')
 
   await page.waitForFunction(() => {

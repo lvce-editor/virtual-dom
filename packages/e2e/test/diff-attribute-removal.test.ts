@@ -1,6 +1,6 @@
-import { test, expect } from '@playwright/test'
+import { test, expect } from '../src/fixtures.ts'
 
-test.skip('diff - attribute removal', async ({ page }) => {
+test('diff - attribute removal', async ({ page }) => {
   await page.goto('/diff/attribute-removal.html')
 
   await page.waitForFunction(() => {

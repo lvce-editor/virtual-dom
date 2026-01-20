@@ -1,6 +1,6 @@
-import { test, expect } from '@playwright/test'
+import { test, expect } from '../src/fixtures.ts'
 
-test.skip('diff - complex table changes', async ({ page }) => {
+test('diff - complex table changes', async ({ page }) => {
   await page.goto('/diff/complex-table.html')
 
   await page.waitForFunction(() => {

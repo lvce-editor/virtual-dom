@@ -1,6 +1,6 @@
-import { test, expect } from '@playwright/test'
+import { test, expect } from '../src/fixtures.ts'
 
-test.skip('diff - sequential diffs', async ({ page }) => {
+test('diff - sequential diffs', async ({ page }) => {
   await page.goto('/diff/sequential-diffs.html')
 
   await page.waitForFunction(() => {
