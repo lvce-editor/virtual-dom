@@ -661,3 +661,124 @@ test('diffTree - node with multiple children', () => {
     },
   ])
 })
+
+test('diffTree - add child nodes', () => {
+  const oldNodes = [
+    {
+      type: VirtualDomElements.Div,
+      childCount: 1,
+    },
+    {
+      type: VirtualDomElements.Span,
+      childCount: 1,
+    },
+    {
+      type: VirtualDomElements.Text,
+      text: 'First',
+      childCount: 0,
+    },
+  ]
+
+  const newNodes = [
+    {
+      type: VirtualDomElements.Div,
+      childCount: 2,
+    },
+    {
+      type: VirtualDomElements.Span,
+      childCount: 1,
+    },
+    {
+      type: VirtualDomElements.Text,
+      text: 'First',
+      childCount: 0,
+    },
+    {
+      type: VirtualDomElements.Span,
+      childCount: 1,
+    },
+    {
+      type: VirtualDomElements.Text,
+      text: 'Second',
+      childCount: 0,
+    },
+  ]
+  const patches = diffTree(oldNodes, newNodes)
+  expect(patches).toEqual([
+    {
+      index: 0,
+      type: 7,
+    },
+    {
+      index: 0,
+      type: 7,
+    },
+    {
+      type: 8,
+    },
+    {
+      index: 1,
+      type: 10,
+    },
+    {
+      nodes: [
+        {
+          childCount: 1,
+          type: 8,
+        },
+      ],
+      type: 6,
+    },
+    {
+      index: 0,
+      type: 7,
+    },
+    {
+      nodes: [
+        {
+          childCount: 0,
+          text: 'Second',
+          type: 12,
+        },
+      ],
+      type: 6,
+    },
+    {
+      type: 8,
+    },
+    {
+      type: 8,
+    },
+    {
+      index: 1,
+      type: 10,
+    },
+    {
+      index: 0,
+      type: 9,
+    },
+    {
+      nodes: [
+        {
+          childCount: 1,
+          type: 8,
+        },
+      ],
+      type: 6,
+    },
+    {
+      index: 0,
+      type: 7,
+    },
+    {
+      nodes: [
+        {
+          childCount: 0,
+          text: 'Second',
+          type: 12,
+        },
+      ],
+      type: 6,
+    },
+  ])
+})
