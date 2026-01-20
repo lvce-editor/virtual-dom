@@ -37,39 +37,48 @@ const diffChildren = (
         nodes: flatNodes,
       })
     } else if (newNode) {
-      // Navigate to this child if not already there
-      if (currentChildIndex === -1) {
-        patches.push({
-          type: PatchType.NavigateChild,
-          index: i,
-        })
-        currentChildIndex = i
-      } else if (currentChildIndex !== i) {
-        patches.push({
-          type: PatchType.NavigateSibling,
-          index: i,
-        })
-        currentChildIndex = i
-      }
-
-      // Compare nodes
+      // Compare nodes to see if we need any patches
       const nodePatches = CompareNodes.compareNodes(oldNode.node, newNode.node)
-      if (nodePatches.length > 0) {
-        patches.push(...nodePatches)
-      }
 
-      // Compare children recursively
-      if (oldNode.children.length > 0 || newNode.children.length > 0) {
-        // Navigate to first child
-        patches.push({
-          type: PatchType.NavigateChild,
-          index: 0,
-        })
-        diffChildren(oldNode.children, newNode.children, patches)
-        // Navigate back to current node
-        patches.push({
-          type: PatchType.NavigateParent,
-        })
+      // Check if we need to recurse into children
+      const hasChildrenToCompare =
+        oldNode.children.length > 0 || newNode.children.length > 0
+
+      // Only navigate to this element if we need to do something
+      if (nodePatches.length > 0 || hasChildrenToCompare) {
+        // Navigate to this child if not already there
+        if (currentChildIndex === -1) {
+          patches.push({
+            type: PatchType.NavigateChild,
+            index: i,
+          })
+          currentChildIndex = i
+        } else if (currentChildIndex !== i) {
+          patches.push({
+            type: PatchType.NavigateSibling,
+            index: i,
+          })
+          currentChildIndex = i
+        }
+
+        // Apply node patches
+        if (nodePatches.length > 0) {
+          patches.push(...nodePatches)
+        }
+
+        // Compare children recursively
+        if (hasChildrenToCompare) {
+          // Navigate to first child
+          patches.push({
+            type: PatchType.NavigateChild,
+            index: 0,
+          })
+          diffChildren(oldNode.children, newNode.children, patches)
+          // Navigate back to current node
+          patches.push({
+            type: PatchType.NavigateParent,
+          })
+        }
       }
     } else {
       // Remove old node - navigate to parent if needed
