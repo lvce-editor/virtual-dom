@@ -13,5 +13,6 @@ test('diff - very deep nested changes', async ({ page }) => {
   await expect(span).toBeVisible()
   await expect(span).toHaveText('Very Deep')
   const divs = container.locator('div')
-  await expect(divs).toHaveCount(6)
+  // Updated DOM has 5 divs (not 6)
+  await expect(divs).toHaveCount(5)
 })

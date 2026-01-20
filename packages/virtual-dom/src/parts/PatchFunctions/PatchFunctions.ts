@@ -5,6 +5,11 @@ import * as RenderInternal from '../RenderInternal/RenderInternal.ts'
 const propertyToAttribute: Record<string, string> = {
   className: 'class',
   htmlFor: 'for',
+  ariaActivedescendant: 'aria-activedescendant',
+  ariaControls: 'aria-controls',
+  ariaLabelledBy: 'aria-labelledby',
+  ariaOwns: 'aria-owns',
+  inputType: 'type',
 }
 
 // Style properties that need to be set on element.style
@@ -23,6 +28,16 @@ export const setAttribute = (
   key: string,
   value: any,
 ): void => {
+  // Handle width/height for images (set as attributes, not style)
+  if (
+    (key === 'width' || key === 'height') &&
+    $Element instanceof HTMLImageElement
+  ) {
+    // @ts-ignore - dynamic property access
+    $Element[key] = value
+    return
+  }
+
   // Handle style properties
   if (styleProperties.has(key)) {
     // @ts-ignore - dynamic style property access
@@ -30,14 +45,18 @@ export const setAttribute = (
     return
   }
 
-  // Handle special cases where property name differs from attribute name
-  const attributeName = propertyToAttribute[key] || key
+  // Handle aria attributes - map camelCase to hyphenated form
+  if (key in propertyToAttribute) {
+    $Element.setAttribute(propertyToAttribute[key], value)
+    return
+  }
+
   // Use property assignment for known DOM properties, attribute for others
   if (key in $Element) {
     // @ts-ignore - dynamic property access
     $Element[key] = value
   } else {
-    $Element.setAttribute(attributeName, value)
+    $Element.setAttribute(key, value)
   }
 }
 
