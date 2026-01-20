@@ -714,10 +714,6 @@ test('diffTree - add child nodes', () => {
       type: 10,
     },
     {
-      index: 0,
-      type: 9,
-    },
-    {
       nodes: [
         {
           childCount: 1,
