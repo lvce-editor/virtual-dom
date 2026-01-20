@@ -9,6 +9,9 @@ export const applyPatch = ($Element: Node, patches: readonly Patch[]): void => {
       case PatchType.Add:
         PatchFunctions.add($Current as HTMLElement, patch.nodes)
         break
+      case PatchType.Replace:
+        $Current = PatchFunctions.replace($Current as HTMLElement, patch.nodes)
+        break
       case PatchType.NavigateChild:
         $Current = ($Current as HTMLElement).childNodes[patch.index]
         break

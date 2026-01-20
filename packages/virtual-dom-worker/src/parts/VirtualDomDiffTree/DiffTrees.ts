@@ -12,6 +12,8 @@ const diffChildren = (
   const maxLength = Math.max(oldChildren.length, newChildren.length)
   // Track where we are: -1 means at parent, >= 0 means at child index
   let currentChildIndex = -1
+  // Collect indices of children to remove (we'll add these patches at the end in reverse order)
+  const indicesToRemove: number[] = []
 
   for (let i = 0; i < maxLength; i++) {
     const oldNode = oldChildren[i]
@@ -40,6 +42,33 @@ const diffChildren = (
       // Compare nodes to see if we need any patches
       const nodePatches = CompareNodes.compareNodes(oldNode.node, newNode.node)
 
+      // If nodePatches is null, the node types are incompatible - need to replace
+      if (nodePatches === null) {
+        // Navigate to this child
+        if (currentChildIndex === -1) {
+          patches.push({
+            type: PatchType.NavigateChild,
+            index: i,
+          })
+          currentChildIndex = i
+        } else if (currentChildIndex !== i) {
+          patches.push({
+            type: PatchType.NavigateSibling,
+            index: i,
+          })
+          currentChildIndex = i
+        }
+
+        // Replace the entire subtree
+        const flatNodes = TreeToArray.treeToArray(newNode)
+        patches.push({
+          type: PatchType.Replace,
+          nodes: flatNodes,
+        })
+        // After replace, we're at the new element (same position)
+        continue
+      }
+
       // Check if we need to recurse into children
       const hasChildrenToCompare =
         oldNode.children.length > 0 || newNode.children.length > 0
@@ -61,37 +90,19 @@ const diffChildren = (
           currentChildIndex = i
         }
 
-        // Apply node patches
+        // Apply node patches (these apply to the current element, not children)
         if (nodePatches.length > 0) {
           patches.push(...nodePatches)
         }
 
         // Compare children recursively
         if (hasChildrenToCompare) {
-          // Navigate to first child
-          patches.push({
-            type: PatchType.NavigateChild,
-            index: 0,
-          })
           diffChildren(oldNode.children, newNode.children, patches)
-          // Navigate back to current node
-          patches.push({
-            type: PatchType.NavigateParent,
-          })
         }
       }
     } else {
-      // Remove old node - navigate to parent if needed
-      if (currentChildIndex >= 0) {
-        patches.push({
-          type: PatchType.NavigateParent,
-        })
-        currentChildIndex = -1
-      }
-      patches.push({
-        type: PatchType.RemoveChild,
-        index: i,
-      })
+      // Remove old node - collect the index for later removal
+      indicesToRemove.push(i)
     }
   }
 
@@ -99,6 +110,16 @@ const diffChildren = (
   if (currentChildIndex >= 0) {
     patches.push({
       type: PatchType.NavigateParent,
+    })
+    currentChildIndex = -1
+  }
+
+  // Add remove patches in reverse order (highest index first)
+  // This ensures indices remain valid as we remove
+  for (let j = indicesToRemove.length - 1; j >= 0; j--) {
+    patches.push({
+      type: PatchType.RemoveChild,
+      index: indicesToRemove[j],
     })
   }
 }
@@ -117,6 +138,17 @@ export const diffTrees = (
 
     // Compare root nodes
     const nodePatches = CompareNodes.compareNodes(oldNode.node, newNode.node)
+
+    // If nodePatches is null, the root node types are incompatible - need to replace
+    if (nodePatches === null) {
+      const flatNodes = TreeToArray.treeToArray(newNode)
+      patches.push({
+        type: PatchType.Replace,
+        nodes: flatNodes,
+      })
+      return
+    }
+
     if (nodePatches.length > 0) {
       patches.push(...nodePatches)
     }

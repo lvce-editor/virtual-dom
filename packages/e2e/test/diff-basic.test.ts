@@ -1,4 +1,4 @@
-import { test, expect } from '@playwright/test'
+import { test, expect } from '../src/fixtures.ts'
 
 test('applies diff patches to update DOM', async ({ page }) => {
   await page.goto('/diff/diff.html')

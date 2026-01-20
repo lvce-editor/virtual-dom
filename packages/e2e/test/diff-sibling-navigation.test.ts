@@ -1,4 +1,4 @@
-import { test, expect } from '@playwright/test'
+import { test, expect } from '../src/fixtures.ts'
 
 test('diff - sibling navigation complex', async ({ page }) => {
   await page.goto('/diff/sibling-navigation.html')

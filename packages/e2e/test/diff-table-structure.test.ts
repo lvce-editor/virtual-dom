@@ -1,4 +1,4 @@
-import { test, expect } from '@playwright/test'
+import { test, expect } from '../src/fixtures.ts'
 
 test('diff - table structure', async ({ page }) => {
   await page.goto('/diff/table-structure.html')

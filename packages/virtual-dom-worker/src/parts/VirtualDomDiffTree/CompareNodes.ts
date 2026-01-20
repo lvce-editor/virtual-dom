@@ -7,20 +7,13 @@ import * as PatchType from '../PatchType/PatchType.ts'
 export const compareNodes = (
   oldNode: VirtualDomNode,
   newNode: VirtualDomNode,
-): Patch[] => {
+): Patch[] | null => {
   const patches: Patch[] = []
 
-  // Check if node type changed
+  // Check if node type changed - return null to signal incompatible nodes
+  // (caller should handle this with a Replace operation)
   if (oldNode.type !== newNode.type) {
-    patches.push({
-      type: PatchType.RemoveChild,
-      index: 0,
-    })
-    patches.push({
-      type: PatchType.Add,
-      nodes: [newNode],
-    })
-    return patches
+    return null
   }
 
   // Handle text nodes
