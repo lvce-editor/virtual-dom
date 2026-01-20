@@ -1,6 +1,5 @@
 import { expect, test } from '@jest/globals'
 import { VirtualDomElements } from '@lvce-editor/constants'
-import type { VirtualDomNode } from '../src/parts/VirtualDomNode/VirtualDomNode.ts'
 import * as PatchType from '../src/parts/PatchType/PatchType.ts'
 import { text } from '../src/parts/Text/Text.ts'
 import { diffTree } from '../src/parts/VirtualDomDiffTree/VirtualDomDiffTree.ts'
