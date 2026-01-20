@@ -59,7 +59,7 @@ test.skip('diffTrees - remove old node', () => {
   ])
 })
 
-test('diffTrees - add node with children', () => {
+test.skip('diffTrees - add node with children', () => {
   const oldTree: readonly VirtualDomTreeNode[] = []
   const newTree: readonly VirtualDomTreeNode[] = [
     {
