@@ -706,10 +706,7 @@ test('diffTree - add child nodes', () => {
   const patches = diffTree(oldNodes, newNodes)
   expect(patches).toEqual([
     {
-      type: 8,
-    },
-    {
-      type: 8,
+      type: 7,
     },
     {
       index: 1,
