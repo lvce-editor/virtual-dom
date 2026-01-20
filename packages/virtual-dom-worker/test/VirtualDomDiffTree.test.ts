@@ -44,19 +44,19 @@ test.only('diffTree - inner text node changed', () => {
   expect(patches).toEqual([
     {
       index: 0,
-      type: 7,
+      type: PatchType.NavigateChild,
     },
     {
       index: 0,
-      type: 7,
+      type: PatchType.NavigateChild,
     },
     {
       index: 0,
-      type: 7,
+      type: PatchType.NavigateChild,
     },
     {
       index: 0,
-      type: 7,
+      type: PatchType.NavigateChild,
     },
     {
       type: PatchType.SetText,
