@@ -9,13 +9,8 @@ export default defineConfig({
   forbidOnly: !!process.env.CI,
   retries: process.env.CI ? 2 : 0,
   ...(process.env.CI ? { workers: 1 } : {}),
-<<<<<<< HEAD
-  reporter: 'html',
-  timeout: 5000, // 10 seconds
-=======
+  timeout: 5000,
   reporter: 'list',
-  timeout: 10_000, // 10 seconds
->>>>>>> origin/main
   use: {
     baseURL: 'http://localhost:3000',
     trace: 'on-first-retry',
