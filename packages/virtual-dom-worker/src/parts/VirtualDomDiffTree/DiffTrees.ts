@@ -68,9 +68,19 @@ export const diffTrees = (
           childPath,
           childPath,
         )
-        patches.push({
-          type: PatchType.NavigateParent,
-        })
+        if (patches.at(-1)?.type === PatchType.NavigateChild) {
+          patches.pop()
+        } else
+          patches.push({
+            type: PatchType.NavigateParent,
+          })
+      } else {
+        // if (patches.at(-1)?.type === PatchType.NavigateChild) {
+        //   patches.pop()
+        // } else
+        //   patches.push({
+        //     type: PatchType.NavigateParent,
+        //   })
       }
     } else {
       console.log({ patches, path, i, currentPath })

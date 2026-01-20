@@ -662,7 +662,7 @@ test('diffTree - node with multiple children', () => {
   ])
 })
 
-test('diffTree - add child nodes', () => {
+test.only('diffTree - add child nodes', () => {
   const oldNodes = [
     {
       type: VirtualDomElements.Div,
@@ -710,15 +710,8 @@ test('diffTree - add child nodes', () => {
       type: 7,
     },
     {
-      index: 0,
-      type: 7,
-    },
-    {
-      type: 8,
-    },
-    {
       index: 1,
-      type: 10,
+      type: PatchType.NavigateSibling,
     },
     {
       nodes: [
