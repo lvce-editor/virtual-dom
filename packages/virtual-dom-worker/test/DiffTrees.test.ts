@@ -180,6 +180,10 @@ test('diffTrees - multiple siblings', () => {
   DiffTrees.diffTrees(oldTree, newTree, patches, [])
   expect(patches).toEqual([
     {
+      type: PatchType.NavigateChild,
+      index: 0,
+    },
+    {
       type: PatchType.SetText,
       value: 'uno',
     },
@@ -190,6 +194,9 @@ test('diffTrees - multiple siblings', () => {
     {
       type: PatchType.SetText,
       value: 'dos',
+    },
+    {
+      type: PatchType.NavigateParent,
     },
   ])
 })

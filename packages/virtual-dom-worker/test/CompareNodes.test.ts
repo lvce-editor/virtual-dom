@@ -18,7 +18,7 @@ test('compareNodes - identical nodes', () => {
   expect(patches).toEqual([])
 })
 
-test('compareNodes - node type changed', () => {
+test('compareNodes - node type changed returns null', () => {
   const oldNode: VirtualDomNode = {
     type: VirtualDomElements.Div,
     childCount: 0,
@@ -27,17 +27,9 @@ test('compareNodes - node type changed', () => {
     type: VirtualDomElements.Span,
     childCount: 0,
   }
+  // Returns null to signal incompatible nodes - caller should handle with Replace operation
   const patches = CompareNodes.compareNodes(oldNode, newNode)
-  expect(patches).toEqual([
-    {
-      type: PatchType.RemoveChild,
-      index: 0,
-    },
-    {
-      type: PatchType.Add,
-      nodes: [newNode],
-    },
-  ])
+  expect(patches).toBeNull()
 })
 
 test('compareNodes - text node changed', () => {

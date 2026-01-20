@@ -206,11 +206,7 @@ test('diffTree - node type changed from div to span', () => {
       index: 0,
     },
     {
-      type: PatchType.RemoveChild,
-      index: 0,
-    },
-    {
-      type: PatchType.Add,
+      type: PatchType.Replace,
       nodes: [
         {
           type: VirtualDomElements.Span,
@@ -468,11 +464,7 @@ test('diffTree - button to input conversion', () => {
       index: 0,
     },
     {
-      type: PatchType.RemoveChild,
-      index: 0,
-    },
-    {
-      type: PatchType.Add,
+      type: PatchType.Replace,
       nodes: [
         {
           type: VirtualDomElements.Input,
@@ -706,35 +698,25 @@ test('diffTree - add child nodes', () => {
   const patches = diffTree(oldNodes, newNodes)
   expect(patches).toEqual([
     {
-      type: 7,
+      type: PatchType.NavigateChild,
       index: 0,
     },
     {
-      index: 1,
-      type: 10,
+      type: PatchType.NavigateParent,
     },
     {
+      type: PatchType.Add,
       nodes: [
         {
           childCount: 1,
-          type: 8,
+          type: VirtualDomElements.Span,
         },
-      ],
-      type: 6,
-    },
-    {
-      index: 0,
-      type: 7,
-    },
-    {
-      nodes: [
         {
           childCount: 0,
           text: 'Second',
-          type: 12,
+          type: VirtualDomElements.Text,
         },
       ],
-      type: 6,
     },
   ])
 })
