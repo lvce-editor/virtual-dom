@@ -5,7 +5,8 @@ import * as RemoveTrailingNavigationPatches from '../src/parts/VirtualDomDiffTre
 
 test('removeTrailingNavigationPatches - empty array', () => {
   const patches: Patch[] = []
-  const result = RemoveTrailingNavigationPatches.removeTrailingNavigationPatches(patches)
+  const result =
+    RemoveTrailingNavigationPatches.removeTrailingNavigationPatches(patches)
   expect(result).toEqual([])
 })
 
@@ -21,7 +22,8 @@ test('removeTrailingNavigationPatches - no navigation patches', () => {
       value: 'test',
     },
   ]
-  const result = RemoveTrailingNavigationPatches.removeTrailingNavigationPatches(patches)
+  const result =
+    RemoveTrailingNavigationPatches.removeTrailingNavigationPatches(patches)
   expect(result).toEqual(patches)
 })
 
@@ -39,7 +41,8 @@ test('removeTrailingNavigationPatches - only navigation patches', () => {
       index: 1,
     },
   ]
-  const result = RemoveTrailingNavigationPatches.removeTrailingNavigationPatches(patches)
+  const result =
+    RemoveTrailingNavigationPatches.removeTrailingNavigationPatches(patches)
   expect(result).toEqual([])
 })
 
@@ -61,7 +64,8 @@ test('removeTrailingNavigationPatches - trailing navigation patches', () => {
       index: 1,
     },
   ]
-  const result = RemoveTrailingNavigationPatches.removeTrailingNavigationPatches(patches)
+  const result =
+    RemoveTrailingNavigationPatches.removeTrailingNavigationPatches(patches)
   expect(result).toEqual([
     {
       type: PatchType.SetText,
@@ -93,7 +97,8 @@ test('removeTrailingNavigationPatches - navigation patches in middle', () => {
       index: 1,
     },
   ]
-  const result = RemoveTrailingNavigationPatches.removeTrailingNavigationPatches(patches)
+  const result =
+    RemoveTrailingNavigationPatches.removeTrailingNavigationPatches(patches)
   expect(result).toEqual([
     {
       type: PatchType.NavigateChild,
@@ -141,7 +146,8 @@ test('removeTrailingNavigationPatches - mixed patches with trailing navigation',
       index: 2,
     },
   ]
-  const result = RemoveTrailingNavigationPatches.removeTrailingNavigationPatches(patches)
+  const result =
+    RemoveTrailingNavigationPatches.removeTrailingNavigationPatches(patches)
   expect(result).toEqual([
     {
       type: PatchType.NavigateChild,
@@ -177,7 +183,8 @@ test('removeTrailingNavigationPatches - all navigation types', () => {
       index: 1,
     },
   ]
-  const result = RemoveTrailingNavigationPatches.removeTrailingNavigationPatches(patches)
+  const result =
+    RemoveTrailingNavigationPatches.removeTrailingNavigationPatches(patches)
   expect(result).toEqual([
     {
       type: PatchType.Add,

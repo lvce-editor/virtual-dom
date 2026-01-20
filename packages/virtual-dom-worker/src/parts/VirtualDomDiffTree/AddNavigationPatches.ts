@@ -18,7 +18,7 @@ export const addNavigationPatches = (
   // So if path is [0, 0] and currentIndex is 0, the target is [0, 0] (not [0, 0, 0])
   // We're comparing the node at path, not its child
   const targetPath = [...path]
-  
+
   // If we're already at the target path, don't add navigation
   if (
     currentPath.length === targetPath.length &&

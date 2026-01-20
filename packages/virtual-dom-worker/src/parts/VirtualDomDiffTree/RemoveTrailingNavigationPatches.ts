@@ -17,5 +17,7 @@ export const removeTrailingNavigationPatches = (patches: Patch[]): Patch[] => {
   }
 
   // Return patches up to and including the last non-navigation patch
-  return lastNonNavigationIndex === -1 ? [] : patches.slice(0, lastNonNavigationIndex + 1)
+  return lastNonNavigationIndex === -1
+    ? []
+    : patches.slice(0, lastNonNavigationIndex + 1)
 }
