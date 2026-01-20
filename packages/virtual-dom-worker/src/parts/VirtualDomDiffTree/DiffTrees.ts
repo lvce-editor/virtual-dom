@@ -59,6 +59,10 @@ export const diffTrees = (
     } else {
       // Remove old node
       AddNavigationPatches.addNavigationPatches(patches, path, i)
+      // Navigate to parent to remove the child
+      patches.push({
+        type: PatchType.NavigateParent,
+      })
       patches.push({
         type: PatchType.RemoveChild,
         index: i,

@@ -16,6 +16,55 @@ test('diffTree - text node changed', () => {
   ])
 })
 
+test.only('diffTree - inner text node changed', () => {
+  const oldNodes = [
+    {
+      type: VirtualDomElements.Div,
+      childCount: 1,
+    },
+    {
+      type: VirtualDomElements.Text,
+      text: 'Initial Text',
+      childCount: 0,
+    },
+  ]
+
+  const newNodes = [
+    {
+      type: VirtualDomElements.Div,
+      childCount: 1,
+    },
+    {
+      type: VirtualDomElements.Text,
+      text: 'Updated Text',
+      childCount: 0,
+    },
+  ]
+  const patches = diffTree(oldNodes, newNodes)
+  expect(patches).toEqual([
+    {
+      index: 0,
+      type: 7,
+    },
+    {
+      index: 0,
+      type: 7,
+    },
+    {
+      index: 0,
+      type: 7,
+    },
+    {
+      index: 0,
+      type: 7,
+    },
+    {
+      type: PatchType.SetText,
+      value: 'world',
+    },
+  ])
+})
+
 test('diffTree - attribute changed 1', () => {
   const oldNodes = [
     {
