@@ -3,7 +3,7 @@ import {
   applyPatch,
   VirtualDomElements,
 } from '/dist/virtual-dom/dist/index.js'
-import { diff } from '/dist/virtual-dom-worker/dist/index.js'
+import { diffTree } from '/dist/virtual-dom-worker/dist/index.js'
 
 const $container = document.getElementById('diff-container')
 
@@ -42,7 +42,7 @@ let currentDom = [
   },
 ]
 
-let patches = diff(initialDom, currentDom)
+let patches = diffTree(initialDom, currentDom)
 let $root = $container.firstElementChild
 applyPatch($root, patches)
 
