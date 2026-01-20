@@ -16,7 +16,7 @@ test('diffTree - text node changed', () => {
   ])
 })
 
-test.only('diffTree - inner text node changed', () => {
+test('diffTree - inner text node changed', () => {
   const oldNodes = [
     {
       type: VirtualDomElements.Div,

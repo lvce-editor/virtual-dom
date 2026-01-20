@@ -50,6 +50,10 @@ export const diffTrees = (
       // Compare children
       if (oldNode.children.length > 0 || newNode.children.length > 0) {
         const childPath = [...path, i]
+        // Only add NavigateChild if we're not already at the parent
+        // When we're at the root and navigating to the first child, we need to navigate
+        // But when we're already at a node and navigating to its child, we also need to navigate
+        // The key is: we always need to navigate to the child, so we add the patch
         patches.push({
           type: PatchType.NavigateChild,
           index: 0,
