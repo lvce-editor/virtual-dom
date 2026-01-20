@@ -562,7 +562,7 @@ test('diffTree - table structure', () => {
   ])
 })
 
-test.skip('diffTree - deep nested structure', () => {
+test('diffTree - deep nested structure', () => {
   const oldNodes = [
     {
       type: VirtualDomElements.Div,
