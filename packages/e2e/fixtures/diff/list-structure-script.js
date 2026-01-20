@@ -77,7 +77,7 @@ const updatedDom = [
   },
 ]
 
-const patches = diff(initialDom, updatedDom)
+const patches = diffTree(initialDom, updatedDom)
 const $root = $container.firstElementChild
 applyPatch($root, patches)
 
