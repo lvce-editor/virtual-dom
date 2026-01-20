@@ -3,6 +3,7 @@ import type * as VirtualDomTree from '../VirtualDomTree/VirtualDomTree.ts'
 import * as PatchType from '../PatchType/PatchType.ts'
 import * as AddNavigationPatches from './AddNavigationPatches.ts'
 import * as CompareNodes from './CompareNodes.ts'
+import * as TreeToArray from './TreeToArray.ts'
 
 export const diffTrees = (
   oldTree: readonly VirtualDomTree.VirtualDomTreeNode[],
@@ -22,23 +23,14 @@ export const diffTrees = (
     }
 
     if (!oldNode) {
-      // Add new node
+      // Add new node - flatten the entire subtree so renderInternal can handle it
       AddNavigationPatches.addNavigationPatches(patches, path, i, currentPath)
+      const flatNodes = TreeToArray.treeToArray(newNode)
       patches.push({
         type: PatchType.Add,
-        nodes: [newNode.node],
+        nodes: flatNodes,
       })
-      if (newNode.children.length > 0) {
-        const newChildPath = [...path, i]
-        patches.push({
-          type: PatchType.NavigateChild,
-          index: 0,
-        })
-        diffTrees([], newNode.children, patches, newChildPath, newChildPath)
-        patches.push({
-          type: PatchType.NavigateParent,
-        })
-      }
+      // Don't navigate into the newly added node - all children are already included
     } else if (newNode) {
       // Compare nodes
       const nodePatches = CompareNodes.compareNodes(oldNode.node, newNode.node)
