@@ -12,10 +12,6 @@ export const diffTree = (
   const oldTree = VirtualDomTree.arrayToTree(oldNodes)
   const newTree = VirtualDomTree.arrayToTree(newNodes)
 
-  // Step 2: Add fake root nodes to both trees
-  // const oldRoot = { node: { type: 0, childCount: oldTree.length }, children: oldTree }
-  // const newRoot = { node: { type: 0, childCount: newTree.length }, children: newTree }
-
   // Step 3: Compare the trees
   const patches: Patch[] = []
   DiffTrees.diffTrees(oldTree, newTree, patches, [])
