@@ -23,6 +23,8 @@ const styleProperties = new Set([
   'paddingRight',
 ])
 
+// TODO merge this with the setProp function
+
 export const setAttribute = (
   $Element: HTMLElement,
   key: string,
