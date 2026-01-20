@@ -707,6 +707,7 @@ test('diffTree - add child nodes', () => {
   expect(patches).toEqual([
     {
       type: 7,
+      index: 0,
     },
     {
       index: 1,
