@@ -60,7 +60,7 @@ test.only('diffTree - inner text node changed', () => {
     },
     {
       type: PatchType.SetText,
-      value: 'world',
+      value: 'Updated Text',
     },
   ])
 })
