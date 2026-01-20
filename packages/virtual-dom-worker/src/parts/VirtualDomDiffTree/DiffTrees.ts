@@ -55,6 +55,8 @@ export const diffTrees = (
           index: 0,
         })
         // After navigating to child, we're now at childPath
+        // When comparing children, we're already at the correct position,
+        // so we don't need to add navigation patches - we pass childPath as currentPath
         diffTrees(oldNode.children, newNode.children, patches, childPath, childPath)
         patches.push({
           type: PatchType.NavigateParent,
