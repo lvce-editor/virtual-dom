@@ -5,6 +5,11 @@ export interface VirtualDomTreeNode {
   readonly node: VirtualDomNode
 }
 
+interface ParseResult {
+  readonly children: readonly VirtualDomTreeNode[]
+  readonly nodesConsumed: number
+}
+
 export const arrayToTree = (
   nodes: readonly VirtualDomNode[],
 ): readonly VirtualDomTreeNode[] => {
@@ -13,43 +18,54 @@ export const arrayToTree = (
 
   while (i < nodes.length) {
     const node = nodes[i]
-    const children = getChildren(nodes, i + 1, node.childCount || 0)
+    const { children, nodesConsumed } = getChildrenWithCount(
+      nodes,
+      i + 1,
+      node.childCount || 0,
+    )
     result.push({
       node,
       children,
     })
-    i += 1 + (node.childCount || 0)
+    i += 1 + nodesConsumed
   }
 
   return result
 }
 
-const getChildren = (
+const getChildrenWithCount = (
   nodes: readonly VirtualDomNode[],
   startIndex: number,
   childCount: number,
-): readonly VirtualDomTreeNode[] => {
+): ParseResult => {
   if (childCount === 0) {
-    return []
+    return { children: [], nodesConsumed: 0 }
   }
 
   const children: VirtualDomTreeNode[] = []
   let i = startIndex
   let remaining = childCount
+  let totalConsumed = 0
 
   while (remaining > 0 && i < nodes.length) {
     const node = nodes[i]
     const nodeChildCount = node.childCount || 0
-    const nodeChildren = getChildren(nodes, i + 1, nodeChildCount)
+    const { children: nodeChildren, nodesConsumed } = getChildrenWithCount(
+      nodes,
+      i + 1,
+      nodeChildCount,
+    )
 
     children.push({
       node,
       children: nodeChildren,
     })
 
-    i += 1 + nodeChildCount
+    const nodeSize = 1 + nodesConsumed
+    i += nodeSize
+    totalConsumed += nodeSize
     remaining--
   }
 
-  return children
+  return { children, nodesConsumed: totalConsumed }
 }
