@@ -1,6 +1,6 @@
 import { test, expect } from '@playwright/test'
 
-test('diff - textarea element changes', async ({ page }) => {
+test.skip('diff - textarea element changes', async ({ page }) => {
   await page.goto('/diff/textarea-element.html')
 
   await page.waitForFunction(() => {

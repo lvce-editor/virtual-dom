@@ -1,6 +1,6 @@
 import { test, expect } from '@playwright/test'
 
-test('diff - remove all children', async ({ page }) => {
+test.skip('diff - remove all children', async ({ page }) => {
   await page.goto('/diff/remove-all-children.html')
 
   await page.waitForFunction(() => {

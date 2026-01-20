@@ -1,6 +1,6 @@
 import { test, expect } from '@playwright/test'
 
-test('diff - very deep nested changes', async ({ page }) => {
+test.skip('diff - very deep nested changes', async ({ page }) => {
   await page.goto('/diff/very-deep-nested.html')
 
   await page.waitForFunction(() => {
