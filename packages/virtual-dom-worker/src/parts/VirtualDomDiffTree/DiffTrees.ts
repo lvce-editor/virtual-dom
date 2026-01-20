@@ -42,7 +42,6 @@ export const diffTrees = (
     } else if (newNode) {
       // Compare nodes
       const nodePatches = CompareNodes.compareNodes(oldNode.node, newNode.node)
-      console.log({ nodePatches, oldNode, newNode })
       if (nodePatches.length > 0) {
         AddNavigationPatches.addNavigationPatches(patches, path, i, currentPath)
         patches.push(...nodePatches)
