@@ -86,17 +86,19 @@ export const removeChild = ($Element: HTMLElement, index: number): void => {
 export const add = (
   $Element: HTMLElement,
   nodes: readonly VirtualDomNode[],
+  eventMap: Record<string, any> = {},
 ): void => {
-  RenderInternal.renderInternal($Element, nodes, {}, {})
+  RenderInternal.renderInternal($Element, nodes, eventMap, eventMap)
 }
 
 export const replace = (
   $Element: HTMLElement,
   nodes: readonly VirtualDomNode[],
+  eventMap: Record<string, any> = {},
 ): HTMLElement => {
   // Create a temporary container to render the new nodes
   const $Temp = document.createElement('div')
-  RenderInternal.renderInternal($Temp, nodes, {}, {})
+  RenderInternal.renderInternal($Temp, nodes, eventMap, eventMap)
   // Replace the current element with the new ones
   const $NewElement = $Temp.firstElementChild as HTMLElement
   $Element.replaceWith($NewElement)
