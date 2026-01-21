@@ -2,12 +2,16 @@ import type { Patch } from '../Patch/Patch.ts'
 import * as PatchFunctions from '../PatchFunctions/PatchFunctions.ts'
 import * as PatchType from '../PatchType/PatchType.ts'
 
-export const applyPatch = ($Element: Node, patches: readonly Patch[]): void => {
+export const applyPatch = (
+  $Element: Node,
+  patches: readonly Patch[],
+  eventMap: Record<string, any> = {},
+): void => {
   let $Current = $Element
   for (const patch of patches) {
     switch (patch.type) {
       case PatchType.Add:
-        PatchFunctions.add($Current as HTMLElement, patch.nodes)
+        PatchFunctions.add($Current as HTMLElement, patch.nodes, eventMap)
         break
       case PatchType.NavigateChild:
         $Current = ($Current as HTMLElement).childNodes[patch.index]
@@ -25,7 +29,11 @@ export const applyPatch = ($Element: Node, patches: readonly Patch[]): void => {
         PatchFunctions.removeChild($Current as HTMLElement, patch.index)
         break
       case PatchType.Replace:
-        $Current = PatchFunctions.replace($Current as HTMLElement, patch.nodes)
+        $Current = PatchFunctions.replace(
+          $Current as HTMLElement,
+          patch.nodes,
+          eventMap,
+        )
         break
       case PatchType.SetAttribute:
         PatchFunctions.setAttribute(
