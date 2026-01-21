@@ -1,18 +1,21 @@
 import type { Patch } from '../Patch/Patch.ts'
 import * as PatchFunctions from '../PatchFunctions/PatchFunctions.ts'
 import * as PatchType from '../PatchType/PatchType.ts'
+import { getEventListenerMap } from '../RegisterEventListeners/RegisterEventListeners.ts'
 import * as VirtualDomElementProp from '../VirtualDomElementProp/VirtualDomElementProp.ts'
 
 export const applyPatch = (
   $Element: Node,
   patches: readonly Patch[],
   eventMap: Record<string, any> = {},
+  id: any = 0,
 ): void => {
+  const events = getEventListenerMap(id) || eventMap
   let $Current = $Element
   for (const patch of patches) {
     switch (patch.type) {
       case PatchType.Add:
-        PatchFunctions.add($Current as HTMLElement, patch.nodes, eventMap)
+        PatchFunctions.add($Current as HTMLElement, patch.nodes, events)
         break
       case PatchType.NavigateChild:
         $Current = ($Current as HTMLElement).childNodes[patch.index]
@@ -33,7 +36,7 @@ export const applyPatch = (
         $Current = PatchFunctions.replace(
           $Current as HTMLElement,
           patch.nodes,
-          eventMap,
+          events,
         )
         break
       case PatchType.SetAttribute:
@@ -41,7 +44,7 @@ export const applyPatch = (
           $Current as HTMLElement,
           patch.key,
           patch.value,
-          eventMap,
+          events,
         )
         break
       case PatchType.SetText:
