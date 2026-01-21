@@ -11,7 +11,7 @@ export const registerEventListeners = (id, eventListeners): void => {
   listeners[id] = map
 }
 
-export const getEventListenerMap = (id): any => {
+export const getEventListenerMap = (id: any): any => {
   const map = listeners[id]
   return map
 }
