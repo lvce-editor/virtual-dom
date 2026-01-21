@@ -1,6 +1,7 @@
 import type { Patch } from '../Patch/Patch.ts'
 import * as PatchFunctions from '../PatchFunctions/PatchFunctions.ts'
 import * as PatchType from '../PatchType/PatchType.ts'
+import * as VirtualDomElementProp from '../VirtualDomElementProp/VirtualDomElementProp.ts'
 
 export const applyPatch = (
   $Element: Node,
@@ -36,10 +37,11 @@ export const applyPatch = (
         )
         break
       case PatchType.SetAttribute:
-        PatchFunctions.setAttribute(
+        VirtualDomElementProp.setProp(
           $Current as HTMLElement,
           patch.key,
           patch.value,
+          eventMap,
         )
         break
       case PatchType.SetText:
