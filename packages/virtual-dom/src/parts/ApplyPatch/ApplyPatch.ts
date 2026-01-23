@@ -57,6 +57,13 @@ export const applyPatch = (
             return
           }
           $Current = $Parent.childNodes[patch.index]
+          if (!$Current) {
+            console.error(
+              'Cannot navigate to sibling: sibling not found at index',
+              { $Parent, index: patch.index, childCount: $Parent.childNodes.length },
+            )
+            return
+          }
           console.warn(`NavigateSibling: got new $Current`)
           break
         }
