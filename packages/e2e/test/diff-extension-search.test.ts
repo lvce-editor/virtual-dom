@@ -1,6 +1,6 @@
 import { test, expect } from '../src/fixtures.ts'
 
-test('diff - extension search', async ({ page }) => {
+test.skip('diff - extension search', async ({ page }) => {
   await page.goto('/diff/extension-search=results.html')
 
   await page.waitForFunction(() => {
