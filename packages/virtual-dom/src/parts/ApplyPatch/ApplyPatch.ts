@@ -26,7 +26,11 @@ export const applyPatch = (
           if (!$Child) {
             console.error(
               'Cannot navigate to child: child not found at index',
-              { $Current, index: patch.index, childCount: ($Current as HTMLElement).childNodes.length },
+              {
+                $Current,
+                index: patch.index,
+                childCount: ($Current as HTMLElement).childNodes.length,
+              },
             )
             return
           }
@@ -60,7 +64,11 @@ export const applyPatch = (
           if (!$Current) {
             console.error(
               'Cannot navigate to sibling: sibling not found at index',
-              { $Parent, index: patch.index, childCount: $Parent.childNodes.length },
+              {
+                $Parent,
+                index: patch.index,
+                childCount: $Parent.childNodes.length,
+              },
             )
             return
           }
