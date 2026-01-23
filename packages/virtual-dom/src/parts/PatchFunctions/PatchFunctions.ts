@@ -68,7 +68,7 @@ export const replace = (
     // In this case, we create a div and move all children to it
     $NewElement = document.createElement('div')
     while ($Temp.firstChild) {
-      $NewElement.appendChild($Temp.firstChild)
+      $NewElement.append($Temp.firstChild)
     }
   }
 
