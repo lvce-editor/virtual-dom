@@ -617,7 +617,6 @@ const updatedDom = [
 ]
 
 const patches = diffTree(initialDom, updatedDom)
-console.log('patches:', patches)
 const $root = $container.firstElementChild
 applyPatch($root, patches)
 
