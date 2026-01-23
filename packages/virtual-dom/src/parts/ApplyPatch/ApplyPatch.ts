@@ -12,10 +12,8 @@ export const applyPatch = (
 ): void => {
   const events = getEventListenerMap(id) || eventMap
   let $Current = $Element
-  console.warn('applyPatch: starting with patches:', patches.length)
   for (let patchIndex = 0; patchIndex < patches.length; patchIndex++) {
     const patch = patches[patchIndex]
-    console.warn(`applyPatch: patch ${patchIndex}:`, patch.type)
     try {
       switch (patch.type) {
         case PatchType.Add:
@@ -50,9 +48,7 @@ export const applyPatch = (
           break
         }
         case PatchType.NavigateSibling: {
-          console.warn(`NavigateSibling: index=${patch.index}`)
           const $Parent = $Current.parentNode
-          console.warn(`NavigateSibling: $Parent exists=${!!$Parent}`)
           if (!$Parent) {
             console.error(
               'Cannot navigate to sibling: current node has no parent',
@@ -72,7 +68,6 @@ export const applyPatch = (
             )
             return
           }
-          console.warn(`NavigateSibling: got new $Current`)
           break
         }
         case PatchType.RemoveAttribute:
@@ -82,13 +77,11 @@ export const applyPatch = (
           PatchFunctions.removeChild($Current as HTMLElement, patch.index)
           break
         case PatchType.Replace:
-          console.warn('Replace: replacing current element')
           $Current = PatchFunctions.replace(
             $Current as HTMLElement,
             patch.nodes,
             events,
           )
-          console.warn('Replace: done')
           break
         case PatchType.SetAttribute:
           VirtualDomElementProp.setProp(
