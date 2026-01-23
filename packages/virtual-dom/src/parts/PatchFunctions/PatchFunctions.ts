@@ -62,7 +62,7 @@ export const replace = (
   RenderInternal.renderInternal($Temp, nodes, eventMap, eventMap)
   // Replace the current element with the new ones
   let $NewElement = $Temp.firstElementChild as HTMLElement | null
-  
+
   if (!$NewElement) {
     // If no element was created (e.g., only text nodes), we need to create a wrapper
     // In this case, we create a div and move all children to it
@@ -71,7 +71,7 @@ export const replace = (
       $NewElement.appendChild($Temp.firstChild)
     }
   }
-  
+
   $Element.replaceWith($NewElement)
   return $NewElement
 }
