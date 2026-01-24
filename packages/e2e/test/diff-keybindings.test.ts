@@ -1,6 +1,6 @@
 import { test, expect } from '../src/fixtures.ts'
 
-test.skip('diff - keybindings', async ({ page }) => {
+test('diff - keybindings', async ({ page }) => {
   await page.goto('/diff/keybindings.html')
 
   await page.waitForFunction(() => {
