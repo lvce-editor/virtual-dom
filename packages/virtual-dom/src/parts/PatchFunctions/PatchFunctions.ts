@@ -40,8 +40,10 @@ export const setText = ($Element: Text, value: string): void => {
 }
 
 export const removeChild = ($Element: HTMLElement, index: number): void => {
-  const $Child = $Element.children[index]
-  $Child.remove()
+  const $Child = $Element.childNodes[index]
+  if ($Child) {
+    $Child.remove()
+  }
 }
 
 export const add = (
