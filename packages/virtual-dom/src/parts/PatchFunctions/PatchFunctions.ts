@@ -55,25 +55,22 @@ export const add = (
 }
 
 export const replace = (
-  $Element: HTMLElement,
+  $Element: HTMLElement | Text,
   nodes: readonly VirtualDomNode[],
   eventMap: Record<string, any> = {},
-): HTMLElement => {
+): Node => {
   // Create a temporary container to render the new nodes
   const $Temp = document.createElement('div')
   RenderInternal.renderInternal($Temp, nodes, eventMap, eventMap)
-  // Replace the current element with the new ones
-  let $NewElement = $Temp.firstElementChild as HTMLElement | null
+  // Replace the current element with the new node(s)
+  const $NewNode = $Temp.firstChild
 
-  if (!$NewElement) {
-    // If no element was created (e.g., only text nodes), we need to create a wrapper
-    // In this case, we create a div and move all children to it
-    $NewElement = document.createElement('div')
-    while ($Temp.firstChild) {
-      $NewElement.append($Temp.firstChild)
-    }
+  if (!$NewNode) {
+    // No node was created, just remove the old element
+    $Element.remove()
+    return $Element
   }
 
-  $Element.replaceWith($NewElement)
-  return $NewElement
+  $Element.replaceWith($NewNode)
+  return $NewNode
 }
