@@ -268,10 +268,6 @@ test('diffTrees - text node split differently', () => {
       index: 0,
     },
     {
-      type: PatchType.NavigateChild,
-      index: 0,
-    },
-    {
       type: PatchType.SetText,
       value: 'Abo',
     },
