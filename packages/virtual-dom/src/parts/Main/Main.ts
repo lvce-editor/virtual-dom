@@ -15,3 +15,5 @@ export { registerEventListeners } from '../RegisterEventListeners/RegisterEventL
 export { rememberFocus } from '../RememberFocus/RememberFocus.ts'
 export { render, renderInto } from '../VirtualDom/VirtualDom.ts'
 export * as VirtualDomElements from '../VirtualDomElements/VirtualDomElements.ts'
+export { set as setViewletInstance } from '../Instances/Instances.ts'
+export { get as getViewletInstance } from '../Instances/Instances.ts'
