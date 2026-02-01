@@ -19,8 +19,11 @@ const renderDomElement = (
   return $Element
 }
 
-const renderReferenceNode = (element: VirtualDomNode): HTMLElement => {
+const renderReferenceNode = (element: VirtualDomNode): any => {
   const instance = Instances.get(element.uid)
+  if (!instance || !instance.state) {
+    return document.createTextNode('Reference node not found')
+  }
   const $Node = instance.state.$Viewlet
   return $Node
 }
