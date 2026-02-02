@@ -99,10 +99,9 @@ export const applyPatch = (
           // Get the new reference node instance
           const instance = Instances.get(patch.uid)
           if (!instance || !instance.state) {
-            console.error(
-              'Cannot set reference node uid: instance not found',
-              { uid: patch.uid },
-            )
+            console.error('Cannot set reference node uid: instance not found', {
+              uid: patch.uid,
+            })
             return
           }
           const $NewNode = instance.state.$Viewlet
