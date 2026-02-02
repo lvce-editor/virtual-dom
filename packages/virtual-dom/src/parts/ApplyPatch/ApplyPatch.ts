@@ -1,9 +1,9 @@
 import type { Patch } from '../Patch/Patch.ts'
+import * as Instances from '../Instances/Instances.ts'
 import * as PatchFunctions from '../PatchFunctions/PatchFunctions.ts'
 import * as PatchType from '../PatchType/PatchType.ts'
 import { getEventListenerMap } from '../RegisterEventListeners/RegisterEventListeners.ts'
 import * as VirtualDomElementProp from '../VirtualDomElementProp/VirtualDomElementProp.ts'
-import * as Instances from '../Instances/Instances.ts'
 
 export const applyPatch = (
   $Element: Node,
@@ -92,9 +92,6 @@ export const applyPatch = (
             events,
           )
           break
-        case PatchType.SetText:
-          PatchFunctions.setText($Current as Text, patch.value)
-          break
         case PatchType.SetReferenceNodeUid: {
           // Get the new reference node instance
           const instance = Instances.get(patch.uid)
@@ -110,6 +107,9 @@ export const applyPatch = (
           $Current = $NewNode
           break
         }
+        case PatchType.SetText:
+          PatchFunctions.setText($Current as Text, patch.value)
+          break
         default:
           break
       }
