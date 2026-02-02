@@ -103,6 +103,7 @@ export const applyPatch = (
           }
           const $NewNode = instance.state.$Viewlet
           // Replace the current reference node with the new viewlet
+          // @ts-ignore
           $Current.replaceWith($NewNode)
           $Current = $NewNode
           break
