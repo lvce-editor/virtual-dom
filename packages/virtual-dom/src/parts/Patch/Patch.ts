@@ -7,6 +7,7 @@ import type { RemoveAttributePatch } from '../RemoveAttributePatch/RemoveAttribu
 import type { RemoveChildPatch } from '../RemoveChildPatch/RemoveChildPatch.ts'
 import type { RemovePatch } from '../RemovePatch/RemovePatch.ts'
 import type { ReplacePatch } from '../ReplacePatch/ReplacePatch.ts'
+import type { SetReferenceNodeUidPatch } from '../SetReferenceNodeUidPatch/SetReferenceNodeUidPatch.ts'
 import type { TextPatch } from '../TextPatch/TextPatch.ts'
 
 export type Patch =
@@ -20,3 +21,4 @@ export type Patch =
   | NavigateParentPatch
   | RemoveChildPatch
   | NavigateSiblingPatch
+  | SetReferenceNodeUidPatch

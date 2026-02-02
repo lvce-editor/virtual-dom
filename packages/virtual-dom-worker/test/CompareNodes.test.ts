@@ -226,3 +226,37 @@ test('compareNodes - ARIA attributes', () => {
     },
   ])
 })
+test('compareNodes - reference node uid changed', () => {
+  const oldNode: VirtualDomNode = {
+    type: VirtualDomElements.Reference,
+    uid: 'ref-1',
+    childCount: 0,
+  }
+  const newNode: VirtualDomNode = {
+    type: VirtualDomElements.Reference,
+    uid: 'ref-2',
+    childCount: 0,
+  }
+  const patches = CompareNodes.compareNodes(oldNode, newNode)
+  expect(patches).toEqual([
+    {
+      type: PatchType.SetReferenceNodeUid,
+      uid: 'ref-2',
+    },
+  ])
+})
+
+test('compareNodes - reference node uid unchanged', () => {
+  const oldNode: VirtualDomNode = {
+    type: VirtualDomElements.Reference,
+    uid: 'ref-1',
+    childCount: 0,
+  }
+  const newNode: VirtualDomNode = {
+    type: VirtualDomElements.Reference,
+    uid: 'ref-1',
+    childCount: 0,
+  }
+  const patches = CompareNodes.compareNodes(oldNode, newNode)
+  expect(patches).toEqual([])
+})
