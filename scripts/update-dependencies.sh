@@ -28,6 +28,7 @@ function updateDependencies {
 
                                   updateDependencies &&
 cd packages/build              && updateDependencies && cd ../../ &&
+cd packages/e2e                && updateDependencies && cd ../../ &&
 cd packages/virtual-dom        && updateDependencies && cd ../../ &&
 cd packages/virtual-dom-worker && updateDependencies && cd ../../ &&
 
