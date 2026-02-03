@@ -1,4 +1,5 @@
 import type { Patch } from '../Patch/Patch.ts'
+import * as Instances from '../Instances/Instances.ts'
 import * as PatchFunctions from '../PatchFunctions/PatchFunctions.ts'
 import * as PatchType from '../PatchType/PatchType.ts'
 import { getEventListenerMap } from '../RegisterEventListeners/RegisterEventListeners.ts'
@@ -91,6 +92,22 @@ export const applyPatch = (
             events,
           )
           break
+        case PatchType.SetReferenceNodeUid: {
+          // Get the new reference node instance
+          const instance = Instances.get(patch.uid)
+          if (!instance || !instance.state) {
+            console.error('Cannot set reference node uid: instance not found', {
+              uid: patch.uid,
+            })
+            return
+          }
+          const $NewNode = instance.state.$Viewlet
+          // Replace the current reference node with the new viewlet
+          // @ts-ignore
+          $Current.replaceWith($NewNode)
+          $Current = $NewNode
+          break
+        }
         case PatchType.SetText:
           PatchFunctions.setText($Current as Text, patch.value)
           break

@@ -8,3 +8,4 @@ export const NavigateChild = 7
 export const NavigateParent = 8
 export const RemoveChild = 9
 export const NavigateSibling = 10
+export const SetReferenceNodeUid = 11
