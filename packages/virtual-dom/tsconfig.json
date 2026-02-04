@@ -8,6 +8,7 @@
     "moduleResolution": "NodeNext",
     "skipLibCheck": true,
     "noEmit": true,
+    "declaration": true,
     "allowSyntheticDefaultImports": true,
     "isolatedModules": true,
     "assumeChangesOnlyAffectDirectDependencies": true,
