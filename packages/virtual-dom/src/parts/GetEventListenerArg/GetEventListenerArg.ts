@@ -84,14 +84,14 @@ export const getEventListenerArg = (param: string, event: any): any => {
       return event.key
     case 'event.shiftKey':
       return event.shiftKey
+    case 'event.target.checked':
+      return event.target.checked
     case 'event.target.className':
       return event.target.className
     case 'event.target.dataset.groupIndex':
       return event.target.dataset.groupIndex
     case 'event.target.dataset.index':
       return event.target.dataset.index
-    case 'event.target.checked':
-      return event.target.checked
     case 'event.target.dataset.name':
       return event.target.dataset.name
     case 'event.target.href':
