@@ -40,5 +40,9 @@ export const createFn = (info, map): any => {
     // TODO avoid mutating function property, maybe return an object with function and options
     fn.passive = true
   }
+  if (info.capture) {
+    // TODO avoid mutating function property, maybe return an object with function and options
+    fn.capture = true
+  }
   return fn
 }

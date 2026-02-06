@@ -4,6 +4,11 @@ export const getEventListenerOptions = (eventName: string, value: any): any => {
       passive: true,
     }
   }
+  if (value.capture) {
+    return {
+      capture: true,
+    }
+  }
   switch (eventName) {
     case 'wheel':
       return {
