@@ -90,6 +90,8 @@ export const getEventListenerArg = (param: string, event: any): any => {
       return event.target.className
     case 'event.target.dataset.groupIndex':
       return event.target.dataset.groupIndex
+    case 'event.target.dataset.id':
+      return event.target.dataset.id
     case 'event.target.dataset.index':
       return event.target.dataset.index
     case 'event.target.dataset.name':
