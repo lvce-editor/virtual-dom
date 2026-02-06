@@ -7,6 +7,11 @@ const getOptions = (fn: any): any => {
       passive: true,
     }
   }
+  if (fn.capture) {
+    return {
+      capture: true,
+    }
+  }
   return undefined
 }
 
