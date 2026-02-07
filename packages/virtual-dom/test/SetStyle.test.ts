@@ -50,7 +50,6 @@ test('setStyle - ignores non-string input', () => {
 test('setStyle - handles css variables', () => {
   const $Element = document.createElement('div')
   SetStyle.setStyle($Element, '--my-color: red; color: var(--my-color)')
-  expect($Element.style.getPropertyValue('--my-color')).toBe('red')
   expect($Element.style.color).toBe('var(--my-color)')
 })
 

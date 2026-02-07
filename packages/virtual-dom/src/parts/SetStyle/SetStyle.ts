@@ -9,5 +9,9 @@ export const setStyle = ($Element: HTMLElement, styleString: string): void => {
     const key = match[1].trim()
     const value = match[2].trim()
     // Convert kebab-case to camelCase for CSS properties with dashes
-    const camelCaseKey = key.replace(/-([a-z])/g, (_, char) => char.toUpperCase())
+    const camelCaseKey = key.replaceAll(/-([a-z])/g, (_, char) =>
+      char.toUpperCase(),
+    )
     $Element.style[camelCaseKey] = value
+  }
+}
