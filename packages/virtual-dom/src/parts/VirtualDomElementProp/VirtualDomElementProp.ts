@@ -1,4 +1,5 @@
 import * as AttachEvent from '../AttachEvent/AttachEvent.ts'
+import * as SetStyle from '../SetStyle/SetStyle.ts'
 
 export const setProp = (
   $Element: HTMLElement,
@@ -93,7 +94,8 @@ export const setProp = (
       AttachEvent.attachEvent($Element, eventMap, eventName, value, newEventMap)
       break
     case 'style':
-      throw new Error('style property is not supported')
+      SetStyle.setStyle($Element, value)
+      break
     case 'childCount':
     case 'type':
       break
