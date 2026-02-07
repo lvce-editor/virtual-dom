@@ -51,11 +51,16 @@ test('width/height - handles non-image elements', () => {
   expect($Element.style.height).toBe('50%')
 })
 
-test('style property - throws error', () => {
+test('style property - parses style string', () => {
   const $Element = document.createElement('div')
-  expect(() => {
-    VirtualDomElementProp.setProp($Element, 'style', {}, {})
-  }).toThrow('style property is not supported')
+  VirtualDomElementProp.setProp(
+    $Element,
+    'style',
+    'color: red; font-size: 14px',
+    {},
+  )
+  expect($Element.style.color).toBe('red')
+  expect($Element.style.fontSize).toBe('14px')
 })
 
 test('aria attributes - sets and removes attributes', () => {

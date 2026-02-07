@@ -1,4 +1,5 @@
 import * as AttachEvent from '../AttachEvent/AttachEvent.ts'
+import * as SetStyle from '../SetStyle/SetStyle.ts'
 
 export const setProp = (
   $Element: HTMLElement,
@@ -27,6 +28,9 @@ export const setProp = (
       } else {
         $Element.removeAttribute('aria-owns')
       }
+      break
+    case 'childCount':
+    case 'type':
       break
     case 'height':
     case 'width':
@@ -93,9 +97,7 @@ export const setProp = (
       AttachEvent.attachEvent($Element, eventMap, eventName, value, newEventMap)
       break
     case 'style':
-      throw new Error('style property is not supported')
-    case 'childCount':
-    case 'type':
+      SetStyle.setStyle($Element, value)
       break
     case 'translate':
       $Element.style[key] = value
