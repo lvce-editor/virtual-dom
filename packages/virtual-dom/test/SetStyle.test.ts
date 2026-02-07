@@ -33,7 +33,10 @@ test('setStyle - ignores empty style string', () => {
 
 test('setStyle - handles style values with spaces', () => {
   const $Element = document.createElement('div')
-  SetStyle.setStyle($Element, 'font-family: Arial, sans-serif; box-shadow: 0 0 10px rgba(0,0,0,0.5)')
+  SetStyle.setStyle(
+    $Element,
+    'font-family: Arial, sans-serif; box-shadow: 0 0 10px rgba(0,0,0,0.5)',
+  )
   expect($Element.style.fontFamily).toBe('Arial, sans-serif')
   expect($Element.style.boxShadow).toBe('0 0 10px rgba(0,0,0,0.5)')
 })

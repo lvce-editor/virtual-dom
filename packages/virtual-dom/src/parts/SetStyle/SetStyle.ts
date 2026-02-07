@@ -2,12 +2,12 @@ export const setStyle = ($Element: HTMLElement, styleString: string): void => {
   if (typeof styleString !== 'string') {
     return
   }
-  
-  const styleRegex = /([^:]+):\s*([^;]+)/g
+
+  const styleRegex = /([^:;]+):\s*([^;]+)/g
   let match
   while ((match = styleRegex.exec(styleString)) !== null) {
     const key = match[1].trim()
     const value = match[2].trim()
-    $Element.style[key] = value
-  }
-}
+    // Convert kebab-case to camelCase for CSS properties with dashes
+    const camelCaseKey = key.replace(/-([a-z])/g, (_, char) => char.toUpperCase())
+    $Element.style[camelCaseKey] = value

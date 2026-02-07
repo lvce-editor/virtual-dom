@@ -29,6 +29,9 @@ export const setProp = (
         $Element.removeAttribute('aria-owns')
       }
       break
+    case 'childCount':
+    case 'type':
+      break
     case 'height':
     case 'width':
       if ($Element instanceof HTMLImageElement) {
@@ -95,9 +98,6 @@ export const setProp = (
       break
     case 'style':
       SetStyle.setStyle($Element, value)
-      break
-    case 'childCount':
-    case 'type':
       break
     case 'translate':
       $Element.style[key] = value
