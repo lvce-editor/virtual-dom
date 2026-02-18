@@ -15,6 +15,7 @@ export default [
       'jest/no-restricted-jest-methods': 'off',
       'github-actions/ci-versions': 'off',
       'perfectionist/sort-objects': 'off',
+      '@cspell/spellchecker': 'off',
     },
   },
 ]
