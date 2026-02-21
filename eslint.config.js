@@ -16,7 +16,6 @@ export default [
       'github-actions/ci-versions': 'off',
       'perfectionist/sort-objects': 'off',
       '@cspell/spellchecker': 'off',
-      'tsconfig/dont-skip-lib-check': 'off',
     },
   },
 ]

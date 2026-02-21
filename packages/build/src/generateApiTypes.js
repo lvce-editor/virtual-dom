@@ -16,7 +16,6 @@ export const generateApiTypes = async ({ packageName }) => {
       '--emitDeclarationOnly',
       '--noEmit',
       'false',
-      '--skipLibCheck',
       '--lib',
       'es2020,dom',
       '--target',
