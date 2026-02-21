@@ -75,7 +75,7 @@ for (const packageName of ['virtual-dom', 'virtual-dom-worker']) {
   delete packageJson.jest
   packageJson.version = version
   packageJson.main = 'dist/index.js'
-  packageJson.exports = 'dist/index.js'
+  packageJson.exports = './dist/index.js'
   packageJson.types = 'dist/index.d.ts'
 
   await writeJson(join(dist, packageName, 'package.json'), packageJson)
