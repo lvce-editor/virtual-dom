@@ -1,3 +1,5 @@
+import { IDragInfo } from '../IDragInfo/IDragInfo.ts'
+
 export { applyPatch } from '../ApplyPatch/ApplyPatch.ts'
 export {
   getComponentUid,
@@ -17,3 +19,4 @@ export { render, renderInto } from '../VirtualDom/VirtualDom.ts'
 export * as VirtualDomElements from '../VirtualDomElements/VirtualDomElements.ts'
 export { set as setViewletInstance } from '../Instances/Instances.ts'
 export { get as getViewletInstance } from '../Instances/Instances.ts'
+export type * from '../IDragInfo/IDragInfo.ts'
