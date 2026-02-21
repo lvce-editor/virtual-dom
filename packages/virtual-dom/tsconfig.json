@@ -6,7 +6,6 @@
     "types": [],
     "module": "NodeNext",
     "moduleResolution": "NodeNext",
-    "skipLibCheck": true,
     "noEmit": true,
     "declaration": true,
     "allowSyntheticDefaultImports": true,
