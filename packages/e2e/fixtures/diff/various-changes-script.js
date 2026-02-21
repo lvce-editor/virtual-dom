@@ -64,7 +64,7 @@ const updatedDom = [
     childCount: 0,
     className: 'TabIcon',
     role: 'none',
-    src: '/remote/home/simon/Documents/levivilet/lvce-editor/extensions/builtin.vscode-icons/icons/file_type_typescript.svg',
+    src: 'extensions/builtin.vscode-icons/icons/file_type_typescript.svg',
     type: 17,
   },
   {
@@ -98,8 +98,8 @@ const updatedDom = [
   },
   {
     childCount: 0,
-    type: 100,
-    uid: 0.27357871529200806,
+    type: 1,
+    className: 'Editor',
   },
 ]
 
