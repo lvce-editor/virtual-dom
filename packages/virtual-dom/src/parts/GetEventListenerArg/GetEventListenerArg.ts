@@ -88,16 +88,6 @@ export const getEventListenerArg = (param: string, event: any): any => {
       return event.target.checked
     case 'event.target.className':
       return event.target.className
-    case 'event.target.dataset.groupId':
-      return event.target.dataset.groupId
-    case 'event.target.dataset.groupIndex':
-      return event.target.dataset.groupIndex
-    case 'event.target.dataset.id':
-      return event.target.dataset.id
-    case 'event.target.dataset.index':
-      return event.target.dataset.index
-    case 'event.target.dataset.name':
-      return event.target.dataset.name
     case 'event.target.href':
       return event.target.href
     case 'event.target.name':
@@ -119,6 +109,10 @@ export const getEventListenerArg = (param: string, event: any): any => {
     case 'event.y':
       return event.y
     default:
+      if (param.startsWith('event.target.dataset')) {
+        const rest = param.slice('event.target.dataset.'.length)
+        return event.target.dataset[rest]
+      }
       return param
   }
 }
