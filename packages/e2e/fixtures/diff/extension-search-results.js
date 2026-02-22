@@ -231,7 +231,7 @@ const initialDom = [
     childCount: 0,
     className: 'ExtensionListItemIcon',
     role: 'none',
-    src: '/remote//home/simon/.local/share/lvce-oss/linked-extensions/builtin.git/packages/extension/./icon.png',
+    src: '/builtin.git/packages/extension/./icon.png',
     type: 17,
   },
   {
