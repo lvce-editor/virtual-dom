@@ -33,7 +33,7 @@ export const applyPatch = (
               const $Placeholder = document.createComment(
                 'virtual-dom-placeholder',
               )
-              ;($Current as HTMLElement).appendChild($Placeholder)
+              ;($Current as HTMLElement).append($Placeholder)
               $Current = $Placeholder
               break
             }
