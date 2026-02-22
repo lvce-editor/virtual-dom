@@ -21,14 +21,28 @@ export const applyPatch = (
           PatchFunctions.add($Current as HTMLElement, patch.nodes, events)
           break
         case PatchType.NavigateChild: {
-          const $Child = ($Current as HTMLElement).childNodes[patch.index]
+          const $Children = ($Current as HTMLElement).childNodes
+          const $Child = $Children[patch.index]
           if (!$Child) {
+            const nextPatch = patches[patchIndex + 1]
+            if (
+              nextPatch &&
+              nextPatch.type === PatchType.Replace &&
+              patch.index === $Children.length
+            ) {
+              const $Placeholder = document.createComment(
+                'virtual-dom-placeholder',
+              )
+              ;($Current as HTMLElement).appendChild($Placeholder)
+              $Current = $Placeholder
+              break
+            }
             console.error(
               'Cannot navigate to child: child not found at index',
               {
                 $Current,
                 index: patch.index,
-                childCount: ($Current as HTMLElement).childNodes.length,
+                childCount: $Children.length,
               },
             )
             return
