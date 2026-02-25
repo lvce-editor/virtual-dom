@@ -109,7 +109,10 @@ export const getEventListenerArg = (param: string, event: any): any => {
     case 'event.y':
       return event.y
     default:
-      if (param.startsWith('event.target.dataset')) {
+      if (
+        typeof param === 'string' &&
+        param.startsWith('event.target.dataset')
+      ) {
         const rest = param.slice('event.target.dataset.'.length)
         return event.target.dataset[rest]
       }
