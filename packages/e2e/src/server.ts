@@ -3,7 +3,7 @@ import { readFile } from 'node:fs/promises'
 import { join } from 'node:path'
 import { fileURLToPath } from 'node:url'
 import { stat } from 'node:fs/promises'
-import { ensureBuild } from './ensureBuild.js'
+import { ensureBuild } from './ensureBuild.ts'
 
 const __dirname = fileURLToPath(new URL('.', import.meta.url))
 const root = join(__dirname, '../../..')

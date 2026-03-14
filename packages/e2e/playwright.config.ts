@@ -22,7 +22,7 @@ export default defineConfig({
     },
   ],
   webServer: {
-    command: 'node src/server.js',
+    command: 'node --experimental-strip-types src/server.ts',
     url: 'http://localhost:3000',
     reuseExistingServer: !process.env.CI,
     cwd: __dirname,
