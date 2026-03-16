@@ -67,6 +67,7 @@ export const setProp = (
     case 'onBlur':
     case 'onChange':
     case 'onClick':
+    case 'onSubmit':
     case 'onContextMenu':
     case 'onDblClick':
     case 'onDragEnd':
