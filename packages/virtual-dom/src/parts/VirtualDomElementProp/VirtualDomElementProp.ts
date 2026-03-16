@@ -93,6 +93,7 @@ export const setProp = (
     case 'onPointerOver':
     case 'onScroll':
     case 'onSelectionChange':
+    case 'onSubmit':
     case 'onWheel':
       const eventName = key.slice(2).toLowerCase()
       if (!eventMap || !value) {
