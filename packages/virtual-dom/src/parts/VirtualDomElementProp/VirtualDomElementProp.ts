@@ -67,7 +67,6 @@ export const setProp = (
     case 'onBlur':
     case 'onChange':
     case 'onClick':
-    case 'onSubmit':
     case 'onContextMenu':
     case 'onDblClick':
     case 'onDragEnd':
@@ -94,6 +93,7 @@ export const setProp = (
     case 'onPointerOver':
     case 'onScroll':
     case 'onSelectionChange':
+    case 'onSubmit':
     case 'onWheel':
       const eventName = key.slice(2).toLowerCase()
       if (!eventMap || !value) {
