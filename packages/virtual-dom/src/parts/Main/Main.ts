@@ -1,3 +1,4 @@
+export { rememberFocus2 } from '../RememberFocus2/RememberFocus2.ts'
 export { applyPatch } from '../ApplyPatch/ApplyPatch.ts'
 export {
   getComponentUid,
