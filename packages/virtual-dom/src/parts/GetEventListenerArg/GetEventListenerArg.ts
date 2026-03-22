@@ -111,6 +111,18 @@ export const getEventListenerArg = (param: string, event: any): any => {
     default:
       if (
         typeof param === 'string' &&
+        param.startsWith('event.currentTarget.')
+      ) {
+        const rest = param.slice('event.currentTarget.'.length)
+        const parts = rest.split('.')
+        let current: any = event.currentTarget
+        for (const part of parts) {
+          current = current[part]
+        }
+        return current
+      }
+      if (
+        typeof param === 'string' &&
         param.startsWith('event.target.dataset')
       ) {
         const rest = param.slice('event.target.dataset.'.length)
