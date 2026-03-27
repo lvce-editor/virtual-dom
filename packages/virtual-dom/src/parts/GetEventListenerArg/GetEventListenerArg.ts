@@ -57,6 +57,23 @@ const handleDataTransferFiles = (event: DragEvent): readonly number[] => {
   return ids
 }
 
+const handleClipboardDataFiles = (event: ClipboardEvent): readonly File[] => {
+  if (!event.clipboardData) {
+    return []
+  }
+  const files: File[] = []
+  for (const item of event.clipboardData.items) {
+    if (item.kind !== 'file') {
+      continue
+    }
+    const file = item.getAsFile()
+    if (file) {
+      files.push(file)
+    }
+  }
+  return files
+}
+
 export const getEventListenerArg = (param: string, event: any): any => {
   switch (param) {
     case 'event.altKey':
@@ -67,6 +84,8 @@ export const getEventListenerArg = (param: string, event: any): any => {
       return event.clientX
     case 'event.clientY':
       return event.clientY
+    case 'event.clipboardData.files':
+      return handleClipboardDataFiles(event)
     case 'event.ctrlKey':
       return event.ctrlKey
     case 'event.data':
