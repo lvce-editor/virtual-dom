@@ -2,7 +2,6 @@
  * @jest-environment jsdom
  */
 import { expect, test } from '@jest/globals'
-
 import { getEventListenerArg } from '../src/parts/GetEventListenerArg/GetEventListenerArg.ts'
 
 test('getEventListenerArg - event.clipboardData.files returns pasted files array', () => {
