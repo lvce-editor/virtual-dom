@@ -5,6 +5,7 @@ import { expect, test } from '@jest/globals'
 import type { Patch } from '../src/parts/Patch/Patch.ts'
 import * as ApplyPatch from '../src/parts/ApplyPatch/ApplyPatch.ts'
 import * as PatchType from '../src/parts/PatchType/PatchType.ts'
+import { renderInto } from '../src/parts/VirtualDom/VirtualDom.ts'
 import * as VirtualDomElements from '../src/parts/VirtualDomElements/VirtualDomElements.ts'
 
 test('attribute change', () => {
@@ -339,6 +340,134 @@ test('multiple changes', () => {
   expect($Root.children[0].children).toHaveLength(1)
   expect($Root.children[0].children[0]).toBeInstanceOf(HTMLSpanElement)
   expect($Root.children[1]).toBeInstanceOf(HTMLSpanElement)
+})
+
+test('navigate sibling after extra root navigation', () => {
+  const oldDom = [
+    {
+      ariaLabel: 'Quick open',
+      childCount: 2,
+      className: 'Viewlet QuickPick',
+      id: 'QuickPick',
+      type: VirtualDomElements.Div,
+    },
+    {
+      childCount: 1,
+      className: 'QuickPickHeader',
+      type: VirtualDomElements.Div,
+    },
+    {
+      ariaLabel: 'Type the name of a command to run.',
+      childCount: 0,
+      className: 'InputBox',
+      inputType: 'text',
+      type: VirtualDomElements.Input,
+    },
+    {
+      childCount: 1,
+      className: 'List ContainContent',
+      id: 'QuickPickItems',
+      role: 'listbox',
+      type: VirtualDomElements.Div,
+    },
+    {
+      childCount: 2,
+      className: 'ListItems ContainContent',
+      type: VirtualDomElements.Div,
+    },
+    {
+      childCount: 1,
+      className: 'QuickPickItem QuickPickItemActive',
+      id: 'QuickPickItemActive',
+      role: 'option',
+      type: VirtualDomElements.Div,
+    },
+    {
+      childCount: 1,
+      className: 'QuickPickItemLabel',
+      type: VirtualDomElements.Div,
+    },
+    {
+      childCount: 0,
+      text: 'Layout: Close Chat',
+      type: VirtualDomElements.Text,
+    },
+    {
+      childCount: 1,
+      className: 'QuickPickItem',
+      role: 'option',
+      type: VirtualDomElements.Div,
+    },
+    {
+      childCount: 1,
+      className: 'QuickPickItemLabel',
+      type: VirtualDomElements.Div,
+    },
+    {
+      childCount: 0,
+      text: 'Window: Close',
+      type: VirtualDomElements.Text,
+    },
+  ]
+
+  const patches: readonly Patch[] = [
+    {
+      index: 0,
+      type: PatchType.NavigateChild,
+    },
+    {
+      index: 0,
+      type: PatchType.NavigateChild,
+    },
+    {
+      index: 1,
+      type: PatchType.NavigateSibling,
+    },
+    {
+      index: 0,
+      type: PatchType.NavigateChild,
+    },
+    {
+      index: 1,
+      type: PatchType.RemoveChild,
+    },
+    {
+      index: 0,
+      type: PatchType.RemoveChild,
+    },
+    {
+      nodes: [
+        {
+          childCount: 1,
+          className: 'QuickPickItem QuickPickItemActive QuickPickStatus',
+          type: VirtualDomElements.Div,
+        },
+        {
+          childCount: 1,
+          className: 'Label',
+          type: VirtualDomElements.Div,
+        },
+        {
+          childCount: 0,
+          text: 'No Results',
+          type: VirtualDomElements.Text,
+        },
+      ],
+      type: PatchType.Add,
+    },
+  ]
+
+  const $Container = document.createElement('div')
+  renderInto($Container, oldDom)
+  const $Root = $Container.firstChild as HTMLElement
+
+  ApplyPatch.applyPatch($Root, patches)
+
+  expect($Root.querySelector('.QuickPickStatus')?.textContent).toBe(
+    'No Results',
+  )
+  expect($Root.querySelectorAll('.QuickPickItem')).toHaveLength(1)
+  expect($Root.querySelector('.ListItems')?.childNodes).toHaveLength(1)
 })
 
 test.skip('large patch', () => {
