@@ -13,12 +13,14 @@ export const applyPatch = (
 ): void => {
   const events = getEventListenerMap(id) || eventMap
   let $Current = $Element
+  let hasAppliedMutation = false
   for (let patchIndex = 0; patchIndex < patches.length; patchIndex++) {
     const patch = patches[patchIndex]
     try {
       switch (patch.type) {
         case PatchType.Add:
           PatchFunctions.add($Current as HTMLElement, patch.nodes, events)
+          hasAppliedMutation = true
           break
         case PatchType.NavigateChild: {
           const $Children = ($Current as HTMLElement).childNodes
@@ -71,7 +73,11 @@ export const applyPatch = (
             )
             return
           }
-          $Current = $Parent.childNodes[patch.index]
+          let $Sibling = $Parent.childNodes[patch.index]
+          if (!$Sibling && !hasAppliedMutation && $Current !== $Element) {
+            $Sibling = $Element.childNodes[patch.index]
+          }
+          $Current = $Sibling
           if (!$Current) {
             console.error(
               'Cannot navigate to sibling: sibling not found at index',
@@ -87,9 +93,11 @@ export const applyPatch = (
         }
         case PatchType.RemoveAttribute:
           PatchFunctions.removeAttribute($Current as HTMLElement, patch.key)
+          hasAppliedMutation = true
           break
         case PatchType.RemoveChild:
           PatchFunctions.removeChild($Current as HTMLElement, patch.index)
+          hasAppliedMutation = true
           break
         case PatchType.Replace:
           $Current = PatchFunctions.replace(
@@ -97,6 +105,7 @@ export const applyPatch = (
             patch.nodes,
             events,
           )
+          hasAppliedMutation = true
           break
         case PatchType.SetAttribute:
           VirtualDomElementProp.setProp(
@@ -105,6 +114,7 @@ export const applyPatch = (
             patch.value,
             events,
           )
+          hasAppliedMutation = true
           break
         case PatchType.SetReferenceNodeUid: {
           // Get the new reference node instance
@@ -120,10 +130,12 @@ export const applyPatch = (
           // @ts-ignore
           $Current.replaceWith($NewNode)
           $Current = $NewNode
+          hasAppliedMutation = true
           break
         }
         case PatchType.SetText:
           PatchFunctions.setText($Current as Text, patch.value)
+          hasAppliedMutation = true
           break
         default:
           break

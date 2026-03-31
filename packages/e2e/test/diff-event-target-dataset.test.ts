@@ -19,5 +19,11 @@ test('diff - event.target.dataset resolves camel-cased data keys and missing val
   expect(commands[0].method).toBe('Viewlet.executeViewletCommand')
   expect(commands[0].args).toEqual([0, '7', 'open-file', '', undefined])
   expect(commands[1].method).toBe('Viewlet.executeViewletCommand')
-  expect(commands[1].args).toEqual([0, undefined, undefined, undefined, undefined])
+  expect(commands[1].args).toEqual([
+    0,
+    undefined,
+    undefined,
+    undefined,
+    undefined,
+  ])
 })
