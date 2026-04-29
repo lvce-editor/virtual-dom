@@ -1,6 +1,11 @@
 import * as GetEventListenerOptions from '../GetEventListenerOptions/GetEventListenerOptions.ts'
 import * as GetWrappedListener from '../GetWrappedListener/GetWrappedListener.ts'
 
+const attachedListeners = new WeakMap<
+  HTMLElement,
+  Map<string, { listener: EventListener; options: any }>
+>()
+
 const getOptions = (fn: any): any => {
   if (fn.passive) {
     return {
@@ -23,11 +28,18 @@ export const attachEvent = (
   newEventMap?: any,
 ): void => {
   const keyLower = key.toLowerCase()
+  const listenersByEvent = attachedListeners.get($Node) || new Map()
+  const previous = listenersByEvent.get(keyLower)
+  if (previous) {
+    $Node.removeEventListener(keyLower, previous.listener, previous.options)
+  }
   if (newEventMap && newEventMap[value]) {
     const fn = newEventMap[value]
     const options: any = getOptions(fn)
     // TODO support event listener options
     $Node.addEventListener(keyLower, newEventMap[value], options)
+    listenersByEvent.set(keyLower, { listener: newEventMap[value], options })
+    attachedListeners.set($Node, listenersByEvent)
     return
   }
   const listener = eventMap[value]
@@ -41,4 +53,6 @@ export const attachEvent = (
     eventMap.returnValue,
   )
   $Node.addEventListener(keyLower, wrapped, options)
+  listenersByEvent.set(keyLower, { listener: wrapped, options })
+  attachedListeners.set($Node, listenersByEvent)
 }

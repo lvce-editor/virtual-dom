@@ -13,9 +13,18 @@ const unwrapItemString = async (item: DataTransferItem): Promise<any> => {
 
 const unwrapItemFile = async (item: DataTransferItem): Promise<any> => {
   // @ts-ignore
-  const file = await item.getAsFileSystemHandle()
+  if (item.getAsFileSystemHandle) {
+    // @ts-ignore
+    const file = await item.getAsFileSystemHandle()
+    return {
+      kind: 'file',
+      type: item.type,
+      value: file,
+    }
+  }
+  const file = item.getAsFile()
   return {
-    kind: 'file',
+    kind: 'file-legacy',
     type: item.type,
     value: file,
   }
@@ -109,6 +118,18 @@ export const getEventListenerArg = (param: string, event: any): any => {
     case 'event.y':
       return event.y
     default:
+      if (
+        typeof param === 'string' &&
+        param.startsWith('event.currentTarget.')
+      ) {
+        const rest = param.slice('event.currentTarget.'.length)
+        const parts = rest.split('.')
+        let current: any = event.currentTarget
+        for (const part of parts) {
+          current = current[part]
+        }
+        return current
+      }
       if (
         typeof param === 'string' &&
         param.startsWith('event.target.dataset')

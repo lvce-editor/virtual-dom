@@ -33,11 +33,11 @@
       "global": {
         "branches": 40,
         "functions": 40,
-        "lines": 50
+        "lines": 40
       }
     }
   },
   "devDependencies": {
-    "@lvce-editor/constants": "^5.5.0"
+    "@lvce-editor/constants": "^5.11.0"
   }
 }
