@@ -16,15 +16,15 @@ test('getEventListenerArg - event.clipboardData.files returns pasted files array
       items: [
         {
           kind: 'string',
-          getAsFile: () => null,
+          getAsFile: (): null => null,
         },
         {
           kind: 'file',
-          getAsFile: () => firstFile,
+          getAsFile: (): File => firstFile,
         },
         {
           kind: 'file',
-          getAsFile: () => secondFile,
+          getAsFile: (): File => secondFile,
         },
       ],
     },
