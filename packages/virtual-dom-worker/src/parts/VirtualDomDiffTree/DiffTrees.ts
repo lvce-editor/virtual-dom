@@ -111,7 +111,6 @@ const diffChildren = (
     patches.push({
       type: PatchType.NavigateParent,
     })
-    currentChildIndex = -1
   }
 
   // Add remove patches in reverse order (highest index first)
