@@ -5,7 +5,7 @@ import { fileURLToPath } from 'node:url'
 const __dirname = fileURLToPath(new URL('.', import.meta.url))
 const root = join(__dirname, '../../..')
 
-export const ensureBuild = async () => {
+export const ensureBuild = async (): Promise<void> => {
   // Check that dist files exist (what we'll actually serve)
   const virtualDomWorkerDist = join(
     root,
@@ -19,7 +19,7 @@ export const ensureBuild = async () => {
   try {
     await access(virtualDomWorkerDist)
     await access(virtualDomDist)
-  } catch (error) {
+  } catch {
     throw new Error(
       `Build files not found. Please run 'npm run build' first.\n` +
         `Expected files:\n` +
