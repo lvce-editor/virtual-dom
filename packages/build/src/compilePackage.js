@@ -30,7 +30,10 @@ export const buildPackage = async ({ packageName }) => {
   const tsConfigPath = getPackageBuildTsConfigPath({ packageName })
   const tsConfig = getPackageBuildTsConfig({ packageName })
 
-  await writeFile(join(root, tsConfigPath), JSON.stringify(tsConfig, null, 2) + '\n')
+  await writeFile(
+    join(root, tsConfigPath),
+    JSON.stringify(tsConfig, null, 2) + '\n',
+  )
 
   try {
     const { exitCode, stderr, stdout } = await execa(

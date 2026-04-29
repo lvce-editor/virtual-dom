@@ -11,7 +11,9 @@ test('getPackageBuildTsConfigPath returns temporary project path', () => {
 })
 
 test('getPackageBuildTsConfig extends package tsconfig and emits js and dts files for src only', () => {
-  expect(getPackageBuildTsConfig({ packageName: 'virtual-dom-worker' })).toEqual({
+  expect(
+    getPackageBuildTsConfig({ packageName: 'virtual-dom-worker' }),
+  ).toEqual({
     extends: '../packages/virtual-dom-worker/tsconfig.json',
     compilerOptions: {
       composite: false,
