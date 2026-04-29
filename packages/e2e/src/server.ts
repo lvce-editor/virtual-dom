@@ -1,8 +1,11 @@
-import { createServer } from 'node:http'
-import { readFile } from 'node:fs/promises'
+import { readFile, stat } from 'node:fs/promises'
+import {
+  createServer,
+  type IncomingMessage,
+  type ServerResponse,
+} from 'node:http'
 import { join } from 'node:path'
 import { fileURLToPath } from 'node:url'
-import { stat } from 'node:fs/promises'
 import { ensureBuild } from './ensureBuild.ts'
 
 const __dirname = fileURLToPath(new URL('.', import.meta.url))
@@ -10,7 +13,7 @@ const root = join(__dirname, '../../..')
 
 const PORT = 3000
 
-const getMimeType = (path) => {
+const getMimeType = (path: string): string => {
   if (path.endsWith('.html')) return 'text/html'
   if (path.endsWith('.js')) return 'application/javascript'
   if (path.endsWith('.css')) return 'text/css'
@@ -18,9 +21,12 @@ const getMimeType = (path) => {
   return 'text/plain'
 }
 
-const server = createServer(async (req, res) => {
+const handleRequest = async (
+  req: IncomingMessage,
+  res: ServerResponse,
+): Promise<void> => {
   try {
-    let url = req.url === '/' ? '/index/' : req.url || '/index/'
+    const url = req.url === '/' ? '/index/' : req.url || '/index/'
 
     // Serve dist files for virtual-dom packages
     if (url.startsWith('/dist/')) {
@@ -30,7 +36,7 @@ const server = createServer(async (req, res) => {
         res.writeHead(200, { 'Content-Type': getMimeType(filePath) })
         res.end(content)
         return
-      } catch (error) {
+      } catch {
         res.writeHead(404, { 'Content-Type': 'text/plain' })
         res.end('Not Found')
         return
@@ -46,7 +52,7 @@ const server = createServer(async (req, res) => {
         res.writeHead(200, { 'Content-Type': getMimeType(filePath) })
         res.end(content)
         return
-      } catch (error) {
+      } catch {
         // Try package-specific node_modules (for lerna hoisted dependencies)
         filePath = join(root, 'packages', 'virtual-dom-worker', url)
         try {
@@ -54,7 +60,7 @@ const server = createServer(async (req, res) => {
           res.writeHead(200, { 'Content-Type': getMimeType(filePath) })
           res.end(content)
           return
-        } catch (error2) {
+        } catch {
           res.writeHead(404, { 'Content-Type': 'text/plain' })
           res.end('Not Found')
           return
@@ -72,7 +78,7 @@ const server = createServer(async (req, res) => {
         if (stats.isDirectory()) {
           filePath = join(filePath, 'index.html')
         }
-      } catch (error) {
+      } catch {
         // Directory doesn't exist, will be handled below
       }
     }
@@ -81,24 +87,30 @@ const server = createServer(async (req, res) => {
       const content = await readFile(filePath, 'utf8')
       res.writeHead(200, { 'Content-Type': getMimeType(filePath) })
       res.end(content)
-    } catch (error) {
+    } catch {
       res.writeHead(404, { 'Content-Type': 'text/plain' })
       res.end('Not Found')
     }
-  } catch (error) {
+  } catch {
     res.writeHead(500, { 'Content-Type': 'text/plain' })
     res.end('Internal Server Error')
   }
+}
+
+const server = createServer((req, res): void => {
+  void handleRequest(req, res)
 })
 
-const start = async () => {
+const start = async (): Promise<void> => {
   await ensureBuild()
   server.listen(PORT, () => {
-    console.log(`Server running at http://localhost:${PORT}`)
+    process.stdout.write(`Server running at http://localhost:${PORT}\n`)
   })
 }
 
-start().catch((error) => {
+try {
+  await start()
+} catch (error) {
   console.error('Failed to start server:', error)
-  process.exit(1)
-})
+  throw error
+}
