@@ -1,10 +1,10 @@
 import { execa } from 'execa'
 import { mkdir, rm, writeFile } from 'node:fs/promises'
-import { join } from 'node:path'
+import { join, posix } from 'node:path'
 import { root } from './root.js'
 
 export const getPackageBuildTsConfigPath = ({ packageName }) => {
-  return join('.tmp', `build-${packageName}.tsconfig.json`)
+  return posix.join('.tmp', `build-${packageName}.tsconfig.json`)
 }
 
 export const getPackageBuildTsConfig = ({ packageName }) => {
