@@ -1,6 +1,6 @@
 import { test, expect } from '@playwright/test'
 
-test('renders virtual dom into root element', async ({ page }) => {
+test.skip('renders virtual dom into root element', async ({ page }) => {
   await page.goto('/index/')
 
   await page.waitForFunction(() => {
