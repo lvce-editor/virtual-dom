@@ -2085,44 +2085,7 @@ test('large diff', () => {
   ])
 })
 
-test.skip('diff - collapsing search results', () => {
-  const oldNodes = [
-    {
-      childCount: 2,
-      className: 'Viewlet Search',
-      type: 4,
-    },
-    {
-      childCount: 3,
-      className: 'SearchHeader',
-      onContextMenu: 3,
-      role: 'none',
-      type: 4,
-    },
-    {
-      childCount: 2,
-      className: 'SearchHeaderTop',
-      role: 'none',
-      type: 4,
-    },
-    {
-      ariaExpanded: true,
-      ariaLabel: 'Toggle Replace',
-      childCount: 1,
-      className: 'IconButton SearchToggleButton SearchToggleButtonExpanded',
-      name: 'ToggleReplace',
-      onClick: 5,
-      title: 'Toggle Replace',
-      type: 1,
-    },
-    {
-      childCount: 0,
-      className: 'MaskIcon MaskIconChevronDown',
-      type: 4,
-    },
-    {
-      childCount: 2,
-      className: 'SearchHeaderTopRight',
+test.todo('diff - collapsing search results')
       role: 'none',
       type: 4,
     },

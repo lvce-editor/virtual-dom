@@ -470,54 +470,7 @@ test('navigate sibling after extra root navigation', () => {
   expect($Root.querySelector('.ListItems')?.childNodes).toHaveLength(1)
 })
 
-test.skip('large patch', () => {
-  const $Root = document.createElement('div')
-  $Root.innerHTML = `<div class="Viewlet Search"><div class="SearchHeader" role="none"><div class="SearchHeaderTop" role="none"><button class="IconButton SearchToggleButton SearchToggleButtonExpanded" title="Toggle Replace" aria-label="Toggle Replace" aria-expanded="true" data-command="toggleReplace" name="ToggleReplace" classname="IconButton SearchToggleButton" ariaexpanded="false"><div class="MaskIcon MaskIconChevronDown" classname="MaskIcon MaskIconChevronRight"></div></button><div class="SearchHeaderTopRight" role="none"><div class="SearchField" role="none"><textarea class="MultilineInputBox" spellcheck="false" autocapitalize="off" placeholder="Search" name="SearchValue"></textarea><div class="SearchFieldButtons"><button class="SearchFieldButton" name="MatchCase" title="Match Case" role="checkbox" aria-checked="false" tabindex="0"><span class="MaskIcon MaskIconCaseSensitive"></span></button><button class="SearchFieldButton" name="MatchWholeWord" title="Match Whole Word" role="checkbox" aria-checked="false" tabindex="0"><span class="MaskIcon MaskIconWholeWord"></span></button><button class="SearchFieldButton" name="UseRegularExpression" title="Use Regular Expression" role="checkbox" aria-checked="false" tabindex="0"><span class="MaskIcon MaskIconRegex"></span></button></div></div><div class="SearchFieldContainer" role="none"><div class="SearchField" role="none"><textarea class="MultilineInputBox" spellcheck="false" autocapitalize="off" placeholder="Replace" name="ReplaceValue"></textarea><div class="SearchFieldButtons"><button class="SearchFieldButton" name="PreserveCase" title="Preserve Case" role="checkbox" aria-checked="false" tabindex="0"><span class="MaskIcon MaskIconPreserveCase"></span></button></div></div><button class="SearchFieldButton SearchFieldButtonDisabled" name="ReplaceAll" title="Replace All" role="checkbox" aria-checked="false" tabindex="0"><span class="MaskIcon MaskIconReplaceAll"></span></button></div></div></div><div class="SearchHeaderDetails"><div class="ViewletSearchMessage" role="status" tabindex="0">No results found</div><div class="ToggleDetails" role="button" tabindex="0" aria-label="Toggle Search Details" title="Toggle Search Details"><div class="MaskIcon MaskIconEllipsis"></div></div></div></div><div class="Viewlet List Tree" role="tree" tabindex="0"><div class="TreeItems" id="TreeItems" style="top: 0px;"></div></div></div>`
-  const patches: readonly Patch[] = [
-    {
-      index: 0,
-      type: PatchType.NavigateChild,
-    },
-    {
-      index: 0,
-      type: PatchType.NavigateChild,
-    },
-    {
-      index: 0,
-      type: PatchType.NavigateChild,
-    },
-    {
-      key: 'className',
-      type: PatchType.SetAttribute,
-      value: 'IconButton SearchToggleButton',
-    },
-    {
-      key: 'ariaExpanded',
-      type: PatchType.SetAttribute,
-      value: false,
-    },
-    {
-      index: 0,
-      type: PatchType.NavigateChild,
-    },
-    {
-      key: 'className',
-      type: PatchType.SetAttribute,
-      value: 'MaskIcon MaskIconChevronRight',
-    },
-
-    // TODO this navigation seems wrong
-    {
-      type: PatchType.NavigateParent,
-    },
-    {
-      index: 0,
-      type: PatchType.NavigateChild,
-    },
-    {
-      index: 0,
-      type: PatchType.NavigateChild,
-    },
+test.todo('large patch')
     {
       type: PatchType.NavigateParent,
     },

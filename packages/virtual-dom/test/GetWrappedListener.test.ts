@@ -60,8 +60,4 @@ test('getWrappedListener - returns cached listener when available', () => {
   expect(result).toBe(cachedListener)
 })
 
-test.skip('getWrappedListener - creates and caches new wrapped listener', () => {
-  const originalListener = jest.fn()
-  const result = getWrappedListener(originalListener, true)
-  expect(mockListenerCache.set).toHaveBeenCalledWith(originalListener, result)
-})
+test.todo('getWrappedListener - creates and caches new wrapped listener')
