@@ -1,6 +1,104 @@
 import * as AttachEvent from '../AttachEvent/AttachEvent.ts'
 import * as SetStyle from '../SetStyle/SetStyle.ts'
 
+const optionalAttributeProps = new Map([
+  ['ariaActivedescendant', 'aria-activedescendant'],
+  ['ariaOwns', 'aria-owns'],
+])
+
+const mappedAttributeProps = new Map([
+  ['ariaControls', 'aria-controls'],
+  ['ariaLabelledBy', 'aria-labelledby'],
+])
+
+const pixelStyleProps = new Set([
+  'left',
+  'marginTop',
+  'paddingLeft',
+  'paddingRight',
+  'top',
+])
+
+const eventProps = new Set([
+  'onBlur',
+  'onChange',
+  'onClick',
+  'onContextMenu',
+  'onDblClick',
+  'onDragEnd',
+  'onDragEnter',
+  'onDragLeave',
+  'onDragOver',
+  'onDragStart',
+  'onDrop',
+  'onFocus',
+  'onFocusIn',
+  'onFocusOut',
+  'onInput',
+  'onKeydown',
+  'onKeyDown',
+  'onKeyUp',
+  'onMouseDown',
+  'onMouseMove',
+  'onMouseOut',
+  'onMouseOver',
+  'onMouseUp',
+  'onPointerDown',
+  'onPointerMove',
+  'onPointerOut',
+  'onPointerOver',
+  'onScroll',
+  'onSelectionChange',
+  'onSubmit',
+  'onWheel',
+])
+
+const setOptionalAttribute = (
+  $Element: HTMLElement,
+  attributeName: string,
+  value: any,
+): void => {
+  if (value) {
+    $Element.setAttribute(attributeName, value)
+    return
+  }
+  $Element.removeAttribute(attributeName)
+}
+
+const setDimension = (
+  $Element: HTMLElement,
+  key: 'height' | 'width',
+  value: any,
+): void => {
+  if ($Element instanceof HTMLImageElement) {
+    $Element[key] = value
+    return
+  }
+  $Element.style[key] = typeof value === 'number' ? `${value}px` : value
+}
+
+const setPixelStyle = (
+  $Element: HTMLElement,
+  key: string,
+  value: any,
+): void => {
+  $Element.style[key] = typeof value === 'number' ? `${value}px` : value
+}
+
+const setEventProp = (
+  $Element: HTMLElement,
+  key: string,
+  value: any,
+  eventMap: any,
+  newEventMap?: any,
+): void => {
+  if (!eventMap || !value) {
+    return
+  }
+  const eventName = key.slice(2).toLowerCase()
+  AttachEvent.attachEvent($Element, eventMap, eventName, value, newEventMap)
+}
+
 export const setProp = (
   $Element: HTMLElement,
   key: string,
@@ -8,110 +106,72 @@ export const setProp = (
   eventMap: any,
   newEventMap?: any,
 ): void => {
-  switch (key) {
-    case 'ariaActivedescendant':
-      if (value) {
-        $Element.setAttribute('aria-activedescendant', value)
-      } else {
-        $Element.removeAttribute('aria-activedescendant')
-      }
-      break
-    case 'ariaControls':
-      $Element.setAttribute('aria-controls', value)
-      break
-    case 'ariaLabelledBy':
-      $Element.setAttribute('aria-labelledby', value)
-      break
-    case 'ariaOwns': // TODO remove this once idl is supported
-      if (value) {
-        $Element.setAttribute('aria-owns', value)
-      } else {
-        $Element.removeAttribute('aria-owns')
-      }
-      break
-    case 'childCount':
-    case 'type':
-      break
-    case 'height':
-    case 'width':
-      if ($Element instanceof HTMLImageElement) {
-        $Element[key] = value
-      } else if (typeof value === 'number') {
-        $Element.style[key] = `${value}px`
-      } else {
-        $Element.style[key] = value
-      }
-      break
-    case 'id':
-      if (value) {
-        $Element[key] = value
-      } else {
-        $Element.removeAttribute(key)
-      }
-      break
-    case 'inputType':
-      // @ts-ignore
-      $Element.type = value
-      break
-    case 'left':
-    case 'marginTop':
-    case 'paddingLeft':
-    case 'paddingRight':
-    case 'top':
-      $Element.style[key] = typeof value === 'number' ? `${value}px` : value
-      break
-    case 'maskImage':
-      $Element.style.maskImage = `url('${value}')`
-      $Element.style.webkitMaskImage = `url('${value}')`
-      break
-    case 'onBlur':
-    case 'onChange':
-    case 'onClick':
-    case 'onContextMenu':
-    case 'onDblClick':
-    case 'onDragEnd':
-    case 'onDragEnter':
-    case 'onDragLeave':
-    case 'onDragOver':
-    case 'onDragStart':
-    case 'onDrop':
-    case 'onFocus':
-    case 'onFocusIn':
-    case 'onFocusOut':
-    case 'onInput':
-    case 'onKeydown':
-    case 'onKeyDown':
-    case 'onKeyUp':
-    case 'onMouseDown':
-    case 'onMouseMove':
-    case 'onMouseOut':
-    case 'onMouseOver':
-    case 'onMouseUp':
-    case 'onPointerDown':
-    case 'onPointerMove':
-    case 'onPointerOut':
-    case 'onPointerOver':
-    case 'onScroll':
-    case 'onSelectionChange':
-    case 'onSubmit':
-    case 'onWheel':
-      const eventName = key.slice(2).toLowerCase()
-      if (!eventMap || !value) {
-        return
-      }
-      AttachEvent.attachEvent($Element, eventMap, eventName, value, newEventMap)
-      break
-    case 'style':
-      SetStyle.setStyle($Element, value)
-      break
-    case 'translate':
-      $Element.style[key] = value
-      break
-    default:
-      if (key.startsWith('data-')) {
-        $Element.dataset[key.slice('data-'.length)] = value
-      } else {
-        $Element[key] = value
-      }
+  const optionalAttributeName = optionalAttributeProps.get(key)
+  if (optionalAttributeName) {
+    setOptionalAttribute($Element, optionalAttributeName, value)
+    return
   }
+
+  const mappedAttributeName = mappedAttributeProps.get(key)
+  if (mappedAttributeName) {
+    $Element.setAttribute(mappedAttributeName, value)
+    return
+  }
+
+  if (key === 'childCount' || key === 'type') {
+    return
+  }
+
+  if (key === 'height' || key === 'width') {
+    setDimension($Element, key, value)
+    return
+  }
+
+  if (key === 'id') {
+    if (value) {
+      $Element[key] = value
+    } else {
+      $Element.removeAttribute(key)
+    }
+    return
+  }
+
+  if (key === 'inputType') {
+    // @ts-ignore
+    $Element.type = value
+    return
+  }
+
+  if (pixelStyleProps.has(key)) {
+    setPixelStyle($Element, key, value)
+    return
+  }
+
+  if (key === 'maskImage') {
+    $Element.style.maskImage = `url('${value}')`
+    $Element.style.webkitMaskImage = `url('${value}')`
+    return
+  }
+
+  if (eventProps.has(key)) {
+    setEventProp($Element, key, value, eventMap, newEventMap)
+    return
+  }
+
+  if (key === 'style') {
+    SetStyle.setStyle($Element, value)
+    return
+  }
+
+  if (key === 'translate') {
+    $Element.style[key] = value
+    return
+  }
+
+  if (key.startsWith('data-')) {
+    $Element.dataset[key.slice('data-'.length)] = value
+    return
+  }
+
+  $Element[key] = value
 }

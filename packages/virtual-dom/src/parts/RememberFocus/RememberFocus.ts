@@ -9,6 +9,103 @@ const focusElement = ($Element: HTMLElement): void => {
   $Element.focus({ preventScroll: true })
 }
 
+const getInputMap = ($Viewlet: HTMLElement): Record<string, string> => {
+  const $$Inputs = QueryInputs.queryInputs($Viewlet)
+  const inputMap = Object.create(null)
+  for (const $Input of $$Inputs) {
+    inputMap[$Input.name] = $Input.value
+  }
+  return inputMap
+}
+
+const createHiddenContainer = (
+  activeElement: Element | null | undefined,
+  focused: string | null,
+): HTMLDivElement => {
+  const $Hidden = document.createElement('div')
+  $Hidden.style.display = 'none'
+  if (focused && activeElement && document.body) {
+    document.body.append($Hidden)
+    $Hidden.append(activeElement)
+  }
+  return $Hidden
+}
+
+const restoreFocusedElement = (
+  $Hidden: HTMLDivElement,
+  $New: HTMLElement,
+  focused: string,
+): void => {
+  const $NewFocused = $New.querySelector<HTMLInputElement>(
+    `[name="${focused}"]`,
+  )
+  if (!$NewFocused) {
+    return
+  }
+  const $Previous = $Hidden.firstChild as HTMLInputElement | null
+  if (!$Previous) {
+    return
+  }
+  $Previous.className = $NewFocused.className
+  $Previous.placeholder = $NewFocused.placeholder
+  if ($NewFocused.childNodes) {
+    $Previous.replaceChildren(...$NewFocused.childNodes)
+  }
+  $NewFocused.replaceWith($Previous)
+}
+
+const renderWithUid = (
+  $Viewlet: HTMLElement,
+  dom: any[],
+  eventMap: any,
+  uid: number,
+  inputMap: Record<string, string>,
+  focused: string | null,
+  $Hidden: HTMLDivElement,
+): HTMLElement => {
+  const newEventMap = RegisterEventListeners.getEventListenerMap(uid)
+  const $New = VirtualDom.render(dom, eventMap, newEventMap)
+    .firstChild as HTMLElement
+  ComponentUid.setComponentUid($New, uid)
+  const $$NewInputs = QueryInputs.queryInputs($New)
+  for (const $Input of $$NewInputs) {
+    $Input.value = inputMap[$Input.name] || $Input.value || ''
+  }
+  $Viewlet.replaceWith($New)
+  if (focused) {
+    restoreFocusedElement($Hidden, $New, focused)
+  }
+  return $New
+}
+
+const restoreFocus = (
+  $Viewlet: HTMLElement,
+  isRootTree: boolean,
+  isTreeFocused: boolean,
+  focused: string | null,
+): void => {
+  if (isRootTree) {
+    focusElement($Viewlet)
+    return
+  }
+  if (isTreeFocused) {
+    const $Tree = $Viewlet.querySelector('[role="tree"]')
+    if ($Tree) {
+      // @ts-ignore
+      focusElement($Tree)
+    }
+    return
+  }
+  if (!focused) {
+    return
+  }
+  const $Focused = $Viewlet.querySelector(`[name="${focused}"]`)
+  if ($Focused) {
+    // @ts-ignore
+    focusElement($Focused)
+  }
+}
+
 export const rememberFocus = (
   $Viewlet: HTMLElement,
   dom: any[],
@@ -24,67 +121,27 @@ export const rememberFocus = (
   const isTreeFocused = activeElement?.getAttribute('role') === 'tree'
   const isRootTree =
     $Viewlet.getAttribute('role') === 'tree' && activeElement === $Viewlet
-  const focused = activeElement?.getAttribute('name')
-  const $Hidden = document.createElement('div')
-  $Hidden.style.display = 'none'
-  if (focused) {
-    if (document.body) {
-      document.body.append($Hidden)
-    }
-    // @ts-ignore
-    $Hidden.append(activeElement)
-  }
-  const $$Inputs = QueryInputs.queryInputs($Viewlet)
-  const inputMap = Object.create(null)
-  for (const $Input of $$Inputs) {
-    inputMap[$Input.name] = $Input.value
-  }
+  const focused = activeElement?.getAttribute('name') || null
+  const $Hidden = createHiddenContainer(activeElement, focused)
+  const inputMap = getInputMap($Viewlet)
   if (uid) {
-    const newEventMap = RegisterEventListeners.getEventListenerMap(uid)
-    const $New = VirtualDom.render(dom, eventMap, newEventMap)
-      .firstChild as HTMLElement
-    ComponentUid.setComponentUid($New, uid)
-    const $$NewInputs = QueryInputs.queryInputs($New)
-    for (const $Input of $$NewInputs) {
-      $Input.value = inputMap[$Input.name] || $Input.value || ''
-    }
-    $Viewlet.replaceWith($New)
-    if (focused) {
-      const $NewFocused = $New.querySelector(
-        `[name="${focused}"]`,
-      ) as HTMLInputElement
-      if ($NewFocused) {
-        const $Previous = $Hidden.firstChild as HTMLInputElement
-        $Previous.className = $NewFocused.className
-        $Previous.placeholder = $NewFocused.placeholder
-        if ($NewFocused.childNodes) {
-          $Previous.replaceChildren(...$NewFocused.childNodes)
-        }
-        $NewFocused.replaceWith($Previous)
-      }
-    }
+    const numericUid = Number(uid)
+    $Viewlet = renderWithUid(
+      $Viewlet,
+      dom,
+      eventMap,
+      numericUid,
+      inputMap,
+      focused,
+      $Hidden,
+    )
     $Hidden.remove()
-    $Viewlet = $New
   } else {
     VirtualDom.renderInto($Viewlet, dom, eventMap)
+    $Hidden.remove()
   }
 
-  if (isRootTree) {
-    focusElement($Viewlet)
-  } else if (isTreeFocused) {
-    const $Tree = $Viewlet.querySelector('[role="tree"]')
-    if ($Tree) {
-      // @ts-ignore
-      focusElement($Tree)
-    }
-  } else if (focused) {
-    const $Focused = $Viewlet.querySelector(`[name="${focused}"]`)
-
-    if ($Focused) {
-      // @ts-ignore
-      focusElement($Focused)
-    }
-  }
+  restoreFocus($Viewlet, isRootTree, isTreeFocused, focused)
 
   $Viewlet.style.top = oldTop
   $Viewlet.style.left = oldLeft

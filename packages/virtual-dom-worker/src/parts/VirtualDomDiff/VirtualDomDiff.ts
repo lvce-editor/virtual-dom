@@ -6,63 +6,241 @@ import * as GetKeys from '../GetKeys/GetKeys.ts'
 import * as GetTotalChildCount from '../GetTotalChildCount/GetTotalChildCount.ts'
 import * as PatchType from '../PatchType/PatchType.ts'
 
+interface DiffState {
+  i: number
+  indexStack: number[]
+  j: number
+  maxSiblingOffset: number
+  patches: Patch[]
+  pendingPatches: number[]
+  siblingOffset: number
+}
+
+const applyPendingPatches = (state: DiffState, skip = 0): void => {
+  ApplyPendingPatches.applyPendingPatches(
+    state.patches,
+    state.pendingPatches,
+    skip,
+  )
+}
+
+const syncAncestorNavigation = (state: DiffState): void => {
+  while (state.siblingOffset === state.maxSiblingOffset) {
+    state.pendingPatches.push(PatchType.NavigateParent, 0)
+    state.indexStack.pop()
+    state.indexStack.pop()
+    state.maxSiblingOffset = state.indexStack.pop() as number
+    state.siblingOffset = (state.indexStack.pop() as number) + 1
+  }
+}
+
+const hasPendingNavigateChild = (
+  pendingPatches: readonly number[],
+): boolean => {
+  return (
+    pendingPatches.length > 0 &&
+    pendingPatches.at(-2) === PatchType.NavigateChild
+  )
+}
+
+const replaceMismatchedNode = (
+  state: DiffState,
+  oldNodes: readonly VirtualDomNode[],
+  newNodes: readonly VirtualDomNode[],
+): void => {
+  const skip = hasPendingNavigateChild(state.pendingPatches) ? 2 : 0
+  applyPendingPatches(state, skip)
+  const oldTotal = GetTotalChildCount.getTotalChildCount(oldNodes, state.i)
+  const newTotal = GetTotalChildCount.getTotalChildCount(newNodes, state.j)
+
+  state.patches.push({
+    index: state.siblingOffset,
+    type: PatchType.RemoveChild,
+  })
+  state.patches.push({
+    nodes: newNodes.slice(state.j, state.j + newTotal),
+    type: PatchType.Add,
+  })
+  state.siblingOffset++
+  state.i += oldTotal
+  state.j += newTotal
+}
+
+const updateTextNode = (
+  state: DiffState,
+  oldNode: VirtualDomNode,
+  newNode: VirtualDomNode,
+): void => {
+  if (oldNode.text !== newNode.text) {
+    if (state.siblingOffset !== 0) {
+      state.pendingPatches.push(PatchType.NavigateSibling, state.siblingOffset)
+    }
+    applyPendingPatches(state)
+    state.patches.push({
+      type: PatchType.SetText,
+      value: newNode.text,
+    })
+  }
+  state.i++
+  state.j++
+  state.siblingOffset++
+}
+
+const hasAttributeChanges = (
+  oldNode: VirtualDomNode,
+  newNode: VirtualDomNode,
+  oldKeys: readonly string[],
+  newKeys: readonly string[],
+): boolean => {
+  for (const key of newKeys) {
+    if (oldNode[key] !== newNode[key]) {
+      return true
+    }
+  }
+  for (const key of oldKeys) {
+    if (!(key in newNode)) {
+      return true
+    }
+  }
+  return false
+}
+
+const applyAttributeChanges = (
+  state: DiffState,
+  oldNode: VirtualDomNode,
+  newNode: VirtualDomNode,
+): void => {
+  const oldKeys = GetKeys.getKeys(oldNode)
+  const newKeys = GetKeys.getKeys(newNode)
+  if (!hasAttributeChanges(oldNode, newNode, oldKeys, newKeys)) {
+    return
+  }
+  if (state.siblingOffset > 0) {
+    state.pendingPatches.push(PatchType.NavigateSibling, state.siblingOffset)
+  }
+  applyPendingPatches(state)
+
+  for (const key of newKeys) {
+    if (oldNode[key] !== newNode[key]) {
+      state.patches.push({
+        key,
+        type: PatchType.SetAttribute,
+        value: newNode[key],
+      })
+    }
+  }
+  for (const key of oldKeys) {
+    if (!(key in newNode)) {
+      state.patches.push({
+        key,
+        type: PatchType.RemoveAttribute,
+      })
+    }
+  }
+}
+
+const enterChildLevel = (state: DiffState, childCount: number): void => {
+  state.maxSiblingOffset = childCount
+  state.indexStack.push(0, state.maxSiblingOffset)
+  state.pendingPatches.push(PatchType.NavigateChild, 0)
+  state.i++
+  state.j++
+}
+
+const removeOldChildren = (
+  state: DiffState,
+  oldNodes: readonly VirtualDomNode[],
+  childCount: number,
+): void => {
+  applyPendingPatches(state)
+  for (let k = 0; k < childCount; k++) {
+    state.patches.push({
+      index: 0,
+      type: PatchType.RemoveChild,
+    })
+  }
+  state.i += GetTotalChildCount.getTotalChildCount(oldNodes, state.i)
+  state.j++
+  state.siblingOffset++
+}
+
+const addNewChildren = (
+  state: DiffState,
+  newNodes: readonly VirtualDomNode[],
+): void => {
+  applyPendingPatches(state)
+  const total = GetTotalChildCount.getTotalChildCount(newNodes, state.j)
+  state.patches.push({
+    nodes: newNodes.slice(state.j + 1, state.j + total),
+    type: PatchType.Add,
+  })
+  state.i++
+  state.j += total
+}
+
+const removeRemainingOldNodes = (
+  state: DiffState,
+  oldNodes: readonly VirtualDomNode[],
+): void => {
+  while (state.i < oldNodes.length) {
+    if (state.indexStack.length !== 2) {
+      state.patches.push({
+        type: PatchType.NavigateParent,
+      })
+    }
+    state.patches.push({
+      index: state.siblingOffset,
+      type: PatchType.RemoveChild,
+    })
+    state.i += GetTotalChildCount.getTotalChildCount(oldNodes, state.i)
+    state.indexStack.pop()
+    state.indexStack.pop()
+  }
+}
+
+const addRemainingNewNodes = (
+  state: DiffState,
+  newNodes: readonly VirtualDomNode[],
+): void => {
+  while (state.j < newNodes.length) {
+    if (state.siblingOffset > 0) {
+      state.patches.push({
+        index: state.siblingOffset,
+        type: PatchType.NavigateSibling,
+      })
+      state.siblingOffset = 0
+    }
+    const count = GetTotalChildCount.getTotalChildCount(newNodes, state.j)
+    state.patches.push({
+      nodes: newNodes.slice(state.j, state.j + count),
+      type: PatchType.Add,
+    })
+    state.j += count
+  }
+}
+
 export const diff = (
   oldNodes: readonly VirtualDomNode[],
   newNodes: readonly VirtualDomNode[],
 ): readonly Patch[] => {
-  const patches: Patch[] = []
-  const pendingPatches: number[] = []
-  let i = 0
-  let j = 0
-  let siblingOffset = 0
-  let maxSiblingOffset = 1
-  const indexStack: number[] = [0, 1]
-  while (i < oldNodes.length && j < newNodes.length) {
-    const oldNode = oldNodes[i]
-    const newNode = newNodes[j]
+  const state: DiffState = {
+    i: 0,
+    j: 0,
+    siblingOffset: 0,
+    maxSiblingOffset: 1,
+    patches: [],
+    pendingPatches: [],
+    indexStack: [0, 1],
+  }
 
-    if (siblingOffset > 0) {
-      // pendingPatches.push(PatchType.NavigateSibling, siblingOffset)
-    }
+  while (state.i < oldNodes.length && state.j < newNodes.length) {
+    const oldNode = oldNodes[state.i]
+    const newNode = newNodes[state.j]
 
-    // TODO maybe don't have the current element in indexstack
-    if (siblingOffset === maxSiblingOffset) {
-      indexStack.pop()
-      indexStack.pop()
-      pendingPatches.push(PatchType.NavigateParent, 0)
-      maxSiblingOffset = indexStack.pop() as number
-      siblingOffset = (indexStack.pop() as number) + 1
-    }
-
-    while (siblingOffset === maxSiblingOffset) {
-      pendingPatches.push(PatchType.NavigateParent, 0)
-      maxSiblingOffset = indexStack.pop() as number
-      siblingOffset = (indexStack.pop() as number) + 1
-    }
+    syncAncestorNavigation(state)
 
     if (oldNode.type !== newNode.type) {
-      let skip = 0
-      if (
-        pendingPatches.length > 0 &&
-        pendingPatches.at(-2) === PatchType.NavigateChild
-      ) {
-        skip = 2
-      }
-      ApplyPendingPatches.applyPendingPatches(patches, pendingPatches, skip)
-      const oldTotal = GetTotalChildCount.getTotalChildCount(oldNodes, i)
-      const newTotal = GetTotalChildCount.getTotalChildCount(newNodes, j)
-
-      patches.push({
-        index: siblingOffset,
-        type: PatchType.RemoveChild,
-      })
-      patches.push({
-        nodes: newNodes.slice(j, j + newTotal),
-        type: PatchType.Add,
-      })
-      siblingOffset++
-      i += oldTotal
-      j += newTotal
+      replaceMismatchedNode(state, oldNodes, newNodes)
       continue
     }
 
@@ -70,133 +248,34 @@ export const diff = (
       oldNode.type === VirtualDomElements.Text &&
       newNode.type === VirtualDomElements.Text
     ) {
-      if (oldNode.text !== newNode.text) {
-        if (siblingOffset !== 0) {
-          pendingPatches.push(PatchType.NavigateSibling, siblingOffset)
-        }
-        ApplyPendingPatches.applyPendingPatches(patches, pendingPatches, 0)
-        patches.push({
-          type: PatchType.SetText,
-          value: newNode.text,
-        })
-      }
-      i++
-      j++
-      siblingOffset++
+      updateTextNode(state, oldNode, newNode)
       continue
     }
 
-    const oldKeys = GetKeys.getKeys(oldNode)
-    const newKeys = GetKeys.getKeys(newNode)
-    let hasAttributeChanges = false
-    for (const key of newKeys) {
-      if (oldNode[key] !== newNode[key]) {
-        hasAttributeChanges = true
-        break
-      }
-    }
-    for (const key of oldKeys) {
-      if (!(key in newNode)) {
-        hasAttributeChanges = true
-        break
-      }
-    }
-
-    if (hasAttributeChanges) {
-      if (siblingOffset > 0) {
-        pendingPatches.push(PatchType.NavigateSibling, siblingOffset)
-      }
-      ApplyPendingPatches.applyPendingPatches(patches, pendingPatches, 0)
-
-      for (const key of newKeys) {
-        if (oldNode[key] !== newNode[key]) {
-          patches.push({
-            key,
-            type: PatchType.SetAttribute,
-            value: newNode[key],
-          })
-        }
-      }
-      for (const key of oldKeys) {
-        if (!(key in newNode)) {
-          patches.push({
-            key,
-            type: PatchType.RemoveAttribute,
-          })
-        }
-      }
-    }
+    applyAttributeChanges(state, oldNode, newNode)
 
     if (oldNode.childCount && newNode.childCount) {
-      maxSiblingOffset = oldNode.childCount
-      indexStack.push(0, maxSiblingOffset)
-      pendingPatches.push(PatchType.NavigateChild, 0)
-      i++
-      j++
+      enterChildLevel(state, oldNode.childCount)
       continue
     }
 
     if (oldNode.childCount) {
-      ApplyPendingPatches.applyPendingPatches(patches, pendingPatches, 0)
-      for (let k = 0; k < oldNode.childCount; k++) {
-        patches.push({
-          index: 0,
-          type: PatchType.RemoveChild,
-        })
-      }
-      i += GetTotalChildCount.getTotalChildCount(oldNodes, i)
-      j++
-      siblingOffset++
+      removeOldChildren(state, oldNodes, oldNode.childCount)
       continue
     }
 
     if (newNode.childCount) {
-      ApplyPendingPatches.applyPendingPatches(patches, pendingPatches, 0)
-      const total = GetTotalChildCount.getTotalChildCount(newNodes, j)
-      patches.push({
-        nodes: newNodes.slice(j + 1, j + total),
-        type: PatchType.Add,
-      })
-      i++
-      j += total
+      addNewChildren(state, newNodes)
       continue
     }
 
-    i++
-    j++
-    siblingOffset++
+    state.i++
+    state.j++
+    state.siblingOffset++
   }
 
-  while (i < oldNodes.length) {
-    if (indexStack.length !== 2) {
-      patches.push({
-        type: PatchType.NavigateParent,
-      })
-    }
-    patches.push({
-      index: siblingOffset,
-      type: PatchType.RemoveChild,
-    })
-    i += GetTotalChildCount.getTotalChildCount(oldNodes, i)
-    indexStack.pop()
-    indexStack.pop()
-  }
+  removeRemainingOldNodes(state, oldNodes)
+  addRemainingNewNodes(state, newNodes)
 
-  while (j < newNodes.length) {
-    if (siblingOffset > 0) {
-      patches.push({
-        index: siblingOffset,
-        type: PatchType.NavigateSibling,
-      })
-      siblingOffset = 0
-    }
-    const count = GetTotalChildCount.getTotalChildCount(newNodes, j)
-    patches.push({
-      nodes: newNodes.slice(j, j + count),
-      type: PatchType.Add,
-    })
-    j += count
-  }
-
-  return patches
+  return state.patches
 }

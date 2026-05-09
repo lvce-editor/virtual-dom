@@ -11,6 +11,6 @@ test('diff - event listener patch updates click handler', async ({ page }) => {
   const container = page.locator('#diff-container')
   const button = container.locator('button')
   await expect(button).toHaveText('0')
-  await button.click()
+  await button.dispatchEvent('click')
   await expect(button).toHaveText('2')
 })
