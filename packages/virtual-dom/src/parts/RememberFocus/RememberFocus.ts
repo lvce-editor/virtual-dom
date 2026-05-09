@@ -35,9 +35,9 @@ const restoreFocusedElement = (
   $New: HTMLElement,
   focused: string,
 ): void => {
-  const $NewFocused = $New.querySelector(`[name="${focused}"]`) as
-    | HTMLInputElement
-    | null
+  const $NewFocused = $New.querySelector<HTMLInputElement>(
+    `[name="${focused}"]`,
+  )
   if (!$NewFocused) {
     return
   }

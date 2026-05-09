@@ -8,12 +8,12 @@ import * as PatchType from '../PatchType/PatchType.ts'
 
 interface DiffState {
   i: number
+  indexStack: number[]
   j: number
-  siblingOffset: number
   maxSiblingOffset: number
   patches: Patch[]
   pendingPatches: number[]
-  indexStack: number[]
+  siblingOffset: number
 }
 
 const applyPendingPatches = (state: DiffState, skip = 0): void => {
@@ -34,8 +34,13 @@ const syncAncestorNavigation = (state: DiffState): void => {
   }
 }
 
-const hasPendingNavigateChild = (pendingPatches: readonly number[]): boolean => {
-  return pendingPatches.length > 0 && pendingPatches.at(-2) === PatchType.NavigateChild
+const hasPendingNavigateChild = (
+  pendingPatches: readonly number[],
+): boolean => {
+  return (
+    pendingPatches.length > 0 &&
+    pendingPatches.at(-2) === PatchType.NavigateChild
+  )
 }
 
 const replaceMismatchedNode = (
@@ -61,7 +66,11 @@ const replaceMismatchedNode = (
   state.j += newTotal
 }
 
-const updateTextNode = (state: DiffState, oldNode: VirtualDomNode, newNode: VirtualDomNode): void => {
+const updateTextNode = (
+  state: DiffState,
+  oldNode: VirtualDomNode,
+  newNode: VirtualDomNode,
+): void => {
   if (oldNode.text !== newNode.text) {
     if (state.siblingOffset !== 0) {
       state.pendingPatches.push(PatchType.NavigateSibling, state.siblingOffset)

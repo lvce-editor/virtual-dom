@@ -29,7 +29,7 @@ const handleNavigateChild = (
     patch.index === $Children.length
   ) {
     const $Placeholder = document.createComment('virtual-dom-placeholder')
-      ; (state.current as HTMLElement).append($Placeholder)
+    ;(state.current as HTMLElement).append($Placeholder)
     state.current = $Placeholder
     return true
   }
@@ -82,10 +82,7 @@ const handleNavigateSibling = (
   return true
 }
 
-const handleSetReferenceNodeUid = (
-  state: ApplyState,
-  patch: any,
-): boolean => {
+const handleSetReferenceNodeUid = (state: ApplyState, patch: any): boolean => {
   const instance = Instances.get(patch.uid)
   if (!instance || !instance.state) {
     console.error('Cannot set reference node uid: instance not found', {
@@ -99,6 +96,69 @@ const handleSetReferenceNodeUid = (
   state.current = $NewNode
   state.hasAppliedMutation = true
   return true
+}
+
+const handleNavigationPatch = (
+  state: ApplyState,
+  patch: Patch,
+  patches: readonly Patch[],
+  patchIndex: number,
+  $Element: Node,
+): boolean => {
+  switch (patch.type) {
+    case PatchType.NavigateChild:
+      return handleNavigateChild(state, patches, patchIndex)
+    case PatchType.NavigateParent:
+      return handleNavigateParent(state)
+    case PatchType.NavigateSibling:
+      return handleNavigateSibling(state, patch, $Element, patchIndex)
+    default:
+      return true
+  }
+}
+
+const applyMutationPatch = (
+  state: ApplyState,
+  patch: Patch,
+  events: Record<string, any>,
+): void => {
+  switch (patch.type) {
+    case PatchType.Add:
+      PatchFunctions.add(state.current as HTMLElement, patch.nodes, events)
+      state.hasAppliedMutation = true
+      break
+    case PatchType.RemoveAttribute:
+      PatchFunctions.removeAttribute(state.current as HTMLElement, patch.key)
+      state.hasAppliedMutation = true
+      break
+    case PatchType.RemoveChild:
+      PatchFunctions.removeChild(state.current as HTMLElement, patch.index)
+      state.hasAppliedMutation = true
+      break
+    case PatchType.Replace:
+      state.current = PatchFunctions.replace(
+        state.current as HTMLElement,
+        patch.nodes,
+        events,
+      )
+      state.hasAppliedMutation = true
+      break
+    case PatchType.SetAttribute:
+      VirtualDomElementProp.setProp(
+        state.current as HTMLElement,
+        patch.key,
+        patch.value,
+        events,
+      )
+      state.hasAppliedMutation = true
+      break
+    case PatchType.SetText:
+      PatchFunctions.setText(state.current as Text, patch.value)
+      state.hasAppliedMutation = true
+      break
+    default:
+      break
+  }
 }
 
 export const applyPatch = (
@@ -115,63 +175,16 @@ export const applyPatch = (
   for (let patchIndex = 0; patchIndex < patches.length; patchIndex++) {
     const patch = patches[patchIndex]
     try {
-      switch (patch.type) {
-        case PatchType.Add:
-          PatchFunctions.add(state.current as HTMLElement, patch.nodes, events)
-          state.hasAppliedMutation = true
-          break
-        case PatchType.NavigateChild:
-          if (!handleNavigateChild(state, patches, patchIndex)) {
-            return
-          }
-          break
-        case PatchType.NavigateParent:
-          if (!handleNavigateParent(state)) {
-            return
-          }
-          break
-        case PatchType.NavigateSibling:
-          if (!handleNavigateSibling(state, patch, $Element, patchIndex)) {
-            return
-          }
-          break
-        case PatchType.RemoveAttribute:
-          PatchFunctions.removeAttribute(state.current as HTMLElement, patch.key)
-          state.hasAppliedMutation = true
-          break
-        case PatchType.RemoveChild:
-          PatchFunctions.removeChild(state.current as HTMLElement, patch.index)
-          state.hasAppliedMutation = true
-          break
-        case PatchType.Replace:
-          state.current = PatchFunctions.replace(
-            state.current as HTMLElement,
-            patch.nodes,
-            events,
-          )
-          state.hasAppliedMutation = true
-          break
-        case PatchType.SetAttribute:
-          VirtualDomElementProp.setProp(
-            state.current as HTMLElement,
-            patch.key,
-            patch.value,
-            events,
-          )
-          state.hasAppliedMutation = true
-          break
-        case PatchType.SetReferenceNodeUid:
-          if (!handleSetReferenceNodeUid(state, patch)) {
-            return
-          }
-          break
-        case PatchType.SetText:
-          PatchFunctions.setText(state.current as Text, patch.value)
-          state.hasAppliedMutation = true
-          break
-        default:
-          break
+      if (!handleNavigationPatch(state, patch, patches, patchIndex, $Element)) {
+        return
       }
+      if (patch.type === PatchType.SetReferenceNodeUid) {
+        if (!handleSetReferenceNodeUid(state, patch)) {
+          return
+        }
+        continue
+      }
+      applyMutationPatch(state, patch, events)
     } catch (error) {
       console.error('Error applying patch at index ' + patchIndex, patch, error)
       throw error

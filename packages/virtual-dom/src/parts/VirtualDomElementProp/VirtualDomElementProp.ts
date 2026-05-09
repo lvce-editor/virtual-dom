@@ -55,7 +55,6 @@ const eventProps = new Set([
 
 const setOptionalAttribute = (
   $Element: HTMLElement,
-  key: string,
   attributeName: string,
   value: any,
 ): void => {
@@ -63,7 +62,7 @@ const setOptionalAttribute = (
     $Element.setAttribute(attributeName, value)
     return
   }
-  $Element.removeAttribute(key)
+  $Element.removeAttribute(attributeName)
 }
 
 const setDimension = (
@@ -109,7 +108,7 @@ export const setProp = (
 ): void => {
   const optionalAttributeName = optionalAttributeProps.get(key)
   if (optionalAttributeName) {
-    setOptionalAttribute($Element, optionalAttributeName, optionalAttributeName, value)
+    setOptionalAttribute($Element, optionalAttributeName, value)
     return
   }
 
