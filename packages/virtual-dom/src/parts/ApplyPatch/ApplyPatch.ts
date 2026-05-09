@@ -29,7 +29,7 @@ const handleNavigateChild = (
     patch.index === $Children.length
   ) {
     const $Placeholder = document.createComment('virtual-dom-placeholder')
-      ; (state.current as HTMLElement).append($Placeholder)
+    ;(state.current as HTMLElement).append($Placeholder)
     state.current = $Placeholder
     return true
   }

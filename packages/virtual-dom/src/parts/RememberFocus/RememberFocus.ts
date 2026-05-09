@@ -20,10 +20,11 @@ const getInputMap = ($Viewlet: HTMLElement): Record<string, string> => {
 
 const createHiddenContainer = (
   activeElement: Element | null | undefined,
+  focused: string | null,
 ): HTMLDivElement => {
   const $Hidden = document.createElement('div')
   $Hidden.style.display = 'none'
-  if (activeElement && document.body) {
+  if (focused && activeElement && document.body) {
     document.body.append($Hidden)
     $Hidden.append(activeElement)
   }
@@ -121,7 +122,7 @@ export const rememberFocus = (
   const isRootTree =
     $Viewlet.getAttribute('role') === 'tree' && activeElement === $Viewlet
   const focused = activeElement?.getAttribute('name') || null
-  const $Hidden = createHiddenContainer(activeElement)
+  const $Hidden = createHiddenContainer(activeElement, focused)
   const inputMap = getInputMap($Viewlet)
   if (uid) {
     const numericUid = Number(uid)
