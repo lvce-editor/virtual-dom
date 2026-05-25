@@ -16,6 +16,7 @@ export default [
       'github-actions/ci-versions': 'off',
       'perfectionist/sort-objects': 'off',
       '@cspell/spellchecker': 'off',
+      'e2e/no-inline-nth-in-expect': 'off',
     },
   },
 ]
