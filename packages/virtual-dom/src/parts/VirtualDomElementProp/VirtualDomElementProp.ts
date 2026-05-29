@@ -24,6 +24,7 @@ const eventProps = new Set([
   'onChange',
   'onClick',
   'onContextMenu',
+  'onBeforeInput',
   'onDblClick',
   'onDragEnd',
   'onDragEnter',
