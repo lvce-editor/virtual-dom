@@ -98,7 +98,7 @@ const hasAttributeChanges = (
     }
   }
   for (const key of oldKeys) {
-    if (!(key in newNode)) {
+    if (!Object.hasOwn(newNode, key)) {
       return true
     }
   }
@@ -130,7 +130,7 @@ const applyAttributeChanges = (
     }
   }
   for (const key of oldKeys) {
-    if (!(key in newNode)) {
+    if (!Object.hasOwn(newNode, key)) {
       state.patches.push({
         key,
         type: PatchType.RemoveAttribute,

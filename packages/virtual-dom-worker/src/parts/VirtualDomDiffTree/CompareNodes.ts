@@ -8,13 +8,13 @@ export const compareNodes = (
   oldNode: VirtualDomNode,
   newNode: VirtualDomNode,
 ): Patch[] | null => {
-  const patches: Patch[] = []
-
   // Check if node type changed - return null to signal incompatible nodes
   // (caller should handle this with a Replace operation)
   if (oldNode.type !== newNode.type) {
     return null
   }
+
+  const patches: Patch[] = []
 
   // Handle reference nodes - special handling for uid changes
   if (oldNode.type === VirtualDomElements.Reference) {
@@ -58,7 +58,7 @@ export const compareNodes = (
 
   // Check for removed attributes
   for (const key of oldKeys) {
-    if (!(key in newNode)) {
+    if (!Object.hasOwn(newNode, key)) {
       patches.push({
         type: PatchType.RemoveAttribute,
         key,

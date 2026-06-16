@@ -7,7 +7,7 @@ import { uidSymbol } from '../src/parts/UidSymbol/UidSymbol.ts'
 
 test('getUidTarget', () => {
   const $Element = document.createElement('div')
-  $Element[uidSymbol] = 1
+  Reflect.set($Element, uidSymbol, 1)
   expect(getUidTarget($Element)).toBe($Element)
 })
 
@@ -18,7 +18,7 @@ test('getUidTarget - not found', () => {
 
 test('getUidTarget - parent node', () => {
   const $Element = document.createElement('div')
-  $Element[uidSymbol] = 2
+  Reflect.set($Element, uidSymbol, 2)
   const $Child = document.createElement('div')
   $Element.append($Child)
   expect(getUidTarget($Child)).toBe($Element)

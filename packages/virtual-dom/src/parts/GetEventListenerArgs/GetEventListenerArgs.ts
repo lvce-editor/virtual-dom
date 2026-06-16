@@ -4,9 +4,8 @@ export const getEventListenerArgs = (
   params: readonly string[],
   event: any,
 ): readonly any[] => {
-  const serialized: any[] = []
-  for (const param of params) {
-    serialized.push(GetEventListenerArg.getEventListenerArg(param, event))
-  }
+  const serialized: any[] = Array.from(params, param =>
+    GetEventListenerArg.getEventListenerArg(param, event),
+  )
   return serialized
 }
