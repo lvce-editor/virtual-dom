@@ -4,7 +4,7 @@ export const getUidTarget = (
   $Element: HTMLElement,
 ): HTMLElement | undefined => {
   while ($Element) {
-    if ($Element[uidSymbol]) {
+    if (Object.getOwnPropertyDescriptor($Element, uidSymbol)?.value) {
       return $Element
     }
     $Element = $Element.parentNode as HTMLElement

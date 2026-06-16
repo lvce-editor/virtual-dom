@@ -37,7 +37,7 @@ const restoreFocusedElement = (
   focused: string,
 ): void => {
   const $NewFocused = $New.querySelector<HTMLInputElement>(
-    `[name="${focused}"]`,
+    `[name="${CSS.escape(focused)}"]`,
   )
   if (!$NewFocused) {
     return
@@ -89,7 +89,7 @@ const restoreFocus = (
     return
   }
   if (isTreeFocused) {
-    const $Tree = $Viewlet.querySelector('[role="tree"]')
+    const $Tree = $Viewlet.querySelector(':scope [role="tree"]')
     if ($Tree) {
       // @ts-ignore
       focusElement($Tree)
@@ -99,7 +99,7 @@ const restoreFocus = (
   if (!focused) {
     return
   }
-  const $Focused = $Viewlet.querySelector(`[name="${focused}"]`)
+  const $Focused = $Viewlet.querySelector(`[name="${CSS.escape(focused)}"]`)
   if ($Focused) {
     // @ts-ignore
     focusElement($Focused)

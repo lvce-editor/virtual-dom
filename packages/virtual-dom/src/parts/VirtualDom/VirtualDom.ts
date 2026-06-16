@@ -23,8 +23,8 @@ export const renderIncremental = ($Parent, dom): void => {
       $Node.title = node.props.title
     }
   }
-  // const newCount = dom
-  // const $Root = render(dom)
+  // const newCount = DOM
+  // const $Root = render(DOM)
   // $Parent.replaceChildren(...$Root.children)
 }
 

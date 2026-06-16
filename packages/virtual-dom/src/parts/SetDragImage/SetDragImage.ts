@@ -7,8 +7,8 @@ export const setDragImage = (
   dragImage.textContent = label
   document.body.append(dragImage)
   dataTransfer.setDragImage(dragImage, -10, -10)
-  const handleTimeOut = (): void => {
+  const handleTimeout = (): void => {
     dragImage.remove()
   }
-  setTimeout(handleTimeOut, 0)
+  setTimeout(handleTimeout, 0)
 }

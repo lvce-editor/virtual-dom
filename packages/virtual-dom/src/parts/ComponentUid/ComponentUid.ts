@@ -2,7 +2,11 @@ import { getUidTarget } from '../GetUidTarget/GetUidTarget.ts'
 import { uidSymbol } from '../UidSymbol/UidSymbol.ts'
 
 export const setComponentUid = ($Element, uid): void => {
-  $Element[uidSymbol] = uid
+  Object.defineProperty($Element, uidSymbol, {
+    configurable: true,
+    value: uid,
+    writable: true,
+  })
 }
 
 export const getComponentUid = ($Element): number => {
@@ -10,7 +14,7 @@ export const getComponentUid = ($Element): number => {
   if (!$Target) {
     return 0
   }
-  return $Target[uidSymbol]
+  return Object.getOwnPropertyDescriptor($Target, uidSymbol)?.value
 }
 
 export const getComponentUidFromEvent = (event): number => {

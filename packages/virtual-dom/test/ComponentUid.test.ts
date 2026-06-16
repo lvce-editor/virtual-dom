@@ -12,7 +12,7 @@ import { uidSymbol } from '../src/parts/UidSymbol/UidSymbol.ts'
 test('setComponentUid - sets uid on element', () => {
   const $Element = document.createElement('div')
   setComponentUid($Element, 123)
-  expect($Element[uidSymbol]).toBe(123)
+  expect(Object.getOwnPropertyDescriptor($Element, uidSymbol)?.value).toBe(123)
 })
 
 test('getComponentUid - returns 0 when no uid target found', () => {

@@ -33,12 +33,12 @@ export const attachEvent = (
   if (previous) {
     $Node.removeEventListener(keyLower, previous.listener, previous.options)
   }
-  if (newEventMap && newEventMap[value]) {
-    const fn = newEventMap[value]
+  const fn = newEventMap?.[value]
+  if (fn) {
     const options: any = getOptions(fn)
     // TODO support event listener options
-    $Node.addEventListener(keyLower, newEventMap[value], options)
-    listenersByEvent.set(keyLower, { listener: newEventMap[value], options })
+    $Node.addEventListener(keyLower, fn, options)
+    listenersByEvent.set(keyLower, { listener: fn, options })
     attachedListeners.set($Node, listenersByEvent)
     return
   }

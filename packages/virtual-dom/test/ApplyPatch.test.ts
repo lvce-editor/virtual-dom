@@ -195,8 +195,9 @@ test('expand search details', () => {
   $Root.append($Toggle, $TopRight)
   ApplyPatch.applyPatch($Root, patches)
   expect($TopRight.children).toHaveLength(2)
-  expect($TopRight.children[1]).toBeInstanceOf(HTMLInputElement)
-  expect($TopRight.children[1].className).toBe('Replace')
+  const $Replace = $TopRight.querySelector(':scope > .Replace')
+  expect($Replace).toBeInstanceOf(HTMLInputElement)
+  expect($Replace?.className).toBe('Replace')
 })
 
 test('collapse search details', () => {
@@ -224,8 +225,8 @@ test('collapse search details', () => {
   $Root.append($Toggle, $TopRight)
   ApplyPatch.applyPatch($Root, patches)
   expect($TopRight.children).toHaveLength(1)
-  expect($TopRight.children[0]).toBeInstanceOf(HTMLInputElement)
-  expect($TopRight.children[0].className).toBe('SearchValue')
+  expect($TopRight.firstElementChild).toBeInstanceOf(HTMLInputElement)
+  expect($TopRight.firstElementChild?.className).toBe('SearchValue')
 })
 
 test('remove nested child node', () => {
@@ -251,9 +252,9 @@ test('remove nested child node', () => {
   $Root.append($Child1, $Child3)
   ApplyPatch.applyPatch($Root, patches)
   expect($Root.children).toHaveLength(2)
-  expect($Root.children[0]).toBeInstanceOf(HTMLDivElement)
-  expect($Root.children[0].children).toHaveLength(0)
-  expect($Root.children[1]).toBeInstanceOf(HTMLDivElement)
+  expect($Root.firstElementChild).toBeInstanceOf(HTMLDivElement)
+  expect($Root.firstElementChild?.children).toHaveLength(0)
+  expect($Root.lastElementChild).toBeInstanceOf(HTMLDivElement)
 })
 
 test('remove and add node', () => {
@@ -285,10 +286,12 @@ test('remove and add node', () => {
   $Root.append($Child1, $Child3)
   ApplyPatch.applyPatch($Root, patches)
   expect($Root.children).toHaveLength(2)
-  expect($Root.children[0]).toBeInstanceOf(HTMLDivElement)
-  expect($Root.children[0].children).toHaveLength(1)
-  expect($Root.children[0].children[0]).toBeInstanceOf(HTMLSpanElement)
-  expect($Root.children[1]).toBeInstanceOf(HTMLDivElement)
+  expect($Root.firstElementChild).toBeInstanceOf(HTMLDivElement)
+  expect($Root.firstElementChild?.children).toHaveLength(1)
+  expect($Root.firstElementChild?.firstElementChild).toBeInstanceOf(
+    HTMLSpanElement,
+  )
+  expect($Root.lastElementChild).toBeInstanceOf(HTMLDivElement)
 })
 
 test('multiple changes', () => {
@@ -336,10 +339,12 @@ test('multiple changes', () => {
   $Root.append($Child1, $Child3)
   ApplyPatch.applyPatch($Root, patches)
   expect($Root.children).toHaveLength(2)
-  expect($Root.children[0]).toBeInstanceOf(HTMLDivElement)
-  expect($Root.children[0].children).toHaveLength(1)
-  expect($Root.children[0].children[0]).toBeInstanceOf(HTMLSpanElement)
-  expect($Root.children[1]).toBeInstanceOf(HTMLSpanElement)
+  expect($Root.firstElementChild).toBeInstanceOf(HTMLDivElement)
+  expect($Root.firstElementChild?.children).toHaveLength(1)
+  expect($Root.firstElementChild?.firstElementChild).toBeInstanceOf(
+    HTMLSpanElement,
+  )
+  expect($Root.lastElementChild).toBeInstanceOf(HTMLSpanElement)
 })
 
 test('navigate sibling after extra root navigation', () => {
@@ -463,11 +468,11 @@ test('navigate sibling after extra root navigation', () => {
 
   ApplyPatch.applyPatch($Root, patches)
 
-  expect($Root.querySelector('.QuickPickStatus')?.textContent).toBe(
+  expect($Root.querySelector(':scope .QuickPickStatus')?.textContent).toBe(
     'No Results',
   )
-  expect($Root.querySelectorAll('.QuickPickItem')).toHaveLength(1)
-  expect($Root.querySelector('.ListItems')?.childNodes).toHaveLength(1)
+  expect($Root.querySelectorAll(':scope .QuickPickItem')).toHaveLength(1)
+  expect($Root.querySelector(':scope .ListItems')?.childNodes).toHaveLength(1)
 })
 
 test.todo('large patch')
