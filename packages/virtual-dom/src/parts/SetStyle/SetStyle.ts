@@ -1,4 +1,16 @@
-const KEBAB_CASE_REGEX = /-([a-z])/g
+const toCamelCase = (key: string): string => {
+  let camelCaseKey = ''
+  let shouldUpperCase = false
+  for (const char of key) {
+    if (char === '-') {
+      shouldUpperCase = true
+      continue
+    }
+    camelCaseKey += shouldUpperCase ? char.toUpperCase() : char
+    shouldUpperCase = false
+  }
+  return camelCaseKey
+}
 
 export const setStyle = ($Element: HTMLElement, styleString: string): void => {
   if (typeof styleString !== 'string') {
@@ -15,10 +27,11 @@ export const setStyle = ($Element: HTMLElement, styleString: string): void => {
     if (!key || !value) {
       continue
     }
-    // Convert kebab-case to camelCase for CSS properties with dashes
-    const camelCaseKey = key.replaceAll(KEBAB_CASE_REGEX, (_, char) =>
-      char.toUpperCase(),
-    )
+    if (key.startsWith('--')) {
+      $Element.style.setProperty(key, value)
+      continue
+    }
+    const camelCaseKey = toCamelCase(key)
     $Element.style[camelCaseKey] = value
   }
 }

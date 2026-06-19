@@ -123,9 +123,9 @@ export const rememberFocus = (
     $Viewlet.getAttribute('role') === 'tree' && activeElement === $Viewlet
   const focused = activeElement?.getAttribute('name') || null
   const $Hidden = createHiddenContainer(activeElement, focused)
-  const inputMap = getInputMap($Viewlet)
   if (uid) {
     const numericUid = Number(uid)
+    const inputMap = getInputMap($Viewlet)
     $Viewlet = renderWithUid(
       $Viewlet,
       dom,
@@ -135,7 +135,8 @@ export const rememberFocus = (
       focused,
       $Hidden,
     )
-  } else {
+  }
+  if (!uid) {
     VirtualDom.renderInto($Viewlet, dom, eventMap)
   }
   $Hidden.remove()

@@ -1,15 +1,33 @@
-const state = {
-  ignore: false,
+const createEventState = (): {
+  readonly startIgnore: () => void
+  readonly stopIgnore: () => void
+  readonly enabled: () => boolean
+} => {
+  let ignore = false
+
+  return {
+    startIgnore(): void {
+      ignore = true
+    },
+    stopIgnore(): void {
+      ignore = false
+    },
+    enabled(): boolean {
+      return ignore
+    },
+  }
 }
 
+const eventState = createEventState()
+
 export const startIgnore = (): void => {
-  state.ignore = true
+  eventState.startIgnore()
 }
 
 export const stopIgnore = (): void => {
-  state.ignore = false
+  eventState.stopIgnore()
 }
 
 export const enabled = (): boolean => {
-  return state.ignore
+  return eventState.enabled()
 }
