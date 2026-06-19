@@ -1,13 +1,15 @@
-let ignore = false
+const state = {
+  ignore: false,
+}
 
 export const startIgnore = (): void => {
-  ignore = true
+  state.ignore = true
 }
 
 export const stopIgnore = (): void => {
-  ignore = false
+  state.ignore = false
 }
 
 export const enabled = (): boolean => {
-  return ignore
+  return state.ignore
 }
