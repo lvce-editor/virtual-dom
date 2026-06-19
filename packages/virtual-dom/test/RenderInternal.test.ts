@@ -15,7 +15,7 @@ test('renderInternal - renders single element', () => {
     },
   ]
   renderInternal($Parent, elements, {})
-  expect($Parent.children.length).toBe(1)
+  expect($Parent.children).toHaveLength(1)
   expect($Parent.firstElementChild?.className).toBe('test')
 })
 
@@ -47,10 +47,10 @@ test('renderInternal - renders nested elements', () => {
     },
   ]
   renderInternal($Parent, elements, {})
-  expect($Parent.children.length).toBe(1)
+  expect($Parent.children).toHaveLength(1)
   const $ParentDiv = $Parent.firstElementChild
   expect($ParentDiv?.className).toBe('parent')
-  expect($ParentDiv?.children.length).toBe(1)
+  expect($ParentDiv?.children).toHaveLength(1)
   expect($ParentDiv?.firstElementChild?.className).toBe('child')
 })
 
@@ -82,11 +82,11 @@ test('renderInternal - renders multiple nested elements', () => {
 
   const $ParentDiv = $Parent.firstElementChild
   expect($ParentDiv?.className).toBe('parent')
-  expect($ParentDiv?.children.length).toBe(2)
+  expect($ParentDiv?.children).toHaveLength(2)
 
   const $Child1 = $ParentDiv?.children[0]
   expect($Child1?.className).toBe('child1')
-  expect($Child1?.children.length).toBe(1)
+  expect($Child1?.children).toHaveLength(1)
   expect($Child1?.firstElementChild?.className).toBe('grandchild')
 
   const $Child2 = $ParentDiv?.children[1]

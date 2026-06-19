@@ -120,7 +120,7 @@ test('element removeChild', () => {
   const $Child = document.createElement('div')
   $Node.append($Child)
   ApplyPatch.applyPatch($Node, patches)
-  expect($Node.children.length).toBe(0)
+  expect($Node.children).toHaveLength(0)
 })
 
 test('element add', () => {
@@ -138,7 +138,7 @@ test('element add', () => {
   ]
   const $Node = document.createElement('div')
   ApplyPatch.applyPatch($Node, patches)
-  expect($Node.children.length).toBe(1)
+  expect($Node.children).toHaveLength(1)
   expect($Node.firstElementChild?.className).toBe('test')
 })
 
@@ -163,7 +163,7 @@ test('remove and add element', () => {
   const $Child = document.createElement('div')
   $Root.append($Child)
   ApplyPatch.applyPatch($Root, patches)
-  expect($Root.children.length).toBe(1)
+  expect($Root.children).toHaveLength(1)
   expect($Root.firstElementChild?.className).toBe('test')
 })
 

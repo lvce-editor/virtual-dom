@@ -13,7 +13,7 @@ test('getUidTarget', () => {
 
 test('getUidTarget - not found', () => {
   const $Element = document.createElement('div')
-  expect(getUidTarget($Element)).toBe(undefined)
+  expect(getUidTarget($Element)).toBeUndefined()
 })
 
 test('getUidTarget - parent node', () => {

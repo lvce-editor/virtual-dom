@@ -24,7 +24,7 @@ test('clearNode - clears child nodes', () => {
   $Node.append($Child)
   clearNode($Node)
   expect($Node.textContent).toBe('')
-  expect($Node.children.length).toBe(0)
+  expect($Node.children).toHaveLength(0)
 })
 
 test('clearNode - clears multiple nested children', () => {
@@ -39,5 +39,5 @@ test('clearNode - clears multiple nested children', () => {
 
   clearNode($Node)
   expect($Node.textContent).toBe('')
-  expect($Node.children.length).toBe(0)
+  expect($Node.children).toHaveLength(0)
 })

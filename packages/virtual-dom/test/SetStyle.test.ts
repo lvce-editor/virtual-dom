@@ -28,7 +28,7 @@ test('setStyle - handles whitespace around colons and semicolons', () => {
 test('setStyle - ignores empty style string', () => {
   const $Element = document.createElement('div')
   SetStyle.setStyle($Element, '')
-  expect($Element.style.length).toBe(0)
+  expect($Element.style).toHaveLength(0)
 })
 
 test('setStyle - handles style values with spaces', () => {
@@ -44,7 +44,7 @@ test('setStyle - handles style values with spaces', () => {
 test('setStyle - ignores non-string input', () => {
   const $Element = document.createElement('div')
   SetStyle.setStyle($Element, null as any)
-  expect($Element.style.length).toBe(0)
+  expect($Element.style).toHaveLength(0)
 })
 
 test('setStyle - handles css variables', () => {
