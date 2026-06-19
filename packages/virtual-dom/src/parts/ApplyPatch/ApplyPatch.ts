@@ -128,7 +128,7 @@ const applyMutationPatch = (
       state.hasAppliedMutation = true
       break
     case PatchType.RemoveAttribute:
-      PatchFunctions.removeAttribute(state.current as HTMLElement, patch.key)
+      VirtualDomElementProp.removeProp(state.current as HTMLElement, patch.key)
       state.hasAppliedMutation = true
       break
     case PatchType.RemoveChild:

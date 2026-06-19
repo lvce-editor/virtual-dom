@@ -11,12 +11,24 @@ const mappedAttributeProps = new Map([
   ['ariaLabelledBy', 'aria-labelledby'],
 ])
 
+const removedAttributeProps = new Map([
+  ['ariaActivedescendant', 'aria-activedescendant'],
+  ['ariaControls', 'aria-controls'],
+  ['ariaLabelledBy', 'aria-labelledby'],
+  ['ariaOwns', 'aria-owns'],
+  ['className', 'class'],
+  ['htmlFor', 'for'],
+  ['inputType', 'type'],
+])
+
 const pixelStyleProps = new Set([
+  'height',
   'left',
   'marginTop',
   'paddingLeft',
   'paddingRight',
   'top',
+  'width',
 ])
 
 const eventProps = new Set([
@@ -98,6 +110,22 @@ const setEventProp = (
   }
   const eventName = key.slice(2).toLowerCase()
   AttachEvent.attachEvent($Element, eventMap, eventName, value, newEventMap)
+}
+
+export const removeProp = ($Element: HTMLElement, key: string): void => {
+  if (eventProps.has(key)) {
+    const eventName = key.slice(2).toLowerCase()
+    AttachEvent.detachEvent($Element, eventName)
+    return
+  }
+
+  if (pixelStyleProps.has(key)) {
+    $Element.style[key] = ''
+    return
+  }
+
+  const attributeName = removedAttributeProps.get(key) || key
+  $Element.removeAttribute(attributeName)
 }
 
 export const setProp = (
