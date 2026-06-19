@@ -135,11 +135,10 @@ export const rememberFocus = (
       focused,
       $Hidden,
     )
-    $Hidden.remove()
   } else {
     VirtualDom.renderInto($Viewlet, dom, eventMap)
-    $Hidden.remove()
   }
+  $Hidden.remove()
 
   restoreFocus($Viewlet, isRootTree, isTreeFocused, focused)
 
