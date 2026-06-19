@@ -56,3 +56,14 @@ export const attachEvent = (
   listenersByEvent.set(keyLower, { listener: wrapped, options })
   attachedListeners.set($Node, listenersByEvent)
 }
+
+export const detachEvent = ($Node: HTMLElement, key: string): void => {
+  const keyLower = key.toLowerCase()
+  const listenersByEvent = attachedListeners.get($Node)
+  const previous = listenersByEvent?.get(keyLower)
+  if (!previous) {
+    return
+  }
+  $Node.removeEventListener(keyLower, previous.listener, previous.options)
+  listenersByEvent?.delete(keyLower)
+}
