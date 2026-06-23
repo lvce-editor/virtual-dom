@@ -5,250 +5,3584 @@ import {
 } from '/dist/virtual-dom/dist/index.js'
 import { diffTree } from '/dist/virtual-dom-worker/dist/index.js'
 
-const nodeCount = 10_000
-const middleIndex = nodeCount / 2
-
 const $container = document.getElementById('diff-container')
 
-const textNode = (text) => ({
-  type: VirtualDomElements.Text,
-  text,
-  childCount: 0,
-})
+const initialDom = [
+  {
+    childCount: 2,
+    className: 'Viewlet Editor',
+    onContextMenu: 13,
+    role: 'code',
+    type: 4,
+  },
+  {
+    childCount: 0,
+    className: 'Gutter',
+    type: 4,
+  },
+  {
+    childCount: 5,
+    className: 'EditorContent',
+    onMouseMove: 19,
+    type: 4,
+  },
+  {
+    ariaAutoComplete: 'list',
+    ariaMultiLine: 'true',
+    ariaRoleDescription: 'editor',
+    autocapitalize: 'off',
+    autocomplete: 'off',
+    autocorrect: 'off',
+    childCount: 0,
+    className: 'EditorInput',
+    name: 'editor',
+    onBeforeInput: 1,
+    onBlur: 2,
+    onCompositionEnd: 10,
+    onCompositionStart: 11,
+    onCompositionUpdate: 12,
+    onCut: 14,
+    onFocus: 15,
+    onPaste: 20,
+    role: 'textbox',
+    spellcheck: false,
+    type: 62,
+    wrap: 'off',
+  },
+  {
+    childCount: 4,
+    className: 'EditorLayers',
+    type: 4,
+  },
+  {
+    childCount: 0,
+    className: 'Selections',
+    type: 4,
+  },
+  {
+    childCount: 19,
+    className: 'EditorRows',
+    onMouseDown: 18,
+    onPointerDown: 21,
+    onWheel: 33,
+    type: 4,
+  },
+  {
+    childCount: 1,
+    className: 'EditorRow',
+    translate: '0px',
+    type: 4,
+  },
+  {
+    childCount: 1,
+    className: 'Token Punctuation',
+    type: 8,
+  },
+  {
+    childCount: 0,
+    text: '{',
+    type: 12,
+  },
+  {
+    childCount: 10,
+    className: 'EditorRow',
+    translate: '0px',
+    type: 4,
+  },
+  {
+    childCount: 1,
+    className: 'Token Whitespace',
+    type: 8,
+  },
+  {
+    childCount: 0,
+    text: '  ',
+    type: 12,
+  },
+  {
+    childCount: 1,
+    className: 'Token Punctuation',
+    type: 8,
+  },
+  {
+    childCount: 0,
+    text: '"',
+    type: 12,
+  },
+  {
+    childCount: 1,
+    className: 'Token JsonPropertyName',
+    type: 8,
+  },
+  {
+    childCount: 0,
+    text: 'name',
+    type: 12,
+  },
+  {
+    childCount: 1,
+    className: 'Token Punctuation',
+    type: 8,
+  },
+  {
+    childCount: 0,
+    text: '"',
+    type: 12,
+  },
+  {
+    childCount: 1,
+    className: 'Token Punctuation',
+    type: 8,
+  },
+  {
+    childCount: 0,
+    text: ':',
+    type: 12,
+  },
+  {
+    childCount: 1,
+    className: 'Token Whitespace',
+    type: 8,
+  },
+  {
+    childCount: 0,
+    text: ' ',
+    type: 12,
+  },
+  {
+    childCount: 1,
+    className: 'Token Punctuation',
+    type: 8,
+  },
+  {
+    childCount: 0,
+    text: '"',
+    type: 12,
+  },
+  {
+    childCount: 1,
+    className: 'Token JsonPropertyValueString',
+    type: 8,
+  },
+  {
+    childCount: 0,
+    text: '@lvce-editor/editor-worker-monorepo',
+    type: 12,
+  },
+  {
+    childCount: 1,
+    className: 'Token Punctuation',
+    type: 8,
+  },
+  {
+    childCount: 0,
+    text: '"',
+    type: 12,
+  },
+  {
+    childCount: 1,
+    className: 'Token Punctuation',
+    type: 8,
+  },
+  {
+    childCount: 0,
+    text: ',',
+    type: 12,
+  },
+  {
+    childCount: 10,
+    className: 'EditorRow',
+    translate: '0px',
+    type: 4,
+  },
+  {
+    childCount: 1,
+    className: 'Token Whitespace',
+    type: 8,
+  },
+  {
+    childCount: 0,
+    text: '  ',
+    type: 12,
+  },
+  {
+    childCount: 1,
+    className: 'Token Punctuation',
+    type: 8,
+  },
+  {
+    childCount: 0,
+    text: '"',
+    type: 12,
+  },
+  {
+    childCount: 1,
+    className: 'Token JsonPropertyName',
+    type: 8,
+  },
+  {
+    childCount: 0,
+    text: 'version',
+    type: 12,
+  },
+  {
+    childCount: 1,
+    className: 'Token Punctuation',
+    type: 8,
+  },
+  {
+    childCount: 0,
+    text: '"',
+    type: 12,
+  },
+  {
+    childCount: 1,
+    className: 'Token Punctuation',
+    type: 8,
+  },
+  {
+    childCount: 0,
+    text: ':',
+    type: 12,
+  },
+  {
+    childCount: 1,
+    className: 'Token Whitespace',
+    type: 8,
+  },
+  {
+    childCount: 0,
+    text: ' ',
+    type: 12,
+  },
+  {
+    childCount: 1,
+    className: 'Token Punctuation',
+    type: 8,
+  },
+  {
+    childCount: 0,
+    text: '"',
+    type: 12,
+  },
+  {
+    childCount: 1,
+    className: 'Token JsonPropertyValueString',
+    type: 8,
+  },
+  {
+    childCount: 0,
+    text: '0.0.0-dev',
+    type: 12,
+  },
+  {
+    childCount: 1,
+    className: 'Token Punctuation',
+    type: 8,
+  },
+  {
+    childCount: 0,
+    text: '"',
+    type: 12,
+  },
+  {
+    childCount: 1,
+    className: 'Token Punctuation',
+    type: 8,
+  },
+  {
+    childCount: 0,
+    text: ',',
+    type: 12,
+  },
+  {
+    childCount: 8,
+    className: 'EditorRow',
+    translate: '0px',
+    type: 4,
+  },
+  {
+    childCount: 1,
+    className: 'Token Whitespace',
+    type: 8,
+  },
+  {
+    childCount: 0,
+    text: '  ',
+    type: 12,
+  },
+  {
+    childCount: 1,
+    className: 'Token Punctuation',
+    type: 8,
+  },
+  {
+    childCount: 0,
+    text: '"',
+    type: 12,
+  },
+  {
+    childCount: 1,
+    className: 'Token JsonPropertyName',
+    type: 8,
+  },
+  {
+    childCount: 0,
+    text: 'lockfileVersion',
+    type: 12,
+  },
+  {
+    childCount: 1,
+    className: 'Token Punctuation',
+    type: 8,
+  },
+  {
+    childCount: 0,
+    text: '"',
+    type: 12,
+  },
+  {
+    childCount: 1,
+    className: 'Token Punctuation',
+    type: 8,
+  },
+  {
+    childCount: 0,
+    text: ':',
+    type: 12,
+  },
+  {
+    childCount: 1,
+    className: 'Token Whitespace',
+    type: 8,
+  },
+  {
+    childCount: 0,
+    text: ' ',
+    type: 12,
+  },
+  {
+    childCount: 1,
+    className: 'Token Numeric',
+    type: 8,
+  },
+  {
+    childCount: 0,
+    text: '3',
+    type: 12,
+  },
+  {
+    childCount: 1,
+    className: 'Token Punctuation',
+    type: 8,
+  },
+  {
+    childCount: 0,
+    text: ',',
+    type: 12,
+  },
+  {
+    childCount: 8,
+    className: 'EditorRow',
+    translate: '0px',
+    type: 4,
+  },
+  {
+    childCount: 1,
+    className: 'Token Whitespace',
+    type: 8,
+  },
+  {
+    childCount: 0,
+    text: '  ',
+    type: 12,
+  },
+  {
+    childCount: 1,
+    className: 'Token Punctuation',
+    type: 8,
+  },
+  {
+    childCount: 0,
+    text: '"',
+    type: 12,
+  },
+  {
+    childCount: 1,
+    className: 'Token JsonPropertyName',
+    type: 8,
+  },
+  {
+    childCount: 0,
+    text: 'requires',
+    type: 12,
+  },
+  {
+    childCount: 1,
+    className: 'Token Punctuation',
+    type: 8,
+  },
+  {
+    childCount: 0,
+    text: '"',
+    type: 12,
+  },
+  {
+    childCount: 1,
+    className: 'Token Punctuation',
+    type: 8,
+  },
+  {
+    childCount: 0,
+    text: ':',
+    type: 12,
+  },
+  {
+    childCount: 1,
+    className: 'Token Whitespace',
+    type: 8,
+  },
+  {
+    childCount: 0,
+    text: ' ',
+    type: 12,
+  },
+  {
+    childCount: 1,
+    className: 'Token LanguageConstant',
+    type: 8,
+  },
+  {
+    childCount: 0,
+    text: 'true',
+    type: 12,
+  },
+  {
+    childCount: 1,
+    className: 'Token Punctuation',
+    type: 8,
+  },
+  {
+    childCount: 0,
+    text: ',',
+    type: 12,
+  },
+  {
+    childCount: 7,
+    className: 'EditorRow',
+    translate: '0px',
+    type: 4,
+  },
+  {
+    childCount: 1,
+    className: 'Token Whitespace',
+    type: 8,
+  },
+  {
+    childCount: 0,
+    text: '  ',
+    type: 12,
+  },
+  {
+    childCount: 1,
+    className: 'Token Punctuation',
+    type: 8,
+  },
+  {
+    childCount: 0,
+    text: '"',
+    type: 12,
+  },
+  {
+    childCount: 1,
+    className: 'Token JsonPropertyName',
+    type: 8,
+  },
+  {
+    childCount: 0,
+    text: 'packages',
+    type: 12,
+  },
+  {
+    childCount: 1,
+    className: 'Token Punctuation',
+    type: 8,
+  },
+  {
+    childCount: 0,
+    text: '"',
+    type: 12,
+  },
+  {
+    childCount: 1,
+    className: 'Token Punctuation',
+    type: 8,
+  },
+  {
+    childCount: 0,
+    text: ':',
+    type: 12,
+  },
+  {
+    childCount: 1,
+    className: 'Token Whitespace',
+    type: 8,
+  },
+  {
+    childCount: 0,
+    text: ' ',
+    type: 12,
+  },
+  {
+    childCount: 1,
+    className: 'Token Punctuation',
+    type: 8,
+  },
+  {
+    childCount: 0,
+    text: '{',
+    type: 12,
+  },
+  {
+    childCount: 6,
+    className: 'EditorRow',
+    translate: '0px',
+    type: 4,
+  },
+  {
+    childCount: 1,
+    className: 'Token Whitespace',
+    type: 8,
+  },
+  {
+    childCount: 0,
+    text: '    ',
+    type: 12,
+  },
+  {
+    childCount: 1,
+    className: 'Token Punctuation',
+    type: 8,
+  },
+  {
+    childCount: 0,
+    text: '"',
+    type: 12,
+  },
+  {
+    childCount: 1,
+    className: 'Token Punctuation',
+    type: 8,
+  },
+  {
+    childCount: 0,
+    text: '"',
+    type: 12,
+  },
+  {
+    childCount: 1,
+    className: 'Token Punctuation',
+    type: 8,
+  },
+  {
+    childCount: 0,
+    text: ':',
+    type: 12,
+  },
+  {
+    childCount: 1,
+    className: 'Token Whitespace',
+    type: 8,
+  },
+  {
+    childCount: 0,
+    text: ' ',
+    type: 12,
+  },
+  {
+    childCount: 1,
+    className: 'Token Punctuation',
+    type: 8,
+  },
+  {
+    childCount: 0,
+    text: '{',
+    type: 12,
+  },
+  {
+    childCount: 10,
+    className: 'EditorRow',
+    translate: '0px',
+    type: 4,
+  },
+  {
+    childCount: 1,
+    className: 'Token Whitespace',
+    type: 8,
+  },
+  {
+    childCount: 0,
+    text: '      ',
+    type: 12,
+  },
+  {
+    childCount: 1,
+    className: 'Token Punctuation',
+    type: 8,
+  },
+  {
+    childCount: 0,
+    text: '"',
+    type: 12,
+  },
+  {
+    childCount: 1,
+    className: 'Token JsonPropertyName',
+    type: 8,
+  },
+  {
+    childCount: 0,
+    text: 'name',
+    type: 12,
+  },
+  {
+    childCount: 1,
+    className: 'Token Punctuation',
+    type: 8,
+  },
+  {
+    childCount: 0,
+    text: '"',
+    type: 12,
+  },
+  {
+    childCount: 1,
+    className: 'Token Punctuation',
+    type: 8,
+  },
+  {
+    childCount: 0,
+    text: ':',
+    type: 12,
+  },
+  {
+    childCount: 1,
+    className: 'Token Whitespace',
+    type: 8,
+  },
+  {
+    childCount: 0,
+    text: ' ',
+    type: 12,
+  },
+  {
+    childCount: 1,
+    className: 'Token Punctuation',
+    type: 8,
+  },
+  {
+    childCount: 0,
+    text: '"',
+    type: 12,
+  },
+  {
+    childCount: 1,
+    className: 'Token JsonPropertyValueString',
+    type: 8,
+  },
+  {
+    childCount: 0,
+    text: '@lvce-editor/editor-worker-monorepo',
+    type: 12,
+  },
+  {
+    childCount: 1,
+    className: 'Token Punctuation',
+    type: 8,
+  },
+  {
+    childCount: 0,
+    text: '"',
+    type: 12,
+  },
+  {
+    childCount: 1,
+    className: 'Token Punctuation',
+    type: 8,
+  },
+  {
+    childCount: 0,
+    text: ',',
+    type: 12,
+  },
+  {
+    childCount: 10,
+    className: 'EditorRow',
+    translate: '0px',
+    type: 4,
+  },
+  {
+    childCount: 1,
+    className: 'Token Whitespace',
+    type: 8,
+  },
+  {
+    childCount: 0,
+    text: '      ',
+    type: 12,
+  },
+  {
+    childCount: 1,
+    className: 'Token Punctuation',
+    type: 8,
+  },
+  {
+    childCount: 0,
+    text: '"',
+    type: 12,
+  },
+  {
+    childCount: 1,
+    className: 'Token JsonPropertyName',
+    type: 8,
+  },
+  {
+    childCount: 0,
+    text: 'version',
+    type: 12,
+  },
+  {
+    childCount: 1,
+    className: 'Token Punctuation',
+    type: 8,
+  },
+  {
+    childCount: 0,
+    text: '"',
+    type: 12,
+  },
+  {
+    childCount: 1,
+    className: 'Token Punctuation',
+    type: 8,
+  },
+  {
+    childCount: 0,
+    text: ':',
+    type: 12,
+  },
+  {
+    childCount: 1,
+    className: 'Token Whitespace',
+    type: 8,
+  },
+  {
+    childCount: 0,
+    text: ' ',
+    type: 12,
+  },
+  {
+    childCount: 1,
+    className: 'Token Punctuation',
+    type: 8,
+  },
+  {
+    childCount: 0,
+    text: '"',
+    type: 12,
+  },
+  {
+    childCount: 1,
+    className: 'Token JsonPropertyValueString',
+    type: 8,
+  },
+  {
+    childCount: 0,
+    text: '0.0.0-dev',
+    type: 12,
+  },
+  {
+    childCount: 1,
+    className: 'Token Punctuation',
+    type: 8,
+  },
+  {
+    childCount: 0,
+    text: '"',
+    type: 12,
+  },
+  {
+    childCount: 1,
+    className: 'Token Punctuation',
+    type: 8,
+  },
+  {
+    childCount: 0,
+    text: ',',
+    type: 12,
+  },
+  {
+    childCount: 8,
+    className: 'EditorRow',
+    translate: '0px',
+    type: 4,
+  },
+  {
+    childCount: 1,
+    className: 'Token Whitespace',
+    type: 8,
+  },
+  {
+    childCount: 0,
+    text: '      ',
+    type: 12,
+  },
+  {
+    childCount: 1,
+    className: 'Token Punctuation',
+    type: 8,
+  },
+  {
+    childCount: 0,
+    text: '"',
+    type: 12,
+  },
+  {
+    childCount: 1,
+    className: 'Token JsonPropertyName',
+    type: 8,
+  },
+  {
+    childCount: 0,
+    text: 'hasInstallScript',
+    type: 12,
+  },
+  {
+    childCount: 1,
+    className: 'Token Punctuation',
+    type: 8,
+  },
+  {
+    childCount: 0,
+    text: '"',
+    type: 12,
+  },
+  {
+    childCount: 1,
+    className: 'Token Punctuation',
+    type: 8,
+  },
+  {
+    childCount: 0,
+    text: ':',
+    type: 12,
+  },
+  {
+    childCount: 1,
+    className: 'Token Whitespace',
+    type: 8,
+  },
+  {
+    childCount: 0,
+    text: ' ',
+    type: 12,
+  },
+  {
+    childCount: 1,
+    className: 'Token LanguageConstant',
+    type: 8,
+  },
+  {
+    childCount: 0,
+    text: 'true',
+    type: 12,
+  },
+  {
+    childCount: 1,
+    className: 'Token Punctuation',
+    type: 8,
+  },
+  {
+    childCount: 0,
+    text: ',',
+    type: 12,
+  },
+  {
+    childCount: 10,
+    className: 'EditorRow',
+    translate: '0px',
+    type: 4,
+  },
+  {
+    childCount: 1,
+    className: 'Token Whitespace',
+    type: 8,
+  },
+  {
+    childCount: 0,
+    text: '      ',
+    type: 12,
+  },
+  {
+    childCount: 1,
+    className: 'Token Punctuation',
+    type: 8,
+  },
+  {
+    childCount: 0,
+    text: '"',
+    type: 12,
+  },
+  {
+    childCount: 1,
+    className: 'Token JsonPropertyName',
+    type: 8,
+  },
+  {
+    childCount: 0,
+    text: 'license',
+    type: 12,
+  },
+  {
+    childCount: 1,
+    className: 'Token Punctuation',
+    type: 8,
+  },
+  {
+    childCount: 0,
+    text: '"',
+    type: 12,
+  },
+  {
+    childCount: 1,
+    className: 'Token Punctuation',
+    type: 8,
+  },
+  {
+    childCount: 0,
+    text: ':',
+    type: 12,
+  },
+  {
+    childCount: 1,
+    className: 'Token Whitespace',
+    type: 8,
+  },
+  {
+    childCount: 0,
+    text: ' ',
+    type: 12,
+  },
+  {
+    childCount: 1,
+    className: 'Token Punctuation',
+    type: 8,
+  },
+  {
+    childCount: 0,
+    text: '"',
+    type: 12,
+  },
+  {
+    childCount: 1,
+    className: 'Token JsonPropertyValueString',
+    type: 8,
+  },
+  {
+    childCount: 0,
+    text: 'MIT',
+    type: 12,
+  },
+  {
+    childCount: 1,
+    className: 'Token Punctuation',
+    type: 8,
+  },
+  {
+    childCount: 0,
+    text: '"',
+    type: 12,
+  },
+  {
+    childCount: 1,
+    className: 'Token Punctuation',
+    type: 8,
+  },
+  {
+    childCount: 0,
+    text: ',',
+    type: 12,
+  },
+  {
+    childCount: 7,
+    className: 'EditorRow',
+    translate: '0px',
+    type: 4,
+  },
+  {
+    childCount: 1,
+    className: 'Token Whitespace',
+    type: 8,
+  },
+  {
+    childCount: 0,
+    text: '      ',
+    type: 12,
+  },
+  {
+    childCount: 1,
+    className: 'Token Punctuation',
+    type: 8,
+  },
+  {
+    childCount: 0,
+    text: '"',
+    type: 12,
+  },
+  {
+    childCount: 1,
+    className: 'Token JsonPropertyName',
+    type: 8,
+  },
+  {
+    childCount: 0,
+    text: 'devDependencies',
+    type: 12,
+  },
+  {
+    childCount: 1,
+    className: 'Token Punctuation',
+    type: 8,
+  },
+  {
+    childCount: 0,
+    text: '"',
+    type: 12,
+  },
+  {
+    childCount: 1,
+    className: 'Token Punctuation',
+    type: 8,
+  },
+  {
+    childCount: 0,
+    text: ':',
+    type: 12,
+  },
+  {
+    childCount: 1,
+    className: 'Token Whitespace',
+    type: 8,
+  },
+  {
+    childCount: 0,
+    text: ' ',
+    type: 12,
+  },
+  {
+    childCount: 1,
+    className: 'Token Punctuation',
+    type: 8,
+  },
+  {
+    childCount: 0,
+    text: '{',
+    type: 12,
+  },
+  {
+    childCount: 10,
+    className: 'EditorRow',
+    translate: '0px',
+    type: 4,
+  },
+  {
+    childCount: 1,
+    className: 'Token Whitespace',
+    type: 8,
+  },
+  {
+    childCount: 0,
+    text: '        ',
+    type: 12,
+  },
+  {
+    childCount: 1,
+    className: 'Token Punctuation',
+    type: 8,
+  },
+  {
+    childCount: 0,
+    text: '"',
+    type: 12,
+  },
+  {
+    childCount: 1,
+    className: 'Token JsonPropertyName',
+    type: 8,
+  },
+  {
+    childCount: 0,
+    text: '@lerna/legacy-package-management',
+    type: 12,
+  },
+  {
+    childCount: 1,
+    className: 'Token Punctuation',
+    type: 8,
+  },
+  {
+    childCount: 0,
+    text: '"',
+    type: 12,
+  },
+  {
+    childCount: 1,
+    className: 'Token Punctuation',
+    type: 8,
+  },
+  {
+    childCount: 0,
+    text: ':',
+    type: 12,
+  },
+  {
+    childCount: 1,
+    className: 'Token Whitespace',
+    type: 8,
+  },
+  {
+    childCount: 0,
+    text: ' ',
+    type: 12,
+  },
+  {
+    childCount: 1,
+    className: 'Token Punctuation',
+    type: 8,
+  },
+  {
+    childCount: 0,
+    text: '"',
+    type: 12,
+  },
+  {
+    childCount: 1,
+    className: 'Token JsonPropertyValueString',
+    type: 8,
+  },
+  {
+    childCount: 0,
+    text: '^8.2.4',
+    type: 12,
+  },
+  {
+    childCount: 1,
+    className: 'Token Punctuation',
+    type: 8,
+  },
+  {
+    childCount: 0,
+    text: '"',
+    type: 12,
+  },
+  {
+    childCount: 1,
+    className: 'Token Punctuation',
+    type: 8,
+  },
+  {
+    childCount: 0,
+    text: ',',
+    type: 12,
+  },
+  {
+    childCount: 10,
+    className: 'EditorRow',
+    translate: '0px',
+    type: 4,
+  },
+  {
+    childCount: 1,
+    className: 'Token Whitespace',
+    type: 8,
+  },
+  {
+    childCount: 0,
+    text: '        ',
+    type: 12,
+  },
+  {
+    childCount: 1,
+    className: 'Token Punctuation',
+    type: 8,
+  },
+  {
+    childCount: 0,
+    text: '"',
+    type: 12,
+  },
+  {
+    childCount: 1,
+    className: 'Token JsonPropertyName',
+    type: 8,
+  },
+  {
+    childCount: 0,
+    text: '@lvce-editor/eslint-config',
+    type: 12,
+  },
+  {
+    childCount: 1,
+    className: 'Token Punctuation',
+    type: 8,
+  },
+  {
+    childCount: 0,
+    text: '"',
+    type: 12,
+  },
+  {
+    childCount: 1,
+    className: 'Token Punctuation',
+    type: 8,
+  },
+  {
+    childCount: 0,
+    text: ':',
+    type: 12,
+  },
+  {
+    childCount: 1,
+    className: 'Token Whitespace',
+    type: 8,
+  },
+  {
+    childCount: 0,
+    text: ' ',
+    type: 12,
+  },
+  {
+    childCount: 1,
+    className: 'Token Punctuation',
+    type: 8,
+  },
+  {
+    childCount: 0,
+    text: '"',
+    type: 12,
+  },
+  {
+    childCount: 1,
+    className: 'Token JsonPropertyValueString',
+    type: 8,
+  },
+  {
+    childCount: 0,
+    text: '^12.3.0',
+    type: 12,
+  },
+  {
+    childCount: 1,
+    className: 'Token Punctuation',
+    type: 8,
+  },
+  {
+    childCount: 0,
+    text: '"',
+    type: 12,
+  },
+  {
+    childCount: 1,
+    className: 'Token Punctuation',
+    type: 8,
+  },
+  {
+    childCount: 0,
+    text: ',',
+    type: 12,
+  },
+  {
+    childCount: 10,
+    className: 'EditorRow',
+    translate: '0px',
+    type: 4,
+  },
+  {
+    childCount: 1,
+    className: 'Token Whitespace',
+    type: 8,
+  },
+  {
+    childCount: 0,
+    text: '        ',
+    type: 12,
+  },
+  {
+    childCount: 1,
+    className: 'Token Punctuation',
+    type: 8,
+  },
+  {
+    childCount: 0,
+    text: '"',
+    type: 12,
+  },
+  {
+    childCount: 1,
+    className: 'Token JsonPropertyName',
+    type: 8,
+  },
+  {
+    childCount: 0,
+    text: 'eslint',
+    type: 12,
+  },
+  {
+    childCount: 1,
+    className: 'Token Punctuation',
+    type: 8,
+  },
+  {
+    childCount: 0,
+    text: '"',
+    type: 12,
+  },
+  {
+    childCount: 1,
+    className: 'Token Punctuation',
+    type: 8,
+  },
+  {
+    childCount: 0,
+    text: ':',
+    type: 12,
+  },
+  {
+    childCount: 1,
+    className: 'Token Whitespace',
+    type: 8,
+  },
+  {
+    childCount: 0,
+    text: ' ',
+    type: 12,
+  },
+  {
+    childCount: 1,
+    className: 'Token Punctuation',
+    type: 8,
+  },
+  {
+    childCount: 0,
+    text: '"',
+    type: 12,
+  },
+  {
+    childCount: 1,
+    className: 'Token JsonPropertyValueString',
+    type: 8,
+  },
+  {
+    childCount: 0,
+    text: '^10.5.0',
+    type: 12,
+  },
+  {
+    childCount: 1,
+    className: 'Token Punctuation',
+    type: 8,
+  },
+  {
+    childCount: 0,
+    text: '"',
+    type: 12,
+  },
+  {
+    childCount: 1,
+    className: 'Token Punctuation',
+    type: 8,
+  },
+  {
+    childCount: 0,
+    text: ',',
+    type: 12,
+  },
+  {
+    childCount: 10,
+    className: 'EditorRow',
+    translate: '0px',
+    type: 4,
+  },
+  {
+    childCount: 1,
+    className: 'Token Whitespace',
+    type: 8,
+  },
+  {
+    childCount: 0,
+    text: '        ',
+    type: 12,
+  },
+  {
+    childCount: 1,
+    className: 'Token Punctuation',
+    type: 8,
+  },
+  {
+    childCount: 0,
+    text: '"',
+    type: 12,
+  },
+  {
+    childCount: 1,
+    className: 'Token JsonPropertyName',
+    type: 8,
+  },
+  {
+    childCount: 0,
+    text: 'lerna',
+    type: 12,
+  },
+  {
+    childCount: 1,
+    className: 'Token Punctuation',
+    type: 8,
+  },
+  {
+    childCount: 0,
+    text: '"',
+    type: 12,
+  },
+  {
+    childCount: 1,
+    className: 'Token Punctuation',
+    type: 8,
+  },
+  {
+    childCount: 0,
+    text: ':',
+    type: 12,
+  },
+  {
+    childCount: 1,
+    className: 'Token Whitespace',
+    type: 8,
+  },
+  {
+    childCount: 0,
+    text: ' ',
+    type: 12,
+  },
+  {
+    childCount: 1,
+    className: 'Token Punctuation',
+    type: 8,
+  },
+  {
+    childCount: 0,
+    text: '"',
+    type: 12,
+  },
+  {
+    childCount: 1,
+    className: 'Token JsonPropertyValueString',
+    type: 8,
+  },
+  {
+    childCount: 0,
+    text: '^8.2.4',
+    type: 12,
+  },
+  {
+    childCount: 1,
+    className: 'Token Punctuation',
+    type: 8,
+  },
+  {
+    childCount: 0,
+    text: '"',
+    type: 12,
+  },
+  {
+    childCount: 1,
+    className: 'Token Punctuation',
+    type: 8,
+  },
+  {
+    childCount: 0,
+    text: ',',
+    type: 12,
+  },
+  {
+    childCount: 10,
+    className: 'EditorRow',
+    translate: '0px',
+    type: 4,
+  },
+  {
+    childCount: 1,
+    className: 'Token Whitespace',
+    type: 8,
+  },
+  {
+    childCount: 0,
+    text: '        ',
+    type: 12,
+  },
+  {
+    childCount: 1,
+    className: 'Token Punctuation',
+    type: 8,
+  },
+  {
+    childCount: 0,
+    text: '"',
+    type: 12,
+  },
+  {
+    childCount: 1,
+    className: 'Token JsonPropertyName',
+    type: 8,
+  },
+  {
+    childCount: 0,
+    text: 'prettier',
+    type: 12,
+  },
+  {
+    childCount: 1,
+    className: 'Token Punctuation',
+    type: 8,
+  },
+  {
+    childCount: 0,
+    text: '"',
+    type: 12,
+  },
+  {
+    childCount: 1,
+    className: 'Token Punctuation',
+    type: 8,
+  },
+  {
+    childCount: 0,
+    text: ':',
+    type: 12,
+  },
+  {
+    childCount: 1,
+    className: 'Token Whitespace',
+    type: 8,
+  },
+  {
+    childCount: 0,
+    text: ' ',
+    type: 12,
+  },
+  {
+    childCount: 1,
+    className: 'Token Punctuation',
+    type: 8,
+  },
+  {
+    childCount: 0,
+    text: '"',
+    type: 12,
+  },
+  {
+    childCount: 1,
+    className: 'Token JsonPropertyValueString',
+    type: 8,
+  },
+  {
+    childCount: 0,
+    text: '^3.8.4',
+    type: 12,
+  },
+  {
+    childCount: 1,
+    className: 'Token Punctuation',
+    type: 8,
+  },
+  {
+    childCount: 0,
+    text: '"',
+    type: 12,
+  },
+  {
+    childCount: 1,
+    className: 'Token Punctuation',
+    type: 8,
+  },
+  {
+    childCount: 0,
+    text: ',',
+    type: 12,
+  },
+  {
+    childCount: 9,
+    className: 'EditorRow',
+    translate: '0px',
+    type: 4,
+  },
+  {
+    childCount: 1,
+    className: 'Token Whitespace',
+    type: 8,
+  },
+  {
+    childCount: 0,
+    text: '        ',
+    type: 12,
+  },
+  {
+    childCount: 1,
+    className: 'Token Punctuation',
+    type: 8,
+  },
+  {
+    childCount: 0,
+    text: '"',
+    type: 12,
+  },
+  {
+    childCount: 1,
+    className: 'Token JsonPropertyName',
+    type: 8,
+  },
+  {
+    childCount: 0,
+    text: 'typescript',
+    type: 12,
+  },
+  {
+    childCount: 1,
+    className: 'Token Punctuation',
+    type: 8,
+  },
+  {
+    childCount: 0,
+    text: '"',
+    type: 12,
+  },
+  {
+    childCount: 1,
+    className: 'Token Punctuation',
+    type: 8,
+  },
+  {
+    childCount: 0,
+    text: ':',
+    type: 12,
+  },
+  {
+    childCount: 1,
+    className: 'Token Whitespace',
+    type: 8,
+  },
+  {
+    childCount: 0,
+    text: ' ',
+    type: 12,
+  },
+  {
+    childCount: 1,
+    className: 'Token Punctuation',
+    type: 8,
+  },
+  {
+    childCount: 0,
+    text: '"',
+    type: 12,
+  },
+  {
+    childCount: 1,
+    className: 'Token JsonPropertyValueString',
+    type: 8,
+  },
+  {
+    childCount: 0,
+    text: '^6.0.3',
+    type: 12,
+  },
+  {
+    childCount: 1,
+    className: 'Token Punctuation',
+    type: 8,
+  },
+  {
+    childCount: 0,
+    text: '"',
+    type: 12,
+  },
+  {
+    childCount: 2,
+    className: 'EditorRow',
+    translate: '0px',
+    type: 4,
+  },
+  {
+    childCount: 1,
+    className: 'Token Whitespace',
+    type: 8,
+  },
+  {
+    childCount: 0,
+    text: '      ',
+    type: 12,
+  },
+  {
+    childCount: 1,
+    className: 'Token Punctuation',
+    type: 8,
+  },
+  {
+    childCount: 0,
+    text: '}',
+    type: 12,
+  },
+  {
+    childCount: 0,
+    className: 'LayerCursor',
+    type: 4,
+  },
+  {
+    childCount: 0,
+    className: 'LayerDiagnostics',
+    type: 4,
+  },
+  {
+    childCount: 0,
+    className: 'EditorScrollBarDiagnostics',
+    type: 4,
+  },
+  {
+    childCount: 1,
+    className: 'ScrollBar ScrollBarVertical',
+    onContextMenu: 13,
+    onPointerDown: 30,
+    type: 4,
+  },
+  {
+    childCount: 0,
+    className: 'ScrollBarThumb ScrollBarThumbVertical',
+    style: 'height:20px;',
+    translate: '0 0px',
+    type: 4,
+  },
+  {
+    childCount: 1,
+    className: 'ScrollBar ScrollBarHorizontal',
+    onPointerDown: 27,
+    type: 4,
+  },
+  {
+    childCount: 0,
+    className: 'ScrollBarThumb ScrollBarThumbHorizontal',
+    type: 4,
+  },
+]
 
-const divNode = (className) => ({
-  type: VirtualDomElements.Div,
-  className,
-  childCount: 0,
-})
+renderInto($container, initialDom)
 
-const divNodeWithData = (value) => ({
-  type: VirtualDomElements.Div,
-  'data-value': value,
-  childCount: 0,
-})
+const updatedDom = [
+  {
+    childCount: 2,
+    className: 'Viewlet Editor',
+    onContextMenu: 13,
+    role: 'code',
+    type: 4,
+  },
+  {
+    childCount: 0,
+    className: 'Gutter',
+    type: 4,
+  },
+  {
+    childCount: 5,
+    className: 'EditorContent',
+    onMouseMove: 19,
+    type: 4,
+  },
+  {
+    ariaAutoComplete: 'list',
+    ariaMultiLine: 'true',
+    ariaRoleDescription: 'editor',
+    autocapitalize: 'off',
+    autocomplete: 'off',
+    autocorrect: 'off',
+    childCount: 0,
+    className: 'EditorInput',
+    name: 'editor',
+    onBeforeInput: 1,
+    onBlur: 2,
+    onCompositionEnd: 10,
+    onCompositionStart: 11,
+    onCompositionUpdate: 12,
+    onCut: 14,
+    onFocus: 15,
+    onPaste: 20,
+    role: 'textbox',
+    spellcheck: false,
+    type: 62,
+    wrap: 'off',
+  },
+  {
+    childCount: 4,
+    className: 'EditorLayers',
+    type: 4,
+  },
+  {
+    childCount: 0,
+    className: 'Selections',
+    type: 4,
+  },
+  {
+    childCount: 19,
+    className: 'EditorRows',
+    onMouseDown: 18,
+    onPointerDown: 21,
+    onWheel: 33,
+    type: 4,
+  },
+  {
+    childCount: 10,
+    className: 'EditorRow',
+    translate: '0px',
+    type: 4,
+  },
+  {
+    childCount: 1,
+    className: 'Token Whitespace',
+    type: 8,
+  },
+  {
+    childCount: 0,
+    text: '        ',
+    type: 12,
+  },
+  {
+    childCount: 1,
+    className: 'Token Punctuation',
+    type: 8,
+  },
+  {
+    childCount: 0,
+    text: '"',
+    type: 12,
+  },
+  {
+    childCount: 1,
+    className: 'Token JsonPropertyName',
+    type: 8,
+  },
+  {
+    childCount: 0,
+    text: '@lerna/legacy-package-management',
+    type: 12,
+  },
+  {
+    childCount: 1,
+    className: 'Token Punctuation',
+    type: 8,
+  },
+  {
+    childCount: 0,
+    text: '"',
+    type: 12,
+  },
+  {
+    childCount: 1,
+    className: 'Token Punctuation',
+    type: 8,
+  },
+  {
+    childCount: 0,
+    text: ':',
+    type: 12,
+  },
+  {
+    childCount: 1,
+    className: 'Token Whitespace',
+    type: 8,
+  },
+  {
+    childCount: 0,
+    text: ' ',
+    type: 12,
+  },
+  {
+    childCount: 1,
+    className: 'Token Punctuation',
+    type: 8,
+  },
+  {
+    childCount: 0,
+    text: '"',
+    type: 12,
+  },
+  {
+    childCount: 1,
+    className: 'Token JsonPropertyValueString',
+    type: 8,
+  },
+  {
+    childCount: 0,
+    text: '^8.2.4',
+    type: 12,
+  },
+  {
+    childCount: 1,
+    className: 'Token Punctuation',
+    type: 8,
+  },
+  {
+    childCount: 0,
+    text: '"',
+    type: 12,
+  },
+  {
+    childCount: 1,
+    className: 'Token Punctuation',
+    type: 8,
+  },
+  {
+    childCount: 0,
+    text: ',',
+    type: 12,
+  },
+  {
+    childCount: 10,
+    className: 'EditorRow',
+    translate: '0px',
+    type: 4,
+  },
+  {
+    childCount: 1,
+    className: 'Token Whitespace',
+    type: 8,
+  },
+  {
+    childCount: 0,
+    text: '        ',
+    type: 12,
+  },
+  {
+    childCount: 1,
+    className: 'Token Punctuation',
+    type: 8,
+  },
+  {
+    childCount: 0,
+    text: '"',
+    type: 12,
+  },
+  {
+    childCount: 1,
+    className: 'Token JsonPropertyName',
+    type: 8,
+  },
+  {
+    childCount: 0,
+    text: '@lvce-editor/eslint-config',
+    type: 12,
+  },
+  {
+    childCount: 1,
+    className: 'Token Punctuation',
+    type: 8,
+  },
+  {
+    childCount: 0,
+    text: '"',
+    type: 12,
+  },
+  {
+    childCount: 1,
+    className: 'Token Punctuation',
+    type: 8,
+  },
+  {
+    childCount: 0,
+    text: ':',
+    type: 12,
+  },
+  {
+    childCount: 1,
+    className: 'Token Whitespace',
+    type: 8,
+  },
+  {
+    childCount: 0,
+    text: ' ',
+    type: 12,
+  },
+  {
+    childCount: 1,
+    className: 'Token Punctuation',
+    type: 8,
+  },
+  {
+    childCount: 0,
+    text: '"',
+    type: 12,
+  },
+  {
+    childCount: 1,
+    className: 'Token JsonPropertyValueString',
+    type: 8,
+  },
+  {
+    childCount: 0,
+    text: '^12.3.0',
+    type: 12,
+  },
+  {
+    childCount: 1,
+    className: 'Token Punctuation',
+    type: 8,
+  },
+  {
+    childCount: 0,
+    text: '"',
+    type: 12,
+  },
+  {
+    childCount: 1,
+    className: 'Token Punctuation',
+    type: 8,
+  },
+  {
+    childCount: 0,
+    text: ',',
+    type: 12,
+  },
+  {
+    childCount: 10,
+    className: 'EditorRow',
+    translate: '0px',
+    type: 4,
+  },
+  {
+    childCount: 1,
+    className: 'Token Whitespace',
+    type: 8,
+  },
+  {
+    childCount: 0,
+    text: '        ',
+    type: 12,
+  },
+  {
+    childCount: 1,
+    className: 'Token Punctuation',
+    type: 8,
+  },
+  {
+    childCount: 0,
+    text: '"',
+    type: 12,
+  },
+  {
+    childCount: 1,
+    className: 'Token JsonPropertyName',
+    type: 8,
+  },
+  {
+    childCount: 0,
+    text: 'eslint',
+    type: 12,
+  },
+  {
+    childCount: 1,
+    className: 'Token Punctuation',
+    type: 8,
+  },
+  {
+    childCount: 0,
+    text: '"',
+    type: 12,
+  },
+  {
+    childCount: 1,
+    className: 'Token Punctuation',
+    type: 8,
+  },
+  {
+    childCount: 0,
+    text: ':',
+    type: 12,
+  },
+  {
+    childCount: 1,
+    className: 'Token Whitespace',
+    type: 8,
+  },
+  {
+    childCount: 0,
+    text: ' ',
+    type: 12,
+  },
+  {
+    childCount: 1,
+    className: 'Token Punctuation',
+    type: 8,
+  },
+  {
+    childCount: 0,
+    text: '"',
+    type: 12,
+  },
+  {
+    childCount: 1,
+    className: 'Token JsonPropertyValueString',
+    type: 8,
+  },
+  {
+    childCount: 0,
+    text: '^10.5.0',
+    type: 12,
+  },
+  {
+    childCount: 1,
+    className: 'Token Punctuation',
+    type: 8,
+  },
+  {
+    childCount: 0,
+    text: '"',
+    type: 12,
+  },
+  {
+    childCount: 1,
+    className: 'Token Punctuation',
+    type: 8,
+  },
+  {
+    childCount: 0,
+    text: ',',
+    type: 12,
+  },
+  {
+    childCount: 10,
+    className: 'EditorRow',
+    translate: '0px',
+    type: 4,
+  },
+  {
+    childCount: 1,
+    className: 'Token Whitespace',
+    type: 8,
+  },
+  {
+    childCount: 0,
+    text: '        ',
+    type: 12,
+  },
+  {
+    childCount: 1,
+    className: 'Token Punctuation',
+    type: 8,
+  },
+  {
+    childCount: 0,
+    text: '"',
+    type: 12,
+  },
+  {
+    childCount: 1,
+    className: 'Token JsonPropertyName',
+    type: 8,
+  },
+  {
+    childCount: 0,
+    text: 'lerna',
+    type: 12,
+  },
+  {
+    childCount: 1,
+    className: 'Token Punctuation',
+    type: 8,
+  },
+  {
+    childCount: 0,
+    text: '"',
+    type: 12,
+  },
+  {
+    childCount: 1,
+    className: 'Token Punctuation',
+    type: 8,
+  },
+  {
+    childCount: 0,
+    text: ':',
+    type: 12,
+  },
+  {
+    childCount: 1,
+    className: 'Token Whitespace',
+    type: 8,
+  },
+  {
+    childCount: 0,
+    text: ' ',
+    type: 12,
+  },
+  {
+    childCount: 1,
+    className: 'Token Punctuation',
+    type: 8,
+  },
+  {
+    childCount: 0,
+    text: '"',
+    type: 12,
+  },
+  {
+    childCount: 1,
+    className: 'Token JsonPropertyValueString',
+    type: 8,
+  },
+  {
+    childCount: 0,
+    text: '^8.2.4',
+    type: 12,
+  },
+  {
+    childCount: 1,
+    className: 'Token Punctuation',
+    type: 8,
+  },
+  {
+    childCount: 0,
+    text: '"',
+    type: 12,
+  },
+  {
+    childCount: 1,
+    className: 'Token Punctuation',
+    type: 8,
+  },
+  {
+    childCount: 0,
+    text: ',',
+    type: 12,
+  },
+  {
+    childCount: 10,
+    className: 'EditorRow',
+    translate: '0px',
+    type: 4,
+  },
+  {
+    childCount: 1,
+    className: 'Token Whitespace',
+    type: 8,
+  },
+  {
+    childCount: 0,
+    text: '        ',
+    type: 12,
+  },
+  {
+    childCount: 1,
+    className: 'Token Punctuation',
+    type: 8,
+  },
+  {
+    childCount: 0,
+    text: '"',
+    type: 12,
+  },
+  {
+    childCount: 1,
+    className: 'Token JsonPropertyName',
+    type: 8,
+  },
+  {
+    childCount: 0,
+    text: 'prettier',
+    type: 12,
+  },
+  {
+    childCount: 1,
+    className: 'Token Punctuation',
+    type: 8,
+  },
+  {
+    childCount: 0,
+    text: '"',
+    type: 12,
+  },
+  {
+    childCount: 1,
+    className: 'Token Punctuation',
+    type: 8,
+  },
+  {
+    childCount: 0,
+    text: ':',
+    type: 12,
+  },
+  {
+    childCount: 1,
+    className: 'Token Whitespace',
+    type: 8,
+  },
+  {
+    childCount: 0,
+    text: ' ',
+    type: 12,
+  },
+  {
+    childCount: 1,
+    className: 'Token Punctuation',
+    type: 8,
+  },
+  {
+    childCount: 0,
+    text: '"',
+    type: 12,
+  },
+  {
+    childCount: 1,
+    className: 'Token JsonPropertyValueString',
+    type: 8,
+  },
+  {
+    childCount: 0,
+    text: '^3.8.4',
+    type: 12,
+  },
+  {
+    childCount: 1,
+    className: 'Token Punctuation',
+    type: 8,
+  },
+  {
+    childCount: 0,
+    text: '"',
+    type: 12,
+  },
+  {
+    childCount: 1,
+    className: 'Token Punctuation',
+    type: 8,
+  },
+  {
+    childCount: 0,
+    text: ',',
+    type: 12,
+  },
+  {
+    childCount: 9,
+    className: 'EditorRow',
+    translate: '0px',
+    type: 4,
+  },
+  {
+    childCount: 1,
+    className: 'Token Whitespace',
+    type: 8,
+  },
+  {
+    childCount: 0,
+    text: '        ',
+    type: 12,
+  },
+  {
+    childCount: 1,
+    className: 'Token Punctuation',
+    type: 8,
+  },
+  {
+    childCount: 0,
+    text: '"',
+    type: 12,
+  },
+  {
+    childCount: 1,
+    className: 'Token JsonPropertyName',
+    type: 8,
+  },
+  {
+    childCount: 0,
+    text: 'typescript',
+    type: 12,
+  },
+  {
+    childCount: 1,
+    className: 'Token Punctuation',
+    type: 8,
+  },
+  {
+    childCount: 0,
+    text: '"',
+    type: 12,
+  },
+  {
+    childCount: 1,
+    className: 'Token Punctuation',
+    type: 8,
+  },
+  {
+    childCount: 0,
+    text: ':',
+    type: 12,
+  },
+  {
+    childCount: 1,
+    className: 'Token Whitespace',
+    type: 8,
+  },
+  {
+    childCount: 0,
+    text: ' ',
+    type: 12,
+  },
+  {
+    childCount: 1,
+    className: 'Token Punctuation',
+    type: 8,
+  },
+  {
+    childCount: 0,
+    text: '"',
+    type: 12,
+  },
+  {
+    childCount: 1,
+    className: 'Token JsonPropertyValueString',
+    type: 8,
+  },
+  {
+    childCount: 0,
+    text: '^6.0.3',
+    type: 12,
+  },
+  {
+    childCount: 1,
+    className: 'Token Punctuation',
+    type: 8,
+  },
+  {
+    childCount: 0,
+    text: '"',
+    type: 12,
+  },
+  {
+    childCount: 2,
+    className: 'EditorRow',
+    translate: '0px',
+    type: 4,
+  },
+  {
+    childCount: 1,
+    className: 'Token Whitespace',
+    type: 8,
+  },
+  {
+    childCount: 0,
+    text: '      ',
+    type: 12,
+  },
+  {
+    childCount: 1,
+    className: 'Token Punctuation',
+    type: 8,
+  },
+  {
+    childCount: 0,
+    text: '}',
+    type: 12,
+  },
+  {
+    childCount: 3,
+    className: 'EditorRow',
+    translate: '0px',
+    type: 4,
+  },
+  {
+    childCount: 1,
+    className: 'Token Whitespace',
+    type: 8,
+  },
+  {
+    childCount: 0,
+    text: '    ',
+    type: 12,
+  },
+  {
+    childCount: 1,
+    className: 'Token Punctuation',
+    type: 8,
+  },
+  {
+    childCount: 0,
+    text: '}',
+    type: 12,
+  },
+  {
+    childCount: 1,
+    className: 'Token Punctuation',
+    type: 8,
+  },
+  {
+    childCount: 0,
+    text: ',',
+    type: 12,
+  },
+  {
+    childCount: 7,
+    className: 'EditorRow',
+    translate: '0px',
+    type: 4,
+  },
+  {
+    childCount: 1,
+    className: 'Token Whitespace',
+    type: 8,
+  },
+  {
+    childCount: 0,
+    text: '    ',
+    type: 12,
+  },
+  {
+    childCount: 1,
+    className: 'Token Punctuation',
+    type: 8,
+  },
+  {
+    childCount: 0,
+    text: '"',
+    type: 12,
+  },
+  {
+    childCount: 1,
+    className: 'Token JsonPropertyName',
+    type: 8,
+  },
+  {
+    childCount: 0,
+    text: 'node_modules/@altano/repository-tools',
+    type: 12,
+  },
+  {
+    childCount: 1,
+    className: 'Token Punctuation',
+    type: 8,
+  },
+  {
+    childCount: 0,
+    text: '"',
+    type: 12,
+  },
+  {
+    childCount: 1,
+    className: 'Token Punctuation',
+    type: 8,
+  },
+  {
+    childCount: 0,
+    text: ':',
+    type: 12,
+  },
+  {
+    childCount: 1,
+    className: 'Token Whitespace',
+    type: 8,
+  },
+  {
+    childCount: 0,
+    text: ' ',
+    type: 12,
+  },
+  {
+    childCount: 1,
+    className: 'Token Punctuation',
+    type: 8,
+  },
+  {
+    childCount: 0,
+    text: '{',
+    type: 12,
+  },
+  {
+    childCount: 10,
+    className: 'EditorRow',
+    translate: '0px',
+    type: 4,
+  },
+  {
+    childCount: 1,
+    className: 'Token Whitespace',
+    type: 8,
+  },
+  {
+    childCount: 0,
+    text: '      ',
+    type: 12,
+  },
+  {
+    childCount: 1,
+    className: 'Token Punctuation',
+    type: 8,
+  },
+  {
+    childCount: 0,
+    text: '"',
+    type: 12,
+  },
+  {
+    childCount: 1,
+    className: 'Token JsonPropertyName',
+    type: 8,
+  },
+  {
+    childCount: 0,
+    text: 'version',
+    type: 12,
+  },
+  {
+    childCount: 1,
+    className: 'Token Punctuation',
+    type: 8,
+  },
+  {
+    childCount: 0,
+    text: '"',
+    type: 12,
+  },
+  {
+    childCount: 1,
+    className: 'Token Punctuation',
+    type: 8,
+  },
+  {
+    childCount: 0,
+    text: ':',
+    type: 12,
+  },
+  {
+    childCount: 1,
+    className: 'Token Whitespace',
+    type: 8,
+  },
+  {
+    childCount: 0,
+    text: ' ',
+    type: 12,
+  },
+  {
+    childCount: 1,
+    className: 'Token Punctuation',
+    type: 8,
+  },
+  {
+    childCount: 0,
+    text: '"',
+    type: 12,
+  },
+  {
+    childCount: 1,
+    className: 'Token JsonPropertyValueString',
+    type: 8,
+  },
+  {
+    childCount: 0,
+    text: '2.0.3',
+    type: 12,
+  },
+  {
+    childCount: 1,
+    className: 'Token Punctuation',
+    type: 8,
+  },
+  {
+    childCount: 0,
+    text: '"',
+    type: 12,
+  },
+  {
+    childCount: 1,
+    className: 'Token Punctuation',
+    type: 8,
+  },
+  {
+    childCount: 0,
+    text: ',',
+    type: 12,
+  },
+  {
+    childCount: 10,
+    className: 'EditorRow',
+    translate: '0px',
+    type: 4,
+  },
+  {
+    childCount: 1,
+    className: 'Token Whitespace',
+    type: 8,
+  },
+  {
+    childCount: 0,
+    text: '      ',
+    type: 12,
+  },
+  {
+    childCount: 1,
+    className: 'Token Punctuation',
+    type: 8,
+  },
+  {
+    childCount: 0,
+    text: '"',
+    type: 12,
+  },
+  {
+    childCount: 1,
+    className: 'Token JsonPropertyName',
+    type: 8,
+  },
+  {
+    childCount: 0,
+    text: 'resolved',
+    type: 12,
+  },
+  {
+    childCount: 1,
+    className: 'Token Punctuation',
+    type: 8,
+  },
+  {
+    childCount: 0,
+    text: '"',
+    type: 12,
+  },
+  {
+    childCount: 1,
+    className: 'Token Punctuation',
+    type: 8,
+  },
+  {
+    childCount: 0,
+    text: ':',
+    type: 12,
+  },
+  {
+    childCount: 1,
+    className: 'Token Whitespace',
+    type: 8,
+  },
+  {
+    childCount: 0,
+    text: ' ',
+    type: 12,
+  },
+  {
+    childCount: 1,
+    className: 'Token Punctuation',
+    type: 8,
+  },
+  {
+    childCount: 0,
+    text: '"',
+    type: 12,
+  },
+  {
+    childCount: 1,
+    className: 'Token JsonPropertyValueString Link',
+    type: 8,
+  },
+  {
+    childCount: 0,
+    text: 'https://registry.npmjs.org/@altano/repository-tools/-/repository-tools-2.0.3.tgz',
+    type: 12,
+  },
+  {
+    childCount: 1,
+    className: 'Token Punctuation',
+    type: 8,
+  },
+  {
+    childCount: 0,
+    text: '"',
+    type: 12,
+  },
+  {
+    childCount: 1,
+    className: 'Token Punctuation',
+    type: 8,
+  },
+  {
+    childCount: 0,
+    text: ',',
+    type: 12,
+  },
+  {
+    childCount: 10,
+    className: 'EditorRow',
+    translate: '0px',
+    type: 4,
+  },
+  {
+    childCount: 1,
+    className: 'Token Whitespace',
+    type: 8,
+  },
+  {
+    childCount: 0,
+    text: '      ',
+    type: 12,
+  },
+  {
+    childCount: 1,
+    className: 'Token Punctuation',
+    type: 8,
+  },
+  {
+    childCount: 0,
+    text: '"',
+    type: 12,
+  },
+  {
+    childCount: 1,
+    className: 'Token JsonPropertyName',
+    type: 8,
+  },
+  {
+    childCount: 0,
+    text: 'integrity',
+    type: 12,
+  },
+  {
+    childCount: 1,
+    className: 'Token Punctuation',
+    type: 8,
+  },
+  {
+    childCount: 0,
+    text: '"',
+    type: 12,
+  },
+  {
+    childCount: 1,
+    className: 'Token Punctuation',
+    type: 8,
+  },
+  {
+    childCount: 0,
+    text: ':',
+    type: 12,
+  },
+  {
+    childCount: 1,
+    className: 'Token Whitespace',
+    type: 8,
+  },
+  {
+    childCount: 0,
+    text: ' ',
+    type: 12,
+  },
+  {
+    childCount: 1,
+    className: 'Token Punctuation',
+    type: 8,
+  },
+  {
+    childCount: 0,
+    text: '"',
+    type: 12,
+  },
+  {
+    childCount: 1,
+    className: 'Token JsonPropertyValueString',
+    type: 8,
+  },
+  {
+    childCount: 0,
+    text: 'sha512-cSR/ZYDF6Wp9OeAJMyLYYN1GenAAhV17W+w38ELP+3c5Ltsy9jkkCymi33nz/qnXyef3n6Fbr1h2yt3dvUN5sQ==',
+    type: 12,
+  },
+  {
+    childCount: 1,
+    className: 'Token Punctuation',
+    type: 8,
+  },
+  {
+    childCount: 0,
+    text: '"',
+    type: 12,
+  },
+  {
+    childCount: 1,
+    className: 'Token Punctuation',
+    type: 8,
+  },
+  {
+    childCount: 0,
+    text: ',',
+    type: 12,
+  },
+  {
+    childCount: 8,
+    className: 'EditorRow',
+    translate: '0px',
+    type: 4,
+  },
+  {
+    childCount: 1,
+    className: 'Token Whitespace',
+    type: 8,
+  },
+  {
+    childCount: 0,
+    text: '      ',
+    type: 12,
+  },
+  {
+    childCount: 1,
+    className: 'Token Punctuation',
+    type: 8,
+  },
+  {
+    childCount: 0,
+    text: '"',
+    type: 12,
+  },
+  {
+    childCount: 1,
+    className: 'Token JsonPropertyName',
+    type: 8,
+  },
+  {
+    childCount: 0,
+    text: 'dev',
+    type: 12,
+  },
+  {
+    childCount: 1,
+    className: 'Token Punctuation',
+    type: 8,
+  },
+  {
+    childCount: 0,
+    text: '"',
+    type: 12,
+  },
+  {
+    childCount: 1,
+    className: 'Token Punctuation',
+    type: 8,
+  },
+  {
+    childCount: 0,
+    text: ':',
+    type: 12,
+  },
+  {
+    childCount: 1,
+    className: 'Token Whitespace',
+    type: 8,
+  },
+  {
+    childCount: 0,
+    text: ' ',
+    type: 12,
+  },
+  {
+    childCount: 1,
+    className: 'Token LanguageConstant',
+    type: 8,
+  },
+  {
+    childCount: 0,
+    text: 'true',
+    type: 12,
+  },
+  {
+    childCount: 1,
+    className: 'Token Punctuation',
+    type: 8,
+  },
+  {
+    childCount: 0,
+    text: ',',
+    type: 12,
+  },
+  {
+    childCount: 9,
+    className: 'EditorRow',
+    translate: '0px',
+    type: 4,
+  },
+  {
+    childCount: 1,
+    className: 'Token Whitespace',
+    type: 8,
+  },
+  {
+    childCount: 0,
+    text: '      ',
+    type: 12,
+  },
+  {
+    childCount: 1,
+    className: 'Token Punctuation',
+    type: 8,
+  },
+  {
+    childCount: 0,
+    text: '"',
+    type: 12,
+  },
+  {
+    childCount: 1,
+    className: 'Token JsonPropertyName',
+    type: 8,
+  },
+  {
+    childCount: 0,
+    text: 'license',
+    type: 12,
+  },
+  {
+    childCount: 1,
+    className: 'Token Punctuation',
+    type: 8,
+  },
+  {
+    childCount: 0,
+    text: '"',
+    type: 12,
+  },
+  {
+    childCount: 1,
+    className: 'Token Punctuation',
+    type: 8,
+  },
+  {
+    childCount: 0,
+    text: ':',
+    type: 12,
+  },
+  {
+    childCount: 1,
+    className: 'Token Whitespace',
+    type: 8,
+  },
+  {
+    childCount: 0,
+    text: ' ',
+    type: 12,
+  },
+  {
+    childCount: 1,
+    className: 'Token Punctuation',
+    type: 8,
+  },
+  {
+    childCount: 0,
+    text: '"',
+    type: 12,
+  },
+  {
+    childCount: 1,
+    className: 'Token JsonPropertyValueString',
+    type: 8,
+  },
+  {
+    childCount: 0,
+    text: 'ISC',
+    type: 12,
+  },
+  {
+    childCount: 1,
+    className: 'Token Punctuation',
+    type: 8,
+  },
+  {
+    childCount: 0,
+    text: '"',
+    type: 12,
+  },
+  {
+    childCount: 3,
+    className: 'EditorRow',
+    translate: '0px',
+    type: 4,
+  },
+  {
+    childCount: 1,
+    className: 'Token Whitespace',
+    type: 8,
+  },
+  {
+    childCount: 0,
+    text: '    ',
+    type: 12,
+  },
+  {
+    childCount: 1,
+    className: 'Token Punctuation',
+    type: 8,
+  },
+  {
+    childCount: 0,
+    text: '}',
+    type: 12,
+  },
+  {
+    childCount: 1,
+    className: 'Token Punctuation',
+    type: 8,
+  },
+  {
+    childCount: 0,
+    text: ',',
+    type: 12,
+  },
+  {
+    childCount: 7,
+    className: 'EditorRow',
+    translate: '0px',
+    type: 4,
+  },
+  {
+    childCount: 1,
+    className: 'Token Whitespace',
+    type: 8,
+  },
+  {
+    childCount: 0,
+    text: '    ',
+    type: 12,
+  },
+  {
+    childCount: 1,
+    className: 'Token Punctuation',
+    type: 8,
+  },
+  {
+    childCount: 0,
+    text: '"',
+    type: 12,
+  },
+  {
+    childCount: 1,
+    className: 'Token JsonPropertyName',
+    type: 8,
+  },
+  {
+    childCount: 0,
+    text: 'node_modules/@babel/code-frame',
+    type: 12,
+  },
+  {
+    childCount: 1,
+    className: 'Token Punctuation',
+    type: 8,
+  },
+  {
+    childCount: 0,
+    text: '"',
+    type: 12,
+  },
+  {
+    childCount: 1,
+    className: 'Token Punctuation',
+    type: 8,
+  },
+  {
+    childCount: 0,
+    text: ':',
+    type: 12,
+  },
+  {
+    childCount: 1,
+    className: 'Token Whitespace',
+    type: 8,
+  },
+  {
+    childCount: 0,
+    text: ' ',
+    type: 12,
+  },
+  {
+    childCount: 1,
+    className: 'Token Punctuation',
+    type: 8,
+  },
+  {
+    childCount: 0,
+    text: '{',
+    type: 12,
+  },
+  {
+    childCount: 10,
+    className: 'EditorRow',
+    translate: '0px',
+    type: 4,
+  },
+  {
+    childCount: 1,
+    className: 'Token Whitespace',
+    type: 8,
+  },
+  {
+    childCount: 0,
+    text: '      ',
+    type: 12,
+  },
+  {
+    childCount: 1,
+    className: 'Token Punctuation',
+    type: 8,
+  },
+  {
+    childCount: 0,
+    text: '"',
+    type: 12,
+  },
+  {
+    childCount: 1,
+    className: 'Token JsonPropertyName',
+    type: 8,
+  },
+  {
+    childCount: 0,
+    text: 'version',
+    type: 12,
+  },
+  {
+    childCount: 1,
+    className: 'Token Punctuation',
+    type: 8,
+  },
+  {
+    childCount: 0,
+    text: '"',
+    type: 12,
+  },
+  {
+    childCount: 1,
+    className: 'Token Punctuation',
+    type: 8,
+  },
+  {
+    childCount: 0,
+    text: ':',
+    type: 12,
+  },
+  {
+    childCount: 1,
+    className: 'Token Whitespace',
+    type: 8,
+  },
+  {
+    childCount: 0,
+    text: ' ',
+    type: 12,
+  },
+  {
+    childCount: 1,
+    className: 'Token Punctuation',
+    type: 8,
+  },
+  {
+    childCount: 0,
+    text: '"',
+    type: 12,
+  },
+  {
+    childCount: 1,
+    className: 'Token JsonPropertyValueString',
+    type: 8,
+  },
+  {
+    childCount: 0,
+    text: '7.29.7',
+    type: 12,
+  },
+  {
+    childCount: 1,
+    className: 'Token Punctuation',
+    type: 8,
+  },
+  {
+    childCount: 0,
+    text: '"',
+    type: 12,
+  },
+  {
+    childCount: 1,
+    className: 'Token Punctuation',
+    type: 8,
+  },
+  {
+    childCount: 0,
+    text: ',',
+    type: 12,
+  },
+  {
+    childCount: 10,
+    className: 'EditorRow',
+    translate: '0px',
+    type: 4,
+  },
+  {
+    childCount: 1,
+    className: 'Token Whitespace',
+    type: 8,
+  },
+  {
+    childCount: 0,
+    text: '      ',
+    type: 12,
+  },
+  {
+    childCount: 1,
+    className: 'Token Punctuation',
+    type: 8,
+  },
+  {
+    childCount: 0,
+    text: '"',
+    type: 12,
+  },
+  {
+    childCount: 1,
+    className: 'Token JsonPropertyName',
+    type: 8,
+  },
+  {
+    childCount: 0,
+    text: 'resolved',
+    type: 12,
+  },
+  {
+    childCount: 1,
+    className: 'Token Punctuation',
+    type: 8,
+  },
+  {
+    childCount: 0,
+    text: '"',
+    type: 12,
+  },
+  {
+    childCount: 1,
+    className: 'Token Punctuation',
+    type: 8,
+  },
+  {
+    childCount: 0,
+    text: ':',
+    type: 12,
+  },
+  {
+    childCount: 1,
+    className: 'Token Whitespace',
+    type: 8,
+  },
+  {
+    childCount: 0,
+    text: ' ',
+    type: 12,
+  },
+  {
+    childCount: 1,
+    className: 'Token Punctuation',
+    type: 8,
+  },
+  {
+    childCount: 0,
+    text: '"',
+    type: 12,
+  },
+  {
+    childCount: 1,
+    className: 'Token JsonPropertyValueString Link',
+    type: 8,
+  },
+  {
+    childCount: 0,
+    text: 'https://registry.npmjs.org/@babel/code-frame/-/code-frame-7.29.7.tgz',
+    type: 12,
+  },
+  {
+    childCount: 1,
+    className: 'Token Punctuation',
+    type: 8,
+  },
+  {
+    childCount: 0,
+    text: '"',
+    type: 12,
+  },
+  {
+    childCount: 1,
+    className: 'Token Punctuation',
+    type: 8,
+  },
+  {
+    childCount: 0,
+    text: ',',
+    type: 12,
+  },
+  {
+    childCount: 10,
+    className: 'EditorRow',
+    translate: '0px',
+    type: 4,
+  },
+  {
+    childCount: 1,
+    className: 'Token Whitespace',
+    type: 8,
+  },
+  {
+    childCount: 0,
+    text: '      ',
+    type: 12,
+  },
+  {
+    childCount: 1,
+    className: 'Token Punctuation',
+    type: 8,
+  },
+  {
+    childCount: 0,
+    text: '"',
+    type: 12,
+  },
+  {
+    childCount: 1,
+    className: 'Token JsonPropertyName',
+    type: 8,
+  },
+  {
+    childCount: 0,
+    text: 'integrity',
+    type: 12,
+  },
+  {
+    childCount: 1,
+    className: 'Token Punctuation',
+    type: 8,
+  },
+  {
+    childCount: 0,
+    text: '"',
+    type: 12,
+  },
+  {
+    childCount: 1,
+    className: 'Token Punctuation',
+    type: 8,
+  },
+  {
+    childCount: 0,
+    text: ':',
+    type: 12,
+  },
+  {
+    childCount: 1,
+    className: 'Token Whitespace',
+    type: 8,
+  },
+  {
+    childCount: 0,
+    text: ' ',
+    type: 12,
+  },
+  {
+    childCount: 1,
+    className: 'Token Punctuation',
+    type: 8,
+  },
+  {
+    childCount: 0,
+    text: '"',
+    type: 12,
+  },
+  {
+    childCount: 1,
+    className: 'Token JsonPropertyValueString',
+    type: 8,
+  },
+  {
+    childCount: 0,
+    text: 'sha512-Aup7aUOfpbAUg2ROOJN6Iw5f9DMBlzu0mIkm/malLQFN/YQgO48wCj0Kxa3sEHJvPVFg7siR+qRInwXd2qhQKw==',
+    type: 12,
+  },
+  {
+    childCount: 1,
+    className: 'Token Punctuation',
+    type: 8,
+  },
+  {
+    childCount: 0,
+    text: '"',
+    type: 12,
+  },
+  {
+    childCount: 1,
+    className: 'Token Punctuation',
+    type: 8,
+  },
+  {
+    childCount: 0,
+    text: ',',
+    type: 12,
+  },
+  {
+    childCount: 0,
+    className: 'LayerCursor',
+    type: 4,
+  },
+  {
+    childCount: 0,
+    className: 'LayerDiagnostics',
+    type: 4,
+  },
+  {
+    childCount: 0,
+    className: 'EditorScrollBarDiagnostics',
+    type: 4,
+  },
+  {
+    childCount: 1,
+    className: 'ScrollBar ScrollBarVertical',
+    onContextMenu: 13,
+    onPointerDown: 30,
+    type: 4,
+  },
+  {
+    childCount: 0,
+    className: 'ScrollBarThumb ScrollBarThumbVertical',
+    style: 'height:20px;',
+    translate: '0 0.3328394497782955px',
+    type: 4,
+  },
+  {
+    childCount: 1,
+    className: 'ScrollBar ScrollBarHorizontal',
+    onPointerDown: 27,
+    type: 4,
+  },
+  {
+    childCount: 0,
+    className: 'ScrollBarThumb ScrollBarThumbHorizontal',
+    type: 4,
+  },
+]
 
-const divNodeWithoutClass = () => ({
-  type: VirtualDomElements.Div,
-  childCount: 0,
-})
-
-const rootNode = (childCount) => ({
-  type: VirtualDomElements.Div,
-  childCount,
-})
-
-const createTextNodes = (prefix, count = nodeCount) => {
-  const nodes = []
-  for (let i = 0; i < count; i++) {
-    nodes.push(textNode(`${prefix}-${i};`))
-  }
-  return nodes
-}
-
-const createElementNodes = (prefix, count = nodeCount) => {
-  const nodes = []
-  for (let i = 0; i < count; i++) {
-    nodes.push(divNode(`${prefix}-${i}`))
-  }
-  return nodes
-}
-
-const createElementRange = (prefix, start, end) => {
-  const nodes = []
-  for (let i = start; i < end; i++) {
-    nodes.push(divNode(`${prefix}-${i}`))
-  }
-  return nodes
-}
-
-const createTextRange = (prefix, start, end) => {
-  const nodes = []
-  for (let i = start; i < end; i++) {
-    nodes.push(textNode(`${prefix}-${i};`))
-  }
-  return nodes
-}
-
-const createElementsWithoutClass = () => {
-  const nodes = []
-  for (let i = 0; i < nodeCount; i++) {
-    nodes.push(divNodeWithoutClass())
-  }
-  return nodes
-}
-
-const createElementsWithData = (prefix) => {
-  const nodes = []
-  for (let i = 0; i < nodeCount; i++) {
-    nodes.push(divNodeWithData(`${prefix}-${i}`))
-  }
-  return nodes
-}
-
-const createDom = (children) => [rootNode(children.length), ...children]
-
-const scenarios = {
-  'add-text-nodes': () => ({
-    initialDom: createDom([]),
-    updatedDom: createDom(createTextNodes('text')),
-  }),
-  'add-direct-element-nodes': () => ({
-    initialDom: createDom([]),
-    updatedDom: createDom(createElementNodes('item')),
-  }),
-  'remove-direct-element-nodes': () => ({
-    initialDom: createDom(createElementNodes('remove')),
-    updatedDom: createDom([]),
-  }),
-  'update-text-nodes': () => ({
-    initialDom: createDom(createTextNodes('old')),
-    updatedDom: createDom(createTextNodes('new')),
-  }),
-  'change-element-class-names': () => ({
-    initialDom: createDom(createElementNodes('old-item')),
-    updatedDom: createDom(createElementNodes('new-item')),
-  }),
-  'insert-element-at-beginning': () => ({
-    initialDom: createDom(createElementNodes('item')),
-    updatedDom: createDom([divNode('inserted'), ...createElementNodes('item')]),
-  }),
-  'insert-element-in-middle': () => ({
-    initialDom: createDom(createElementNodes('item')),
-    updatedDom: createDom([
-      ...createElementRange('item', 0, middleIndex),
-      divNode('inserted'),
-      ...createElementRange('item', middleIndex, nodeCount),
-    ]),
-  }),
-  'remove-first-element': () => ({
-    initialDom: createDom(createElementNodes('item')),
-    updatedDom: createDom(createElementRange('item', 1, nodeCount)),
-  }),
-  'remove-middle-element': () => ({
-    initialDom: createDom(createElementNodes('item')),
-    updatedDom: createDom([
-      ...createElementRange('item', 0, middleIndex),
-      ...createElementRange('item', middleIndex + 1, nodeCount),
-    ]),
-  }),
-  'remove-last-element': () => ({
-    initialDom: createDom(createElementNodes('item')),
-    updatedDom: createDom(createElementRange('item', 0, nodeCount - 1)),
-  }),
-  'replace-elements-with-text': () => ({
-    initialDom: createDom(createElementNodes('item')),
-    updatedDom: createDom(createTextNodes('text')),
-  }),
-  'replace-text-with-elements': () => ({
-    initialDom: createDom(createTextNodes('text')),
-    updatedDom: createDom(createElementNodes('item')),
-  }),
-  'remove-element-class-names': () => ({
-    initialDom: createDom(createElementNodes('item')),
-    updatedDom: createDom(createElementsWithoutClass()),
-  }),
-  'add-element-data-attributes': () => ({
-    initialDom: createDom(createElementsWithoutClass()),
-    updatedDom: createDom(createElementsWithData('value')),
-  }),
-  'large-sequential-add-remove': () => ({
-    initialDom: createDom([]),
-    updatedDoms: [createDom(createElementNodes('item')), createDom([])],
-  }),
-  'special-character-text': () => ({
-    initialDom: createDom([textNode('')]),
-    updatedDom: createDom([textNode('<button>&"quoted"</button>')]),
-  }),
-  'whitespace-text-nodes': () => ({
-    initialDom: createDom(createTextNodes('old-space', 3)),
-    updatedDom: createDom([
-      textNode('  leading'),
-      textNode('\nline\n'),
-      textNode('trailing  '),
-    ]),
-  }),
-  'mixed-first-middle-last-changes': () => ({
-    initialDom: createDom(createTextNodes('stable')),
-    updatedDom: createDom([
-      textNode('changed-first;'),
-      ...createTextRange('stable', 1, middleIndex),
-      textNode('changed-middle;'),
-      ...createTextRange('stable', middleIndex + 1, nodeCount - 1),
-      textNode('changed-last;'),
-    ]),
-  }),
-  'replace-middle-element-with-text': () => ({
-    initialDom: createDom(createElementNodes('item')),
-    updatedDom: createDom([
-      ...createElementRange('item', 0, middleIndex),
-      textNode('middle-text;'),
-      ...createElementRange('item', middleIndex + 1, nodeCount),
-    ]),
-  }),
-}
-
-const getChildInfo = ($root, index) => {
-  const $child = $root.childNodes[index]
-  return {
-    className: $child?.className ?? '',
-    dataValue: $child?.dataset?.value ?? '',
-    nodeType: $child?.nodeType ?? 0,
-    nodeValue: $child?.nodeValue ?? '',
-    textContent: $child?.textContent ?? '',
-  }
-}
-
-const applyDiffs = ($root, initialDom, updatedDoms) => {
-  let currentDom = initialDom
-  let patchCount = 0
-  for (const updatedDom of updatedDoms) {
-    const patches = diffTree(currentDom, updatedDom)
-    applyPatch($root, patches)
-    patchCount += patches.length
-    currentDom = updatedDom
-  }
-  return patchCount
-}
-
-const getResult = ($root, scenarioName, patchCount) => {
-  const childNodeCount = $root.childNodes.length
-  return {
-    scenarioName,
-    patchCount,
-    childNodeCount,
-    childElementCount: $root.childElementCount,
-    firstNodeValue: $root.firstChild?.nodeValue ?? '',
-    lastNodeValue: $root.lastChild?.nodeValue ?? '',
-    firstElementClassName: $root.firstElementChild?.className ?? '',
-    lastElementClassName: $root.lastElementChild?.className ?? '',
-    firstElementDataValue: $root.firstElementChild?.dataset?.value ?? '',
-    lastElementDataValue: $root.lastElementChild?.dataset?.value ?? '',
-    textContent: $root.textContent,
-    textContentLength: $root.textContent.length,
-    child0: getChildInfo($root, 0),
-    child1: getChildInfo($root, 1),
-    child4999: getChildInfo($root, 4_999),
-    child5000: getChildInfo($root, 5_000),
-    child5001: getChildInfo($root, 5_001),
-    lastChild: getChildInfo($root, childNodeCount - 1),
-  }
-}
-
-const scenarioName = location.hash.slice(1)
-const createScenario = scenarios[scenarioName]
-
-if (!createScenario) {
-  throw new Error(`Unknown large DOM diff scenario: ${scenarioName}`)
-}
-
-const scenario = createScenario()
-const updatedDoms = scenario.updatedDoms || [scenario.updatedDom]
-
-renderInto($container, scenario.initialDom)
-
+const patches = diffTree(initialDom, updatedDom)
 const $root = $container.firstElementChild
-const patchCount = applyDiffs($root, scenario.initialDom, updatedDoms)
+applyPatch($root, patches)
 
-window.__virtualDomLargeDiffResult = getResult($root, scenarioName, patchCount)
 window.__virtualDomDiffTestComplete = true
