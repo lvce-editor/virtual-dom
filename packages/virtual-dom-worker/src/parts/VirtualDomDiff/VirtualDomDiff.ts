@@ -204,7 +204,10 @@ const addRemainingNewNodes = (
 ): void => {
   applyPendingPatches(state)
   while (state.j < newNodes.length) {
-    if (state.siblingOffset > 0 && state.siblingOffset < state.maxSiblingOffset) {
+    if (
+      state.siblingOffset > 0 &&
+      state.siblingOffset < state.maxSiblingOffset
+    ) {
       state.patches.push({
         index: state.siblingOffset,
         type: PatchType.NavigateSibling,
