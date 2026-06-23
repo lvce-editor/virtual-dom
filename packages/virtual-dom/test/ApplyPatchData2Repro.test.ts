@@ -8,14 +8,14 @@ import { initialNodes, replayPatches } from './fixtures/editorWorkerData2.ts'
 
 test('replay data2 editor update reproduces sibling navigation failure', () => {
   const $Container = document.createElement('div')
-  renderInto($Container, initialNodes as any)
+  renderInto($Container, initialNodes)
   const $Root = $Container.firstChild as HTMLElement
 
   const consoleErrorSpy = jest
     .spyOn(console, 'error')
     .mockImplementation(() => {})
 
-  ApplyPatch.applyPatch($Root, replayPatches as any)
+  ApplyPatch.applyPatch($Root, replayPatches)
 
   expect(consoleErrorSpy).toHaveBeenCalledWith(
     expect.stringContaining(
