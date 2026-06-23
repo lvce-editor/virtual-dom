@@ -720,3 +720,155 @@ test('diffTree - add child nodes', () => {
     },
   ])
 })
+
+test('diffTree - data3 editor row adds tokens before navigating to them', () => {
+  const token = (className: string, value: string) => [
+    {
+      childCount: 1,
+      className,
+      type: VirtualDomElements.Span,
+    },
+    {
+      childCount: 0,
+      text: value,
+      type: VirtualDomElements.Text,
+    },
+  ]
+  const row = (tokens: readonly (readonly [string, string])[]) => [
+    {
+      childCount: tokens.length,
+      className: 'EditorRow',
+      translate: '0px',
+      type: VirtualDomElements.Div,
+    },
+    ...tokens.flatMap(([className, value]) => token(className, value)),
+  ]
+
+  const oldNodes = row([
+    ['Token Whitespace', '    '],
+    ['Token Punctuation', '"'],
+    [
+      'Token JsonPropertyName',
+      'node_modules/@babel/helper-validator-identifier',
+    ],
+    ['Token Punctuation', '"'],
+    ['Token Punctuation', ':'],
+    ['Token Whitespace', ' '],
+    ['Token Punctuation', '{'],
+  ])
+  const newNodes = row([
+    ['Token Whitespace', '    '],
+    ['Token Punctuation', '"'],
+    ['Token JsonPropertyName', '@cspell/dict-dotnet'],
+    ['Token Punctuation', '"'],
+    ['Token Punctuation', ':'],
+    ['Token Whitespace', ' '],
+    ['Token Punctuation', '"'],
+    ['Token JsonPropertyValueString', '^5.0.13'],
+    ['Token Punctuation', '"'],
+    ['Token Punctuation', ','],
+  ])
+
+  const patches = diffTree(oldNodes, newNodes)
+
+  expect(patches).toEqual([
+    {
+      type: PatchType.NavigateChild,
+      index: 0,
+    },
+    {
+      type: PatchType.NavigateSibling,
+      index: 1,
+    },
+    {
+      type: PatchType.NavigateSibling,
+      index: 2,
+    },
+    {
+      type: PatchType.NavigateChild,
+      index: 0,
+    },
+    {
+      type: PatchType.SetText,
+      value: '@cspell/dict-dotnet',
+    },
+    {
+      type: PatchType.NavigateParent,
+    },
+    {
+      type: PatchType.NavigateSibling,
+      index: 3,
+    },
+    {
+      type: PatchType.NavigateSibling,
+      index: 4,
+    },
+    {
+      type: PatchType.NavigateSibling,
+      index: 5,
+    },
+    {
+      type: PatchType.NavigateSibling,
+      index: 6,
+    },
+    {
+      type: PatchType.NavigateChild,
+      index: 0,
+    },
+    {
+      type: PatchType.SetText,
+      value: '"',
+    },
+    {
+      type: PatchType.NavigateParent,
+    },
+    {
+      type: PatchType.NavigateParent,
+    },
+    {
+      type: PatchType.Add,
+      nodes: [
+        {
+          childCount: 1,
+          className: 'Token JsonPropertyValueString',
+          type: VirtualDomElements.Span,
+        },
+        {
+          childCount: 0,
+          text: '^5.0.13',
+          type: VirtualDomElements.Text,
+        },
+      ],
+    },
+    {
+      type: PatchType.Add,
+      nodes: [
+        {
+          childCount: 1,
+          className: 'Token Punctuation',
+          type: VirtualDomElements.Span,
+        },
+        {
+          childCount: 0,
+          text: '"',
+          type: VirtualDomElements.Text,
+        },
+      ],
+    },
+    {
+      type: PatchType.Add,
+      nodes: [
+        {
+          childCount: 1,
+          className: 'Token Punctuation',
+          type: VirtualDomElements.Span,
+        },
+        {
+          childCount: 0,
+          text: ',',
+          type: VirtualDomElements.Text,
+        },
+      ],
+    },
+  ])
+})
