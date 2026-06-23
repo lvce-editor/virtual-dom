@@ -244,7 +244,7 @@ const runSelectPreserve = () => {
   const initialDom = createSelectDom('before')
   const updatedDom = createSelectDom('updated')
   renderInto($mount, initialDom)
-  const $select = document.getElementById('country-select-broad')
+  const $select = $mount.querySelector('#country-select-broad')
   $select.value = 'uk'
   const patches = diffTree(initialDom, updatedDom)
   applyPatch($mount.firstElementChild, patches)
@@ -252,7 +252,7 @@ const runSelectPreserve = () => {
     value: $select.value,
     optionValues: optionValues($select),
     firstOptionText: $select.options[0].textContent,
-    statusText: document.getElementById('country-status').textContent,
+    statusText: $mount.querySelector('#country-status').textContent,
   }
 }
 
@@ -270,7 +270,7 @@ const runSelectRemoval = () => {
     text('after'),
   ]
   renderInto($mount, initialDom)
-  const $select = document.getElementById('country-select-broad')
+  const $select = $mount.querySelector('#country-select-broad')
   $select.value = 'ca'
   const patches = diffTree(initialDom, updatedDom)
   applyPatch($mount.firstElementChild, patches)
