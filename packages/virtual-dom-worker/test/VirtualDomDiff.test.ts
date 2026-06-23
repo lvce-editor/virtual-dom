@@ -830,6 +830,46 @@ test('diff - node with multiple children', () => {
   ])
 })
 
+test.skip('diff - add sibling while old sibling traversal is complete', () => {
+  const oldNodes = [
+    {
+      type: VirtualDomElements.Div,
+      childCount: 1,
+    },
+    text('a'),
+  ]
+  const newNodes = [
+    {
+      type: VirtualDomElements.Div,
+      childCount: 2,
+    },
+    text('a'),
+    text('b'),
+  ]
+  const patches = diff(oldNodes, newNodes)
+  expect(patches).toHaveLength(3)
+  expect(patches).toEqual([
+    {
+      index: 0,
+      type: PatchType.NavigateChild,
+    },
+    {
+      index: 1,
+      type: PatchType.NavigateSibling,
+    },
+    {
+      nodes: [
+        {
+          childCount: 0,
+          text: 'b',
+          type: VirtualDomElements.Text,
+        },
+      ],
+      type: PatchType.Add,
+    },
+  ])
+})
+
 test('diff - add data attributes', () => {
   const oldNodes = [
     {
