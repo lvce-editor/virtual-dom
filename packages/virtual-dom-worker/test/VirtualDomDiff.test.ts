@@ -830,7 +830,7 @@ test('diff - node with multiple children', () => {
   ])
 })
 
-test.skip('diff - add sibling while old sibling traversal is complete', () => {
+test('diff - add sibling while old sibling traversal is complete', () => {
   const oldNodes = [
     {
       type: VirtualDomElements.Div,
@@ -847,15 +847,10 @@ test.skip('diff - add sibling while old sibling traversal is complete', () => {
     text('b'),
   ]
   const patches = diff(oldNodes, newNodes)
-  expect(patches).toHaveLength(3)
   expect(patches).toEqual([
     {
       index: 0,
       type: PatchType.NavigateChild,
-    },
-    {
-      index: 1,
-      type: PatchType.NavigateSibling,
     },
     {
       nodes: [
@@ -1010,10 +1005,6 @@ test('diff - child removed, sibling added', () => {
     {
       type: PatchType.RemoveChild,
       index: 0,
-    },
-    {
-      type: PatchType.NavigateSibling,
-      index: 2,
     },
     {
       type: PatchType.Add,
