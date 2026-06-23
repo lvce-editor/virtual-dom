@@ -50,9 +50,7 @@ const runDragInfo = () => {
       params: [],
     },
   ])
-  const initialDom = [
-    { type: VirtualDomElements.Div, childCount: 0 },
-  ]
+  const initialDom = [{ type: VirtualDomElements.Div, childCount: 0 }]
   const updatedDom = [
     { type: VirtualDomElements.Div, childCount: 2 },
     {
@@ -148,7 +146,9 @@ const runDropAndClipboard = async () => {
   applyDiff($mount, initialDom, updatedDom, {}, uid)
 
   const fileTransfer = new DataTransfer()
-  fileTransfer.items.add(new File(['hello'], 'hello.txt', { type: 'text/plain' }))
+  fileTransfer.items.add(
+    new File(['hello'], 'hello.txt', { type: 'text/plain' }),
+  )
   document
     .getElementById('drop-files-target')
     .dispatchEvent(createDropEvent(fileTransfer))
@@ -204,9 +204,7 @@ const runUpdatedDragMetadata = () => {
       params: [],
     },
   ])
-  const initialDom = [
-    { type: VirtualDomElements.Div, childCount: 0 },
-  ]
+  const initialDom = [{ type: VirtualDomElements.Div, childCount: 0 }]
   let dom = [
     { type: VirtualDomElements.Div, childCount: 1 },
     {

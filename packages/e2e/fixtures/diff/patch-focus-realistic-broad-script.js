@@ -32,7 +32,11 @@ const runReferenceAndMixedPatchCases = () => {
   let dom = [
     { type: VirtualDomElements.Div, id: 'reference-mixed-root', childCount: 3 },
     text('A'),
-    { type: VirtualDomElements.Reference, uid: 'broad-reference', childCount: 0 },
+    {
+      type: VirtualDomElements.Reference,
+      uid: 'broad-reference',
+      childCount: 0,
+    },
     { type: VirtualDomElements.Span, childCount: 1 },
     text('B'),
   ]
@@ -43,7 +47,11 @@ const runReferenceAndMixedPatchCases = () => {
     text(''),
     { type: VirtualDomElements.Span, childCount: 1 },
     text('before-ref'),
-    { type: VirtualDomElements.Reference, uid: 'broad-reference', childCount: 0 },
+    {
+      type: VirtualDomElements.Reference,
+      uid: 'broad-reference',
+      childCount: 0,
+    },
     text('   '),
     { type: VirtualDomElements.Span, childCount: 1 },
     text('B2'),
@@ -51,14 +59,19 @@ const runReferenceAndMixedPatchCases = () => {
   const afterInsert = childText($root)
   dom = patchDom($root, dom, [
     { type: VirtualDomElements.Div, id: 'reference-mixed-root', childCount: 2 },
-    { type: VirtualDomElements.Reference, uid: 'broad-reference', childCount: 0 },
+    {
+      type: VirtualDomElements.Reference,
+      uid: 'broad-reference',
+      childCount: 0,
+    },
     { type: VirtualDomElements.Span, childCount: 1 },
     text('B3'),
   ])
   return {
     afterInsert,
     afterRemove: childText($root),
-    referenceConnected: document.getElementById('reference-node-broad').isConnected,
+    referenceConnected: document.getElementById('reference-node-broad')
+      .isConnected,
   }
 }
 
@@ -101,7 +114,11 @@ const runReorderAndReplacementCases = () => {
   }
   patchDom($root, dom, [
     { type: VirtualDomElements.Div, id: 'reorder-root', childCount: 1 },
-    { type: VirtualDomElements.Button, id: 'text-back-to-button', childCount: 1 },
+    {
+      type: VirtualDomElements.Button,
+      id: 'text-back-to-button',
+      childCount: 1,
+    },
     text('button again'),
   ])
   return {
@@ -117,7 +134,11 @@ const runReorderAndReplacementCases = () => {
 const runEmptyWhitespaceAndNestedRemoval = () => {
   const $mount = createCaseRoot('empty-whitespace-removal-case')
   let dom = [
-    { type: VirtualDomElements.Div, id: 'empty-whitespace-root', childCount: 2 },
+    {
+      type: VirtualDomElements.Div,
+      id: 'empty-whitespace-root',
+      childCount: 2,
+    },
     { type: VirtualDomElements.Span, childCount: 1 },
     text('A'),
     { type: VirtualDomElements.Span, childCount: 1 },
@@ -126,7 +147,11 @@ const runEmptyWhitespaceAndNestedRemoval = () => {
   renderInto($mount, dom)
   const $root = $mount.firstElementChild
   dom = patchDom($root, dom, [
-    { type: VirtualDomElements.Div, id: 'empty-whitespace-root', childCount: 4 },
+    {
+      type: VirtualDomElements.Div,
+      id: 'empty-whitespace-root',
+      childCount: 4,
+    },
     { type: VirtualDomElements.Span, childCount: 1 },
     text('A'),
     text(''),
@@ -140,7 +165,11 @@ const runEmptyWhitespaceAndNestedRemoval = () => {
     text: $root.textContent,
   }
   dom = patchDom($root, dom, [
-    { type: VirtualDomElements.Div, id: 'empty-whitespace-root', childCount: 2 },
+    {
+      type: VirtualDomElements.Div,
+      id: 'empty-whitespace-root',
+      childCount: 2,
+    },
     { type: VirtualDomElements.Span, childCount: 1 },
     text('A'),
     { type: VirtualDomElements.Span, childCount: 1 },
@@ -148,7 +177,11 @@ const runEmptyWhitespaceAndNestedRemoval = () => {
   ])
 
   const nestedInitial = [
-    { type: VirtualDomElements.Section, id: 'nested-removal-root', childCount: 2 },
+    {
+      type: VirtualDomElements.Section,
+      id: 'nested-removal-root',
+      childCount: 2,
+    },
     { type: VirtualDomElements.Ul, id: 'nested-removal-list', childCount: 5 },
     { type: VirtualDomElements.Li, childCount: 1 },
     text('one'),
@@ -160,11 +193,19 @@ const runEmptyWhitespaceAndNestedRemoval = () => {
     text('four'),
     { type: VirtualDomElements.Li, childCount: 1 },
     text('five'),
-    { type: VirtualDomElements.Aside, id: 'nested-removal-aside', childCount: 1 },
+    {
+      type: VirtualDomElements.Aside,
+      id: 'nested-removal-aside',
+      childCount: 1,
+    },
     text('aside'),
   ]
   const nestedUpdated = [
-    { type: VirtualDomElements.Section, id: 'nested-removal-root', childCount: 1 },
+    {
+      type: VirtualDomElements.Section,
+      id: 'nested-removal-root',
+      childCount: 1,
+    },
     { type: VirtualDomElements.Ul, id: 'nested-removal-list', childCount: 2 },
     { type: VirtualDomElements.Li, childCount: 1 },
     text('one'),
@@ -313,7 +354,11 @@ const runRememberFocusCases = () => {
   const $newNestedViewlet = rememberFocus(
     $nestedViewlet,
     [
-      { type: VirtualDomElements.Div, id: 'nested-tree-viewlet', childCount: 1 },
+      {
+        type: VirtualDomElements.Div,
+        id: 'nested-tree-viewlet',
+        childCount: 1,
+      },
       {
         type: VirtualDomElements.Div,
         id: 'nested-tree',
@@ -352,8 +397,16 @@ const runRememberFocusCases = () => {
   const $newInputViewlet = rememberFocus(
     $inputViewlet,
     [
-      { type: VirtualDomElements.Div, id: 'input-parent-viewlet', childCount: 1 },
-      { type: VirtualDomElements.Article, id: 'new-input-parent', childCount: 1 },
+      {
+        type: VirtualDomElements.Div,
+        id: 'input-parent-viewlet',
+        childCount: 1,
+      },
+      {
+        type: VirtualDomElements.Article,
+        id: 'new-input-parent',
+        childCount: 1,
+      },
       {
         type: VirtualDomElements.Input,
         id: 'remember-parent-input',
@@ -440,17 +493,53 @@ const runRealisticFlows = () => {
 
   const $fileTreeMount = createCaseRoot('file-tree-flow')
   const fileTreeInitial = [
-    { type: VirtualDomElements.Div, id: 'file-tree', role: 'tree', tabIndex: 0, childCount: 2 },
-    { type: VirtualDomElements.Div, id: 'src-folder', role: 'treeitem', ariaOwns: 'src-children', childCount: 1 },
+    {
+      type: VirtualDomElements.Div,
+      id: 'file-tree',
+      role: 'tree',
+      tabIndex: 0,
+      childCount: 2,
+    },
+    {
+      type: VirtualDomElements.Div,
+      id: 'src-folder',
+      role: 'treeitem',
+      ariaOwns: 'src-children',
+      childCount: 1,
+    },
     text('src'),
-    { type: VirtualDomElements.Div, id: 'readme-file', role: 'treeitem', className: 'selected', childCount: 1 },
+    {
+      type: VirtualDomElements.Div,
+      id: 'readme-file',
+      role: 'treeitem',
+      className: 'selected',
+      childCount: 1,
+    },
     text('README.md'),
   ]
   const fileTreeUpdated = [
-    { type: VirtualDomElements.Div, id: 'file-tree', role: 'tree', tabIndex: 0, childCount: 2 },
-    { type: VirtualDomElements.Div, id: 'src-folder', role: 'treeitem', ariaOwns: 'src-children', className: 'expanded selected', childCount: 1 },
+    {
+      type: VirtualDomElements.Div,
+      id: 'file-tree',
+      role: 'tree',
+      tabIndex: 0,
+      childCount: 2,
+    },
+    {
+      type: VirtualDomElements.Div,
+      id: 'src-folder',
+      role: 'treeitem',
+      ariaOwns: 'src-children',
+      className: 'expanded selected',
+      childCount: 1,
+    },
     text('src'),
-    { type: VirtualDomElements.Div, id: 'package-file', role: 'treeitem', childCount: 1 },
+    {
+      type: VirtualDomElements.Div,
+      id: 'package-file',
+      role: 'treeitem',
+      childCount: 1,
+    },
     text('package.json'),
   ]
   applyDiff($fileTreeMount, fileTreeInitial, fileTreeUpdated)
@@ -504,8 +593,20 @@ const runRealisticFlows = () => {
   const $settingsMount = createCaseRoot('settings-flow')
   const settingsInitial = [
     { type: VirtualDomElements.Div, id: 'settings-flow', childCount: 4 },
-    { type: VirtualDomElements.Input, id: 'settings-name', name: 'name', childCount: 0 },
-    { type: VirtualDomElements.Input, id: 'settings-enabled', inputType: 'checkbox', name: 'enabled', checked: false, childCount: 0 },
+    {
+      type: VirtualDomElements.Input,
+      id: 'settings-name',
+      name: 'name',
+      childCount: 0,
+    },
+    {
+      type: VirtualDomElements.Input,
+      id: 'settings-enabled',
+      inputType: 'checkbox',
+      name: 'enabled',
+      checked: false,
+      childCount: 0,
+    },
     { type: VirtualDomElements.Select, id: 'settings-theme', childCount: 2 },
     { type: VirtualDomElements.Option, value: 'light', childCount: 1 },
     text('Light'),
@@ -516,8 +617,20 @@ const runRealisticFlows = () => {
   ]
   const settingsUpdated = [
     { type: VirtualDomElements.Div, id: 'settings-flow', childCount: 4 },
-    { type: VirtualDomElements.Input, id: 'settings-name', name: 'name', childCount: 0 },
-    { type: VirtualDomElements.Input, id: 'settings-enabled', inputType: 'checkbox', name: 'enabled', checked: false, childCount: 0 },
+    {
+      type: VirtualDomElements.Input,
+      id: 'settings-name',
+      name: 'name',
+      childCount: 0,
+    },
+    {
+      type: VirtualDomElements.Input,
+      id: 'settings-enabled',
+      inputType: 'checkbox',
+      name: 'enabled',
+      checked: false,
+      childCount: 0,
+    },
     { type: VirtualDomElements.Select, id: 'settings-theme', childCount: 2 },
     { type: VirtualDomElements.Option, value: 'light', childCount: 1 },
     text('Light'),
@@ -541,24 +654,52 @@ const runRealisticFlows = () => {
   const $tabsMount = createCaseRoot('tabs-flow')
   const tabsInitial = [
     { type: VirtualDomElements.Div, id: 'tabs-flow', childCount: 3 },
-    { type: VirtualDomElements.Button, id: 'tab-a', className: 'tab active', childCount: 1 },
+    {
+      type: VirtualDomElements.Button,
+      id: 'tab-a',
+      className: 'tab active',
+      childCount: 1,
+    },
     text('a.ts'),
-    { type: VirtualDomElements.Button, id: 'tab-b', className: 'tab', childCount: 1 },
+    {
+      type: VirtualDomElements.Button,
+      id: 'tab-b',
+      className: 'tab',
+      childCount: 1,
+    },
     text('b.ts'),
-    { type: VirtualDomElements.Button, id: 'tab-c', className: 'tab', childCount: 1 },
+    {
+      type: VirtualDomElements.Button,
+      id: 'tab-c',
+      className: 'tab',
+      childCount: 1,
+    },
     text('c.ts'),
   ]
   const tabsUpdated = [
     { type: VirtualDomElements.Div, id: 'tabs-flow', childCount: 2 },
-    { type: VirtualDomElements.Button, id: 'tab-c', className: 'tab active', childCount: 1 },
+    {
+      type: VirtualDomElements.Button,
+      id: 'tab-c',
+      className: 'tab active',
+      childCount: 1,
+    },
     text('c.ts'),
-    { type: VirtualDomElements.Button, id: 'tab-a', className: 'tab', childCount: 1 },
+    {
+      type: VirtualDomElements.Button,
+      id: 'tab-a',
+      className: 'tab',
+      childCount: 1,
+    },
     text('a.ts'),
   ]
   applyDiff($tabsMount, tabsInitial, tabsUpdated)
   document.getElementById('tab-c').focus()
   const editorTabs = {
-    labels: Array.from(document.querySelectorAll('#tabs-flow button'), (button) => button.textContent),
+    labels: Array.from(
+      document.querySelectorAll('#tabs-flow button'),
+      (button) => button.textContent,
+    ),
     activeId: document.querySelector('#tabs-flow .active').id,
     focusedId: document.activeElement.id,
     closedExists: Boolean(document.getElementById('tab-b')),
@@ -612,7 +753,10 @@ const runRealisticFlows = () => {
   document.querySelector('#toast-three button').click()
   const notifications = {
     calls: notificationCalls,
-    toastIds: Array.from(document.querySelectorAll('#notifications-flow > div'), (toast) => toast.id),
+    toastIds: Array.from(
+      document.querySelectorAll('#notifications-flow > div'),
+      (toast) => toast.id,
+    ),
     text: document.getElementById('notifications-flow').textContent,
   }
 

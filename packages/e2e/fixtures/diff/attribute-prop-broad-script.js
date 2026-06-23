@@ -4,10 +4,7 @@ import {
   patchDom,
   text,
 } from './broad-test-helpers.js'
-import {
-  renderInto,
-  VirtualDomElements,
-} from '/dist/virtual-dom/dist/index.js'
+import { renderInto, VirtualDomElements } from '/dist/virtual-dom/dist/index.js'
 
 const runHtmlFor = () => {
   const $mount = createCaseRoot('html-for-case')

@@ -224,7 +224,11 @@ const runTextareaState = () => {
 
 const createSelectDom = (statusText, includeUk = true) => [
   { type: VirtualDomElements.Div, childCount: 2 },
-  { type: VirtualDomElements.Select, id: 'country-select-broad', childCount: includeUk ? 3 : 2 },
+  {
+    type: VirtualDomElements.Select,
+    id: 'country-select-broad',
+    childCount: includeUk ? 3 : 2,
+  },
   { type: VirtualDomElements.Option, value: 'us', childCount: 1 },
   text(statusText === 'updated' ? 'United States updated' : 'United States'),
   ...(includeUk
@@ -261,7 +265,11 @@ const runSelectRemoval = () => {
   const initialDom = createSelectDom('before')
   const updatedDom = [
     { type: VirtualDomElements.Div, childCount: 2 },
-    { type: VirtualDomElements.Select, id: 'country-select-broad', childCount: 2 },
+    {
+      type: VirtualDomElements.Select,
+      id: 'country-select-broad',
+      childCount: 2,
+    },
     { type: VirtualDomElements.Option, value: 'us', childCount: 1 },
     text('United States'),
     { type: VirtualDomElements.Option, value: 'uk', childCount: 1 },
