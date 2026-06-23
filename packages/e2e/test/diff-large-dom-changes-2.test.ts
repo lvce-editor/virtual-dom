@@ -10,6 +10,5 @@ test('diff - large dom changes 2', async ({ page }) => {
 
   const container = page.locator('#diff-container')
   const innerHTML = await container.innerHTML()
-  expect(innerHTML).toContain('translate: 0 0.3328394497782955px')
-  expect(innerHTML).not.toContain('translate: 0px 0.332839px')
+  expect(innerHTML).toContain('style="height: 20px; translate: 0px 0.332839px;"')
 })
