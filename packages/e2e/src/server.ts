@@ -12,7 +12,7 @@ const __dirname = fileURLToPath(new URL('.', import.meta.url))
 const root = join(__dirname, '../../..')
 
 const HOST = process.env.HOST ?? '127.0.0.1'
-const PORT = Number.parseInt(process.env.PORT ?? '3000', 10)
+const PORT = Number(process.env.PORT ?? '3000')
 
 const getMimeType = (path: string): string => {
   if (path.endsWith('.html')) return 'text/html'
