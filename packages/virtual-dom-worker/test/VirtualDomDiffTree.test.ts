@@ -1,5 +1,6 @@
 import { expect, test } from '@jest/globals'
 import { VirtualDomElements } from '@lvce-editor/constants'
+import type { VirtualDomNode } from '../src/parts/VirtualDomNode/VirtualDomNode.ts'
 import * as PatchType from '../src/parts/PatchType/PatchType.ts'
 import { text } from '../src/parts/Text/Text.ts'
 import { diffTree } from '../src/parts/VirtualDomDiffTree/VirtualDomDiffTree.ts'
@@ -722,7 +723,10 @@ test('diffTree - add child nodes', () => {
 })
 
 test('diffTree - data3 editor row adds tokens before navigating to them', () => {
-  const token = (className: string, value: string) => [
+  const token = (
+    className: string,
+    value: string,
+  ): readonly [VirtualDomNode, VirtualDomNode] => [
     {
       childCount: 1,
       className,
@@ -734,7 +738,9 @@ test('diffTree - data3 editor row adds tokens before navigating to them', () => 
       type: VirtualDomElements.Text,
     },
   ]
-  const row = (tokens: readonly (readonly [string, string])[]) => [
+  const row = (
+    tokens: readonly (readonly [string, string])[],
+  ): readonly VirtualDomNode[] => [
     {
       childCount: tokens.length,
       className: 'EditorRow',
@@ -745,7 +751,7 @@ test('diffTree - data3 editor row adds tokens before navigating to them', () => 
   ]
 
   const oldNodes = row([
-    ['Token Whitespace', '    '],
+    ['Token Whitespace', ' '.repeat(4)],
     ['Token Punctuation', '"'],
     [
       'Token JsonPropertyName',
@@ -757,7 +763,7 @@ test('diffTree - data3 editor row adds tokens before navigating to them', () => 
     ['Token Punctuation', '{'],
   ])
   const newNodes = row([
-    ['Token Whitespace', '    '],
+    ['Token Whitespace', ' '.repeat(4)],
     ['Token Punctuation', '"'],
     ['Token JsonPropertyName', '@cspell/dict-dotnet'],
     ['Token Punctuation', '"'],
