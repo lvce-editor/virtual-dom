@@ -11,7 +11,8 @@ import { ensureBuild } from './ensureBuild.ts'
 const __dirname = fileURLToPath(new URL('.', import.meta.url))
 const root = join(__dirname, '../../..')
 
-const PORT = 3000
+const HOST = process.env.HOST ?? '127.0.0.1'
+const PORT = Number.parseInt(process.env.PORT ?? '3000', 10)
 
 const getMimeType = (path: string): string => {
   if (path.endsWith('.html')) return 'text/html'
@@ -129,8 +130,8 @@ const server = createServer((req, res): void => {
 
 const start = async (): Promise<void> => {
   await ensureBuild()
-  server.listen(PORT, () => {
-    process.stdout.write(`Server running at http://localhost:${PORT}\n`)
+  server.listen(PORT, HOST, () => {
+    process.stdout.write(`Server running at http://${HOST}:${PORT}\n`)
   })
 }
 
