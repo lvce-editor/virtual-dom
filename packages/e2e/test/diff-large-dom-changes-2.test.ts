@@ -1,6 +1,6 @@
 import { test, expect } from '../src/fixtures.ts'
 
-test.skip('diff - multiple attribute changes', async ({ page }) => {
+test.skip('diff - large dom changes 2', async ({ page }) => {
   await page.goto('/diff/large-dom-changes-2.html')
 
   await page.waitForFunction(() => {
