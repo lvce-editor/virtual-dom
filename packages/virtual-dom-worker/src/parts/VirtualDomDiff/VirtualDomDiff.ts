@@ -202,8 +202,12 @@ const addRemainingNewNodes = (
   state: DiffState,
   newNodes: readonly VirtualDomNode[],
 ): void => {
+  applyPendingPatches(state)
   while (state.j < newNodes.length) {
-    if (state.siblingOffset > 0) {
+    if (
+      state.siblingOffset > 0 &&
+      state.siblingOffset < state.maxSiblingOffset
+    ) {
       state.patches.push({
         index: state.siblingOffset,
         type: PatchType.NavigateSibling,
