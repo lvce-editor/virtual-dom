@@ -1,7 +1,7 @@
 /**
  * @jest-environment jsdom
  */
-import { expect, test } from '@jest/globals'
+import { expect, jest, test } from '@jest/globals'
 import type { Patch } from '../src/parts/Patch/Patch.ts'
 import * as ApplyPatch from '../src/parts/ApplyPatch/ApplyPatch.ts'
 import * as PatchType from '../src/parts/PatchType/PatchType.ts'
@@ -473,6 +473,40 @@ test('navigate sibling after extra root navigation', () => {
   )
   expect($Root.querySelectorAll(':scope .QuickPickItem')).toHaveLength(1)
   expect($Root.querySelector(':scope .ListItems')?.childNodes).toHaveLength(1)
+})
+
+test('navigate sibling out of range', () => {
+  const patches: readonly Patch[] = [
+    {
+      index: 0,
+      type: PatchType.NavigateChild,
+    },
+    {
+      index: 1,
+      type: PatchType.NavigateSibling,
+    },
+  ]
+
+  const $Root = document.createElement('div')
+  const $Child = document.createElement('div')
+  $Child.append(document.createTextNode('test'))
+  $Root.append($Child)
+
+  const consoleErrorSpy = jest
+    .spyOn(console, 'error')
+    .mockImplementation(() => {})
+
+  ApplyPatch.applyPatch($Root, patches)
+
+  expect(consoleErrorSpy).toHaveBeenCalledWith(
+    'Cannot navigate to sibling: sibling not found at index',
+    expect.objectContaining({
+      index: 1,
+      childCount: 1,
+    }),
+  )
+
+  consoleErrorSpy.mockRestore()
 })
 
 test.todo('large patch')
