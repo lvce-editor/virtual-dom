@@ -43,6 +43,16 @@ test('width/height - handles image elements differently', () => {
   expect($Element.height).toBe(200)
 })
 
+test('width/height - removes image dimensions as attributes', () => {
+  const $Element = document.createElement('img')
+  VirtualDomElementProp.setProp($Element, 'width', 100, {})
+  VirtualDomElementProp.setProp($Element, 'height', 200, {})
+  VirtualDomElementProp.removeProp($Element, 'width')
+  VirtualDomElementProp.removeProp($Element, 'height')
+  expect($Element.getAttribute('width')).toBeNull()
+  expect($Element.getAttribute('height')).toBeNull()
+})
+
 test('width/height - handles non-image elements', () => {
   const $Element = document.createElement('div')
   VirtualDomElementProp.setProp($Element, 'width', 100, {})
