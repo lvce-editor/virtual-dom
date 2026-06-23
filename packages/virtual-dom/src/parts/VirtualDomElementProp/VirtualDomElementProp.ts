@@ -119,6 +119,14 @@ export const removeProp = ($Element: HTMLElement, key: string): void => {
     return
   }
 
+  if (
+    (key === 'height' || key === 'width') &&
+    $Element instanceof HTMLImageElement
+  ) {
+    $Element.removeAttribute(key)
+    return
+  }
+
   if (pixelStyleProps.has(key)) {
     $Element.style[key] = ''
     return
