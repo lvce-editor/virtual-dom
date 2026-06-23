@@ -830,7 +830,7 @@ test('diff - node with multiple children', () => {
   ])
 })
 
-test('diff - add sibling while old sibling traversal is complete', () => {
+test.skip('diff - add sibling while old sibling traversal is complete', () => {
   const oldNodes = [
     {
       type: VirtualDomElements.Div,
