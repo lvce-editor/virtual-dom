@@ -1,6 +1,8 @@
 import { test, expect } from '../src/fixtures.ts'
 
-test('diff - event preventDefault honors listener options', async ({ page }) => {
+test('diff - event preventDefault honors listener options', async ({
+  page,
+}) => {
   await page.goto('/diff/event-prevent-default-options.html')
 
   await page.waitForFunction(() => {
