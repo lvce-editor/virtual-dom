@@ -17,7 +17,7 @@ test('broad patch focus and realistic flow e2e coverage', async ({ page }) => {
     '',
     'before-ref',
     'REF',
-    '   ',
+    ' '.repeat(3),
     'B2',
   ])
   expect(result.referenceAndMixedPatchCases.afterRemove).toEqual(['REF', 'B3'])
@@ -41,8 +41,8 @@ test('broad patch focus and realistic flow e2e coverage', async ({ page }) => {
     result.emptyWhitespaceAndNestedRemoval.afterWhitespaceInsert,
   ).toMatchObject({
     childCount: 4,
-    nodeValues: [null, '', '   ', null],
-    text: 'A   B',
+    nodeValues: [null, '', ' '.repeat(3), null],
+    text: `A${' '.repeat(3)}B`,
   })
   expect(result.emptyWhitespaceAndNestedRemoval.afterWhitespaceRemove).toEqual({
     childCount: 2,
