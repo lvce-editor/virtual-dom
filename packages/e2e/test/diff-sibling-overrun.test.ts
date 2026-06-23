@@ -6,15 +6,15 @@ test('diff - sibling overrun does not navigate out of range while appending chil
   const siblingErrors: string[] = []
 
   page.on('console', (msg) => {
-    if (msg.type() === 'error') {
-      const text = msg.text()
-      if (
-        text.startsWith(
-          'Cannot navigate to sibling: sibling not found at index',
-        )
-      ) {
-        siblingErrors.push(text)
-      }
+    if (msg.type() !== 'error') {
+      return
+    }
+
+    const text = msg.text()
+    if (
+      text.startsWith('Cannot navigate to sibling: sibling not found at index')
+    ) {
+      siblingErrors.push(text)
     }
   })
 
