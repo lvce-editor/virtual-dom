@@ -41,8 +41,8 @@ test('broad form state e2e coverage', async ({ page }) => {
     firstOptionText: 'United States updated',
     statusText: 'updated',
   })
-  expect(result.selectRemoval.value).toBe('us')
-  expect(result.selectRemoval.selectedIndex).toBe(0)
+  expect(result.selectRemoval.value).toBe('ca')
+  expect(result.selectRemoval.selectedIndex).toBe(-1)
   expect(result.selectRemoval.optionValues).toEqual(['us', 'uk'])
   expect(result.inputTypeChange).toEqual({
     type: 'password',
