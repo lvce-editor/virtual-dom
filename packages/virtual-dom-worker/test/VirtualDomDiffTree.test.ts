@@ -878,3 +878,84 @@ test('diffTree - data3 editor row adds tokens before navigating to them', () => 
     },
   ])
 })
+
+test('diffTree - editor row changes preserve scrollbar nodes', () => {
+  const createEditorDom = (rowText: string): readonly VirtualDomNode[] => [
+    {
+      childCount: 1,
+      className: 'Viewlet Editor',
+      type: VirtualDomElements.Div,
+    },
+    {
+      childCount: 3,
+      className: 'EditorContent',
+      type: VirtualDomElements.Div,
+    },
+    {
+      childCount: 1,
+      className: 'EditorLayers',
+      type: VirtualDomElements.Div,
+    },
+    {
+      childCount: 1,
+      className: 'EditorRows',
+      type: VirtualDomElements.Div,
+    },
+    {
+      childCount: 1,
+      className: 'EditorRow',
+      translate: '0px',
+      type: VirtualDomElements.Div,
+    },
+    {
+      childCount: 1,
+      className: 'Token Text',
+      type: VirtualDomElements.Span,
+    },
+    {
+      childCount: 0,
+      text: rowText,
+      type: VirtualDomElements.Text,
+    },
+    {
+      childCount: 1,
+      className: 'ScrollBar ScrollBarVertical',
+      onPointerDown: 30,
+      type: VirtualDomElements.Div,
+    },
+    {
+      childCount: 0,
+      className: 'ScrollBarThumb ScrollBarThumbVertical',
+      type: VirtualDomElements.Div,
+    },
+    {
+      childCount: 1,
+      className: 'ScrollBar ScrollBarHorizontal',
+      onPointerDown: 27,
+      type: VirtualDomElements.Div,
+    },
+    {
+      childCount: 0,
+      className: 'ScrollBarThumb ScrollBarThumbHorizontal',
+      type: VirtualDomElements.Div,
+    },
+  ]
+
+  const patches = diffTree(createEditorDom('line 000'), createEditorDom('line 250'))
+
+  expect(patches).toContainEqual({
+    type: PatchType.SetText,
+    value: 'line 250',
+  })
+  expect(patches).not.toContainEqual(
+    expect.objectContaining({
+      type: PatchType.Replace,
+    }),
+  )
+  expect(patches).not.toContainEqual(
+    expect.objectContaining({
+      type: PatchType.RemoveChild,
+    }),
+  )
+  expect(JSON.stringify(patches)).not.toContain('ScrollBar')
+})
