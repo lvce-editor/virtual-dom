@@ -5,13 +5,16 @@ on:
     branches:
       - main
 
+permissions:
+  contents: read
+
 jobs:
   ci:
     strategy:
       matrix:
         os: [ubuntu-24.04, macos-14, windows-2025]
     runs-on: ${{ matrix.os }}
-    timeout-minutes: 15
+    timeout-minutes: 30
     steps:
       - uses: actions/checkout@v7
       - uses: actions/setup-node@v6
@@ -44,3 +47,45 @@ jobs:
         run: npm run e2e:headless
         env:
           PLAYWRIGHT_BROWSERS_PATH: 0
+      - name: Install benchmark Chromium
+        if: matrix.os == 'ubuntu-24.04' && steps.npm-cache.outputs.cache-hit != 'true'
+        working-directory: ./packages/benchmark
+        run: npx playwright install chromium
+        env:
+          PLAYWRIGHT_BROWSERS_PATH: 0
+      - name: Run benchmarks
+        if: matrix.os == 'ubuntu-24.04'
+        working-directory: ./packages/benchmark
+        run: npm run benchmark
+        env:
+          PLAYWRIGHT_BROWSERS_PATH: 0
+      - name: Upload benchmark results
+        if: matrix.os == 'ubuntu-24.04'
+        uses: actions/upload-artifact@v7
+        with:
+          name: virtual-dom-benchmark-results
+          path: packages/benchmark/dist
+          if-no-files-found: error
+          retention-days: 30
+      - name: Configure GitHub Pages
+        if: matrix.os == 'ubuntu-24.04'
+        uses: actions/configure-pages@v6
+      - name: Upload GitHub Pages artifact
+        if: matrix.os == 'ubuntu-24.04'
+        uses: actions/upload-pages-artifact@v5
+        with:
+          path: packages/benchmark/dist
+
+  deploy:
+    needs: ci
+    permissions:
+      pages: write
+      id-token: write
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    runs-on: ubuntu-24.04
+    steps:
+      - name: Deploy benchmark report
+        id: deployment
+        uses: actions/deploy-pages@v5
