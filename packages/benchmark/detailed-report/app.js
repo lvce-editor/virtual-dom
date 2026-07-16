@@ -3,6 +3,8 @@ const $chart = document.querySelector('#chart')
 const $hotspots = document.querySelector('#hotspots')
 const $tests = document.querySelector('#tests')
 const $contexts = document.querySelector('#contexts')
+const $workloadTitle = document.querySelector('#workload-title')
+const $workloadDescription = document.querySelector('#workload-description')
 
 const formatDuration = (value) => {
   return `${value.toFixed(2)} ms`
@@ -149,11 +151,16 @@ const renderContexts = (report) => {
 
 const renderMetadata = (report) => {
   const generatedAt = new Date(report.generatedAt)
+  const allowedFailed = report.summary.allowedFailed || 0
+  const failureDetail =
+    allowedFailed === 0
+      ? `${report.summary.failed} failed`
+      : `${report.summary.failed} failed · ${allowedFailed} allowed`
   $metadata.append(
     createMetaCard(
-      'Explorer tests',
+      `${report.workload.label} tests`,
       `${report.summary.passed} passed`,
-      `${report.summary.skipped} skipped · ${report.summary.failed} failed`,
+      `${report.summary.skipped} skipped · ${failureDetail}`,
     ),
     createMetaCard(
       'Virtual DOM CPU',
@@ -176,8 +183,8 @@ const renderMetadata = (report) => {
       report.environment.platform,
     ),
     createMetaCard(
-      'Explorer commit',
-      report.explorerView.commit.slice(0, 12),
+      `${report.workload.label} commit`,
+      report.workload.commit.slice(0, 12),
       `server ${report.serverVersion}`,
     ),
     createMetaCard(
@@ -189,6 +196,11 @@ const renderMetadata = (report) => {
 }
 
 const render = (report) => {
+  document.title = report.title
+  $workloadTitle.textContent = `${report.workload.label} CPU profile`
+  $workloadDescription.textContent =
+    `Every ${report.workload.id} e2e test runs through one load of the ` +
+    '--reuse-page runner while V8 samples the page and all worker execution contexts.'
   renderMetadata(report)
   renderChart(report)
   renderHotspots(report)

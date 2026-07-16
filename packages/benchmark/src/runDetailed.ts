@@ -5,18 +5,22 @@ import { join } from 'node:path'
 import { fileURLToPath } from 'node:url'
 import { promisify } from 'node:util'
 import { chromium, type BrowserContext, type Page } from 'playwright'
+import type { BenchmarkTests } from './benchmarkTests.ts'
 import { startCpuProfile, type CpuProfileCaptureResult } from './cpuProfile.ts'
-import { getExplorerViewTests } from './explorerView.ts'
 import { startDetailedBenchmarkServer } from './serverProcess.ts'
 
 const execFileAsync = promisify(execFile)
 const packageRoot = new URL('..', import.meta.url)
 const reportRoot = new URL('detailed-report/', packageRoot)
-const outputRoot = new URL('dist/detailed-benchmark/', packageRoot)
-const profilesPath = fileURLToPath(new URL('profiles/', outputRoot))
 const browserProfilePath = fileURLToPath(
   new URL('.tmp/chromium-profile/', packageRoot),
 )
+
+interface DetailedBenchmarkOptions {
+  readonly allowedFailures?: readonly string[]
+  readonly getTests: () => Promise<BenchmarkTests>
+  readonly outputPath: string
+}
 
 interface TestResult {
   readonly duration: number
@@ -96,6 +100,7 @@ const parseTestResult = (value: unknown): TestResult => {
 const waitForTestResults = async (
   page: Page,
   timeout: number,
+  workload: BenchmarkTests,
 ): Promise<readonly TestResult[]> => {
   const selector = '.TestResults'
   await page.locator(selector).waitFor({ state: 'attached', timeout })
@@ -109,11 +114,13 @@ const waitForTestResults = async (
   )
   const text = await page.locator(selector).textContent()
   if (!text) {
-    throw new Error('Explorer e2e test results are empty')
+    throw new Error(`${workload.label} e2e test results are empty`)
   }
   const parsed = JSON.parse(text) as unknown
   if (!Array.isArray(parsed)) {
-    throw new TypeError('Expected explorer e2e test results to be an array')
+    throw new TypeError(
+      `Expected ${workload.label} e2e test results to be an array`,
+    )
   }
   return parsed.map(parseTestResult)
 }
@@ -142,7 +149,11 @@ const getDevToolsWebSocketUrl = async (): Promise<string> => {
   return `ws://127.0.0.1:${port}${path}`
 }
 
-const main = async (): Promise<void> => {
+export const runDetailedBenchmark = async (
+  options: DetailedBenchmarkOptions,
+): Promise<void> => {
+  const outputRoot = new URL(`dist/${options.outputPath}/`, packageRoot)
+  const profilesPath = fileURLToPath(new URL('profiles/', outputRoot))
   const timeout = readPositiveInteger(
     'DETAILED_BENCHMARK_TIMEOUT_MS',
     30 * 60 * 1000,
@@ -152,14 +163,14 @@ const main = async (): Promise<void> => {
     'DETAILED_BENCHMARK_SAMPLING_INTERVAL_US',
     1000,
   )
-  const explorerView = await getExplorerViewTests()
+  const workload = await options.getTests()
   await rm(outputRoot, { force: true, recursive: true })
   await rm(browserProfilePath, { force: true, recursive: true })
   await mkdir(outputRoot, { recursive: true })
   await mkdir(browserProfilePath, { recursive: true })
 
   process.stdout.write('Starting @lvce-editor/server...\n')
-  const server = await startDetailedBenchmarkServer(explorerView.testPath)
+  const server = await startDetailedBenchmarkServer(workload.testPath)
   let context: BrowserContext | undefined
   let captureResult: CpuProfileCaptureResult | undefined
   let results: readonly TestResult[] = []
@@ -196,13 +207,13 @@ const main = async (): Promise<void> => {
         url.searchParams.set('filter', filter)
       }
       process.stdout.write(
-        `Running explorer-view tests with --reuse-page at ${url.href}\n`,
+        `Running ${workload.id} tests with --reuse-page at ${url.href}\n`,
       )
       await page.goto(url.href, {
         timeout: 60_000,
         waitUntil: 'domcontentloaded',
       })
-      results = await waitForTestResults(page, timeout)
+      results = await waitForTestResults(page, timeout, workload)
       userAgent = await page.evaluate(() => globalThis.navigator.userAgent)
     } catch (error) {
       runError = getErrorMessage(error)
@@ -221,7 +232,15 @@ const main = async (): Promise<void> => {
   }
   const { analysis } = captureResult
   const passed = results.filter((result) => result.status === 'pass').length
-  const failed = results.filter((result) => result.status === 'fail').length
+  const failedResults = results.filter((result) => result.status === 'fail')
+  const allowedFailures = options.allowedFailures
+    ? new Set(options.allowedFailures)
+    : new Set<string>()
+  const allowedFailed = failedResults.filter((result) =>
+    allowedFailures.has(result.name),
+  ).length
+  const unexpectedFailed = failedResults.length - allowedFailed
+  const failed = failedResults.length
   const skipped = results.filter((result) => result.status === 'skip').length
   const duration = results.reduce((total, result) => total + result.duration, 0)
   const commit = await getGitValue(['rev-parse', 'HEAD'])
@@ -237,6 +256,9 @@ const main = async (): Promise<void> => {
     },
     commit,
     config: {
+      ...(options.allowedFailures && {
+        allowedFailures: options.allowedFailures,
+      }),
       ...(filter && { filter }),
       reusePage: true,
       samplingInterval,
@@ -249,27 +271,31 @@ const main = async (): Promise<void> => {
       node: process.version,
       platform: process.platform,
     },
-    explorerView: {
-      commit: explorerView.commit,
-      source: explorerView.source,
-    },
     generatedAt: new Date().toISOString(),
     profiles: captureResult.profiles,
     repository: 'lvce-editor/virtual-dom',
     runError,
-    schemaVersion: 1,
+    schemaVersion: 2,
     serverVersion: server.version,
     summary: {
+      allowedFailed,
       duration: Math.round(duration * 1000) / 1000,
       failed,
       passed,
       skipped,
       total: results.length,
+      unexpectedFailed,
     },
     tests: results.toSorted((left, right) => right.duration - left.duration),
-    title: 'LVCE Virtual DOM detailed benchmark',
+    title: `LVCE Virtual DOM ${workload.label.toLowerCase()} benchmark`,
     capture: {
       detachedTargetCount: captureResult.detachedTargetCount,
+    },
+    workload: {
+      commit: workload.commit,
+      id: workload.id,
+      label: workload.label,
+      source: workload.source,
     },
   }
 
@@ -283,11 +309,11 @@ const main = async (): Promise<void> => {
   )
 
   if (runError) {
-    throw new Error(`Explorer benchmark failed: ${runError}`)
+    throw new Error(`${workload.label} benchmark failed: ${runError}`)
   }
-  if (failed > 0) {
-    throw new Error(`${failed} explorer-view e2e tests failed`)
+  if (unexpectedFailed > 0) {
+    throw new Error(
+      `${unexpectedFailed} unexpected ${workload.id} e2e tests failed`,
+    )
   }
 }
-
-await main()
