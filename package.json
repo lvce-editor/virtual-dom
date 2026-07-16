@@ -8,6 +8,7 @@
   ],
   "scripts": {
     "benchmark": "npm run build && npm run benchmark --workspace=packages/benchmark",
+    "benchmark:about-view": "npm run benchmark:about-view --workspace=packages/benchmark",
     "benchmark:activity-bar": "npm run benchmark:activity-bar --workspace=packages/benchmark",
     "benchmark:detailed": "npm run benchmark:detailed --workspace=packages/benchmark",
     "build": "node packages/build/src/build.js",
