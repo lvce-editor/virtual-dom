@@ -87,6 +87,7 @@ interface ProfiledTarget {
 interface CapturedProfile {
   readonly contextName: string
   readonly file: string
+  readonly label: string
   readonly profile: CpuProfile
   readonly targetInfo: TargetInfo
 }
@@ -116,6 +117,7 @@ interface PendingRequest {
 
 export interface CpuProfileContext {
   readonly file: string
+  readonly label: string
   readonly name: string
   readonly sampleCount: number
   readonly targetType: string
@@ -155,6 +157,7 @@ export interface CpuProfileCaptureResult {
   readonly profiles: readonly {
     readonly contextName: string
     readonly file: string
+    readonly label: string
     readonly sampleCount: number
     readonly targetType: string
     readonly url: string
@@ -162,6 +165,7 @@ export interface CpuProfileCaptureResult {
 }
 
 export interface CpuProfileCapture {
+  readonly checkpoint: (label: string) => Promise<void>
   readonly stop: () => Promise<CpuProfileCaptureResult>
 }
 
@@ -525,6 +529,7 @@ const analyzeProfile = (
   return {
     context: {
       file,
+      label: captured.label,
       name: contextName,
       sampleCount: length,
       targetType: targetInfo.type,
@@ -599,7 +604,7 @@ const settle = async (tasks: Set<Promise<void>>): Promise<void> => {
 
 const getFileName = (targetInfo: TargetInfo, index: number): string => {
   const type = targetInfo.type.replaceAll(/[^a-z0-9]+/gi, '-').toLowerCase()
-  return `${String(index + 1).padStart(2, '0')}-${type || 'context'}.cpuprofile`
+  return `${String(index + 1).padStart(5, '0')}-${type || 'context'}.cpuprofile`
 }
 
 export const startCpuProfile = async ({
@@ -615,8 +620,10 @@ export const startCpuProfile = async ({
   const targets = new Map<string, ProfiledTarget>()
   const targetSessions = new Map<string, string>()
   const setupTasks = new Set<Promise<void>>()
+  const capturedProfiles: CapturedProfile[] = []
   let detachedTargetCount = 0
   let stopping = false
+  await mkdir(outputPath, { recursive: true })
 
   const sendMayFail = async (
     method: string,
@@ -736,11 +743,11 @@ export const startCpuProfile = async ({
   })
   await settle(setupTasks)
 
-  const stop = async (): Promise<CpuProfileCaptureResult> => {
-    stopping = true
+  const captureActiveProfiles = async (
+    label: string,
+    restartPage: boolean,
+  ): Promise<void> => {
     await settle(setupTasks)
-    const capturedProfiles: CapturedProfile[] = []
-    await mkdir(outputPath, { recursive: true })
     const activeTargets = await Promise.all(
       targets.values().map(refreshTargetInfo),
     )
@@ -765,10 +772,10 @@ export const startCpuProfile = async ({
     const availableProfiles = stoppedProfiles.filter(
       (profile) => profile !== undefined,
     )
-    for (const [index, { rawProfile, target }] of availableProfiles.entries()) {
+    for (const { rawProfile, target } of availableProfiles) {
       try {
         const profile = parseCpuProfile(rawProfile)
-        const fileName = getFileName(target.targetInfo, index)
+        const fileName = getFileName(target.targetInfo, capturedProfiles.length)
         await writeFile(
           join(outputPath, fileName),
           `${JSON.stringify(rawProfile)}\n`,
@@ -776,17 +783,35 @@ export const startCpuProfile = async ({
         capturedProfiles.push({
           contextName: getContextName(target.targetInfo),
           file: `./profiles/${fileName}`,
+          label,
           profile,
           targetInfo: target.targetInfo,
         })
+        if (restartPage && target.targetInfo.type === 'page') {
+          await connection.send('Profiler.start', {}, target.sessionId)
+          targets.set(target.sessionId, target)
+        } else {
+          targets.delete(target.sessionId)
+          targetSessions.delete(target.targetInfo.targetId)
+        }
       } catch {
         detachedTargetCount++
       }
     }
+  }
+
+  const checkpoint = async (label: string): Promise<void> => {
+    await captureActiveProfiles(label, true)
+  }
+
+  const stop = async (): Promise<CpuProfileCaptureResult> => {
+    stopping = true
+    await captureActiveProfiles('final', false)
     const analysis = analyzeCpuProfiles(capturedProfiles)
     const profiles = capturedProfiles.map((captured) => ({
       contextName: captured.contextName,
       file: captured.file,
+      label: captured.label,
       sampleCount: captured.profile.samples.length,
       targetType: captured.targetInfo.type,
       url: captured.targetInfo.url,
@@ -804,6 +829,7 @@ export const startCpuProfile = async ({
   }
 
   return {
+    checkpoint,
     stop,
   }
 }

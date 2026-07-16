@@ -1,5 +1,5 @@
 import { execFile } from 'node:child_process'
-import { access, mkdir, rm } from 'node:fs/promises'
+import { access, mkdir, readdir, rm } from 'node:fs/promises'
 import { join, resolve } from 'node:path'
 import { fileURLToPath } from 'node:url'
 import { promisify } from 'node:util'
@@ -13,6 +13,7 @@ const repositoryUrl = 'https://github.com/lvce-editor/explorer-view.git'
 export interface ExplorerViewTests {
   readonly commit: string
   readonly source: string
+  readonly testFiles: readonly string[]
   readonly testPath: string
 }
 
@@ -37,12 +38,24 @@ const getTestPath = async (root: string): Promise<string> => {
   }
 }
 
+const getTestFiles = async (testPath: string): Promise<readonly string[]> => {
+  const files = await readdir(join(testPath, 'src'))
+  return files
+    .filter(
+      (file) =>
+        !file.startsWith('_') && (file.endsWith('.js') || file.endsWith('.ts')),
+    )
+    .map((file) => file.replace(/\.(?:js|ts)$/, '.js'))
+    .toSorted((a, b) => a.localeCompare(b))
+}
+
 const getLocalTests = async (path: string): Promise<ExplorerViewTests> => {
   const root = resolve(path)
   const testPath = await getTestPath(root)
   return {
     commit: await getCommit(root),
     source: root,
+    testFiles: await getTestFiles(testPath),
     testPath,
   }
 }
@@ -70,10 +83,12 @@ const downloadTests = async (): Promise<ExplorerViewTests> => {
     'set',
     'packages/e2e',
   ])
+  const testPath = join(downloadRoot, 'packages', 'e2e')
   return {
     commit: await getCommit(downloadRoot),
     source: `${repositoryUrl}#${ref}`,
-    testPath: join(downloadRoot, 'packages', 'e2e'),
+    testFiles: await getTestFiles(testPath),
+    testPath,
   }
 }
 

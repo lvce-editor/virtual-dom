@@ -17,8 +17,9 @@
           <p class="eyebrow">Real-world workload</p>
           <h1>Explorer CPU profile</h1>
           <p class="intro">
-            Every explorer-view e2e test runs sequentially in one Chromium page
-            while V8 samples the page and all worker execution contexts.
+            Every explorer-view e2e test navigates through one Chromium page
+            instance while V8 samples the page and all worker execution
+            contexts.
           </p>
         </div>
         <div class="hero-links">
@@ -120,11 +121,13 @@
         <p class="eyebrow">Methodology</p>
         <h2>What is included</h2>
         <p>
-          The Chrome DevTools Protocol records one V8 CPU profile for the page
-          and every worker from before navigation until the final test result.
-          The analysis attributes each sample to its leaf function, reconstructs
-          parent stacks for inclusive time, and keeps functions whose source URL
-          or function name belongs to the virtual DOM implementation.
+          The Chrome DevTools Protocol records V8 CPU profile segments for the
+          page and every worker during each test. Between tests the same page
+          navigates to a fresh test document, and the profiler saves the current
+          segments before those workers are replaced. The analysis attributes
+          each sample to its leaf function, reconstructs parent stacks for
+          inclusive time, and keeps functions whose source URL or function name
+          belongs to the virtual DOM implementation.
         </p>
       </section>
     </main>

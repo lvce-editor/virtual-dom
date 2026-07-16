@@ -17,8 +17,8 @@ warmup and measured samples can be adjusted with
 ## Detailed explorer benchmark
 
 The detailed benchmark downloads the explorer-view e2e tests, starts
-`@lvce-editor/server`, runs every test sequentially through `/tests/_all.html`,
-and records browser-wide V8 CPU samples for the page and its workers:
+`@lvce-editor/server`, runs every test sequentially in one Chromium page
+instance, and records browser-wide V8 CPU samples for the page and its workers:
 
 ```sh
 npm run benchmark:detailed
@@ -32,5 +32,5 @@ functions filtered out.
 For local development, `EXPLORER_VIEW_PATH` can point at an existing
 explorer-view checkout and `DETAILED_BENCHMARK_FILTER` can select a smaller
 test subset. `DETAILED_BENCHMARK_TIMEOUT_MS` controls the full-suite timeout,
-and `DETAILED_BENCHMARK_SAMPLING_INTERVAL_US` controls the V8 sampling
-interval.
+`DETAILED_BENCHMARK_TEST_TIMEOUT_MS` controls each test timeout, and
+`DETAILED_BENCHMARK_SAMPLING_INTERVAL_US` controls the V8 sampling interval.
