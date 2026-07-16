@@ -124,11 +124,15 @@
         <h2>What is included</h2>
         <p>
           The Chrome DevTools Protocol records one continuous V8 CPU profile for
-          the page and every worker while <code>/tests/_all.html</code>
-          runs the suite without reloading the page between tests. The analysis
-          attributes each sample to its leaf function, reconstructs parent
-          stacks for inclusive time, and keeps functions whose source URL or
-          function name belongs to the virtual DOM implementation.
+          the page and every worker while <code>/tests/_all.html</code> runs the
+          suite without reloading the page between tests. By default, this is
+          repeated in five fresh browser profiles. The analysis attributes each
+          sample to its leaf function, reconstructs parent stacks for inclusive
+          time, and keeps functions whose source URL or function name belongs to
+          the virtual DOM implementation. Native browser work such as
+          <code>document.createElement</code> can contribute to a virtual DOM
+          caller's inclusive time, but is intentionally absent from the filtered
+          JavaScript hotspot list.
         </p>
       </section>
     </main>

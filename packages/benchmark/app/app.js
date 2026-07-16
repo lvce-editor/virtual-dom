@@ -3,6 +3,7 @@ import {
   renderInto,
   VirtualDomElements,
 } from '/dist/virtual-dom/dist/index.js'
+import { setProps } from '/dist/virtual-dom/dist/parts/VirtualDomElementProps/VirtualDomElementProps.js'
 import { diffTree } from '/dist/virtual-dom-worker/dist/index.js'
 
 const adjectives = [
@@ -71,7 +72,23 @@ const scenarioNames = new Map([
   ['create-10k', 'Create 10,000 rows'],
   ['append-1k', 'Append 1,000 rows'],
   ['clear-1k', 'Clear rows'],
+  ['set-props-10k', 'Set props on 10,000 elements'],
+  ['create-elements-10k', 'Create 10,000 DOM elements'],
 ])
+
+const microScenarioIds = new Set(['create-elements-10k', 'set-props-10k'])
+const eventMap = {}
+const newEventMap = {}
+const microScenarioProps = {
+  ariaLabel: 'Explorer item',
+  childCount: 0,
+  className: 'ExplorerItem',
+  draggable: true,
+  role: 'treeitem',
+  tabIndex: -1,
+  title: 'Explorer item',
+  type: VirtualDomElements.Div,
+}
 
 const $root = document.querySelector('#benchmark-root')
 const $status = document.querySelector('#status')
@@ -80,6 +97,7 @@ const $toolbar = document.querySelector('#toolbar')
 let rows = []
 let selectedId = -1
 let currentDom
+let benchmarkElements = []
 let scenarioContext = {}
 
 const makeLabel = (id) => {
@@ -187,6 +205,16 @@ const forceLayout = () => {
 const reset = (id) => {
   selectedId = -1
   scenarioContext = {}
+  if (microScenarioIds.has(id)) {
+    rows = []
+    currentDom = undefined
+    $root.replaceChildren()
+    benchmarkElements =
+      id === 'set-props-10k'
+        ? Array.from({ length: 10_000 }, () => document.createElement('div'))
+        : []
+    return
+  }
   switch (id) {
     case 'create-1k':
     case 'create-10k':
@@ -240,6 +268,16 @@ const perform = (id) => {
     case 'clear-1k':
       rows = []
       break
+    case 'set-props-10k':
+      for (const $element of benchmarkElements) {
+        setProps($element, microScenarioProps, eventMap, newEventMap)
+      }
+      return
+    case 'create-elements-10k':
+      benchmarkElements = Array.from({ length: 10_000 }, () => {
+        return document.createElement('div')
+      })
+      return
     default:
       throw new Error(`Unknown benchmark scenario: ${id}`)
   }
@@ -280,6 +318,18 @@ const verify = (id) => {
       return $rows.length === 2_000
     case 'clear-1k':
       return $rows.length === 0
+    case 'set-props-10k':
+      return (
+        benchmarkElements.length === 10_000 &&
+        benchmarkElements[9_999].className === microScenarioProps.className &&
+        benchmarkElements[9_999].getAttribute('role') ===
+          microScenarioProps.role
+      )
+    case 'create-elements-10k':
+      return (
+        benchmarkElements.length === 10_000 &&
+        benchmarkElements[9_999] instanceof HTMLDivElement
+      )
     default:
       return false
   }
@@ -288,7 +338,9 @@ const verify = (id) => {
 const run = (id) => {
   const start = performance.now()
   perform(id)
-  forceLayout()
+  if (!microScenarioIds.has(id)) {
+    forceLayout()
+  }
   const duration = performance.now() - start
   if (!verify(id)) {
     throw new Error(`Benchmark verification failed: ${id}`)

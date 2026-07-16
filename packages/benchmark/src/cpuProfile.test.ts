@@ -73,3 +73,66 @@ void test('analyzeCpuProfiles filters virtual dom functions and includes descend
     url: 'http://localhost/explorerViewWorkerMain.js',
   })
 })
+
+void test('native DOM work is included in its virtual DOM caller but not listed as a hotspot', () => {
+  const analysis = analyzeCpuProfiles([
+    {
+      contextName: 'page: benchmark',
+      file: './profiles/01-page.cpuprofile',
+      profile: {
+        endTime: 3000,
+        nodes: [
+          {
+            callFrame: {
+              codeType: 'other',
+              columnNumber: 0,
+              functionName: '(root)',
+              lineNumber: 0,
+              url: '',
+            },
+            children: [2],
+            id: 1,
+          },
+          {
+            callFrame: {
+              codeType: 'JS',
+              columnNumber: 0,
+              functionName: 'renderDomElement',
+              lineNumber: 10,
+              url: 'http://localhost/virtual-dom/VirtualDomElement.js',
+            },
+            children: [3],
+            id: 2,
+          },
+          {
+            callFrame: {
+              codeType: 'other',
+              columnNumber: 0,
+              functionName: 'createElement',
+              lineNumber: 0,
+              url: '',
+            },
+            children: [],
+            id: 3,
+          },
+        ],
+        samples: [2, 3],
+        startTime: 0,
+        timeDeltas: [1000, 2000],
+      },
+      targetInfo: {
+        targetId: 'target-1',
+        title: 'benchmark',
+        type: 'page',
+        url: 'http://localhost/',
+      },
+    },
+  ])
+
+  assert.equal(analysis.virtualDomInclusiveMs, 3)
+  assert.equal(analysis.virtualDomSelfMs, 1)
+  assert.equal(analysis.hotspots.length, 1)
+  assert.equal(analysis.hotspots[0].functionName, 'renderDomElement')
+  assert.equal(analysis.hotspots[0].inclusiveMs, 3)
+  assert.equal(analysis.hotspots[0].selfMs, 1)
+})

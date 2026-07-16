@@ -5,7 +5,7 @@ import { fileURLToPath } from 'node:url'
 import { promisify } from 'node:util'
 import { chromium, type Page } from 'playwright'
 import { startServer } from './server.ts'
-import { getStatistics } from './statistics.ts'
+import { getStatistics, type Statistics } from './statistics.ts'
 
 const execFileAsync = promisify(execFile)
 const packageRoot = new URL('..', import.meta.url)
@@ -16,6 +16,10 @@ interface Scenario {
   readonly description: string
   readonly id: string
   readonly name: string
+}
+
+interface ScenarioRun extends Statistics {
+  readonly samples: readonly number[]
 }
 
 const scenarios: readonly Scenario[] = [
@@ -64,6 +68,17 @@ const scenarios: readonly Scenario[] = [
     name: 'Clear 1,000 rows',
     description: 'Remove every row from a populated table.',
   },
+  {
+    id: 'set-props-10k',
+    name: 'Set props on 10,000 elements',
+    description:
+      'Apply representative virtual DOM properties to pre-created elements.',
+  },
+  {
+    id: 'create-elements-10k',
+    name: 'Create 10,000 DOM elements',
+    description: 'Create and retain detached native DOM elements.',
+  },
 ]
 
 const readPositiveInteger = (name: string, fallback: number): number => {
@@ -107,23 +122,30 @@ const runScenario = async (page: Page, id: string): Promise<number> => {
   }, id)
 }
 
-declare global {
-  var virtualDomBenchmark: {
-    reset: (id: string) => void
-    run: (id: string) => number
-  }
+const round = (value: number): number => {
+  return Math.round(value * 1000) / 1000
 }
 
-const main = async (): Promise<void> => {
-  const iterations = readPositiveInteger('BENCHMARK_ITERATIONS', 10)
-  const warmupIterations = readPositiveInteger('BENCHMARK_WARMUP_ITERATIONS', 3)
-  const server = await startServer()
+const runBenchmark = async ({
+  iterations,
+  repeat,
+  serverUrl,
+  warmupIterations,
+}: {
+  readonly iterations: number
+  readonly repeat: number
+  readonly serverUrl: string
+  readonly warmupIterations: number
+}): Promise<{
+  readonly browserVersion: string
+  readonly results: ReadonlyMap<string, ScenarioRun>
+  readonly userAgent: string
+}> => {
   const browser = await chromium.launch({ headless: true })
-
+  const context = await browser.newContext({
+    viewport: { height: 900, width: 1440 },
+  })
   try {
-    const context = await browser.newContext({
-      viewport: { height: 900, width: 1440 },
-    })
     const page = await context.newPage()
     page.on('console', (message) => {
       if (message.type() === 'error') {
@@ -134,10 +156,10 @@ const main = async (): Promise<void> => {
       console.error(`[browser] ${error.stack ?? error.message}`)
     })
 
-    const results = []
+    const results = new Map<string, ScenarioRun>()
     for (const scenario of scenarios) {
-      process.stdout.write(`Benchmarking ${scenario.name}... `)
-      await page.goto(server.url, { waitUntil: 'networkidle' })
+      process.stdout.write(`Run ${repeat}: benchmarking ${scenario.name}... `)
+      await page.goto(serverUrl, { waitUntil: 'networkidle' })
       await page.waitForFunction(() => {
         return typeof globalThis.virtualDomBenchmark?.run === 'function'
       })
@@ -156,21 +178,82 @@ const main = async (): Promise<void> => {
       }
 
       const statistics = getStatistics(samples)
-      results.push({
-        ...scenario,
+      results.set(scenario.id, {
         ...statistics,
-        samples: samples.map((sample) => Math.round(sample * 1000) / 1000),
-        unit: 'ms',
+        samples: samples.map(round),
       })
       process.stdout.write(`${statistics.median.toFixed(2)} ms median\n`)
     }
 
     const userAgent = await page.evaluate(() => globalThis.navigator.userAgent)
+    return {
+      browserVersion: browser.version(),
+      results,
+      userAgent,
+    }
+  } finally {
+    await context.close()
+    await browser.close()
+  }
+}
+
+declare global {
+  var virtualDomBenchmark: {
+    reset: (id: string) => void
+    run: (id: string) => number
+  }
+}
+
+const main = async (): Promise<void> => {
+  const iterations = readPositiveInteger('BENCHMARK_ITERATIONS', 10)
+  const repeats = readPositiveInteger('BENCHMARK_REPEATS', 5)
+  const warmupIterations = readPositiveInteger('BENCHMARK_WARMUP_ITERATIONS', 3)
+  const server = await startServer()
+
+  try {
+    const runs: ReadonlyMap<string, ScenarioRun>[] = []
+    let browserVersion = 'unknown'
+    let userAgent = 'unknown'
+    for (let repeat = 1; repeat <= repeats; repeat++) {
+      const {
+        browserVersion: runBrowserVersion,
+        results,
+        userAgent: runUserAgent,
+      } = await runBenchmark({
+        iterations,
+        repeat,
+        serverUrl: server.url,
+        warmupIterations,
+      })
+      runs.push(results)
+      browserVersion = runBrowserVersion
+      userAgent = runUserAgent
+    }
+
+    const results = scenarios.map((scenario) => {
+      const scenarioRuns = runs.map((run) => {
+        const result = run.get(scenario.id)
+        if (!result) {
+          throw new Error(`Missing benchmark result for ${scenario.id}`)
+        }
+        return result
+      })
+      const repeatMedians = scenarioRuns.map((run) => run.median)
+      return {
+        ...scenario,
+        ...getStatistics(repeatMedians),
+        repeatMedians,
+        runs: scenarioRuns,
+        samples: repeatMedians,
+        unit: 'ms',
+      }
+    })
+
     const commit = await getGitValue(['rev-parse', 'HEAD'])
     const branch = await getGitValue(['rev-parse', '--abbrev-ref', 'HEAD'])
     const cpu = cpus()[0]
     const report = {
-      schemaVersion: 1,
+      schemaVersion: 2,
       title: 'LVCE Virtual DOM benchmark',
       generatedAt: new Date().toISOString(),
       repository: 'lvce-editor/virtual-dom',
@@ -178,7 +261,7 @@ const main = async (): Promise<void> => {
       branch,
       browser: {
         name: 'Chromium',
-        version: browser.version(),
+        version: browserVersion,
         userAgent,
       },
       environment: {
@@ -190,6 +273,7 @@ const main = async (): Promise<void> => {
       },
       config: {
         iterations,
+        repeats,
         warmupIterations,
       },
       results,
@@ -206,7 +290,6 @@ const main = async (): Promise<void> => {
       `Static report written to ${fileURLToPath(outputRoot)}\n`,
     )
   } finally {
-    await browser.close()
     await server.close()
   }
 }
