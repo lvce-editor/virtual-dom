@@ -6,7 +6,8 @@
   "license": "MIT",
   "scripts": {
     "benchmark": "node --experimental-strip-types src/run.ts",
-    "benchmark:detailed": "node --experimental-strip-types src/runDetailed.ts",
+    "benchmark:activity-bar": "node --experimental-strip-types src/runActivityBar.ts",
+    "benchmark:detailed": "node --experimental-strip-types src/runExplorer.ts",
     "test": "node --experimental-strip-types --test src/cpuProfile.test.ts"
   },
   "devDependencies": {
