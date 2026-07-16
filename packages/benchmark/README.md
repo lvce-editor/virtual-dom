@@ -59,14 +59,25 @@ the profile and reported as allowed failures because the generic benchmark
 server does not provide their signed-in account states. Any other test failure
 still fails the benchmark job.
 
+The About benchmark profiles the about-view e2e suite. The workload is pinned
+to about-view `v7.8.0` at commit
+`6e92dde363c4c04a60f2eadd258121aac29dd9ea`:
+
+```sh
+npm run benchmark:about-view
+```
+
+Its report is written to `packages/benchmark/dist/about-view-benchmark` and is
+published as a separate GitHub Pages route.
+
 By default each real-world workload runs in five fresh browser profiles. Each
 report shows the run with the median normalized virtual DOM CPU share and
 includes the distribution across all runs.
 
-For local development, `EXPLORER_VIEW_PATH` and `ACTIVITY_BAR_WORKER_PATH` can
-point at existing checkouts. `EXPLORER_VIEW_REF` and
-`ACTIVITY_BAR_WORKER_REF` can select different git refs, and
-`DETAILED_BENCHMARK_FILTER` can select a smaller test subset.
+For local development, `EXPLORER_VIEW_PATH`, `ACTIVITY_BAR_WORKER_PATH`, and
+`ABOUT_VIEW_PATH` can point at existing checkouts. `EXPLORER_VIEW_REF`,
+`ACTIVITY_BAR_WORKER_REF`, and `ABOUT_VIEW_REF` can select different git refs,
+and `DETAILED_BENCHMARK_FILTER` can select a smaller test subset.
 `DETAILED_BENCHMARK_TIMEOUT_MS` controls the full-suite timeout,
 `DETAILED_BENCHMARK_SAMPLING_INTERVAL_US` controls the V8 sampling interval,
 and `DETAILED_BENCHMARK_REPEATS` controls the number of fresh browser runs.
