@@ -2,6 +2,9 @@ import * as VirtualDomElementProp from '../VirtualDomElementProp/VirtualDomEleme
 
 export const setProps = ($Element, props, eventMap, newEventMap): void => {
   for (const key in props) {
+    if (key === 'childCount' || key === 'type') {
+      continue
+    }
     VirtualDomElementProp.setProp(
       $Element,
       key,

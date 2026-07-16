@@ -75,6 +75,17 @@ test('style property - parses style string', () => {
 
 test('aria attributes - sets and removes attributes', () => {
   const $Element = document.createElement('div')
+  VirtualDomElementProp.setProp(
+    $Element,
+    'ariaActivedescendant',
+    'active-id',
+    {},
+  )
+  expect($Element.getAttribute('aria-activedescendant')).toBe('active-id')
+
+  VirtualDomElementProp.setProp($Element, 'ariaControls', 'controls-id', {})
+  expect($Element.getAttribute('aria-controls')).toBe('controls-id')
+
   VirtualDomElementProp.setProp($Element, 'ariaOwns', 'test-id', {})
   expect($Element.getAttribute('aria-owns')).toBe('test-id')
 
