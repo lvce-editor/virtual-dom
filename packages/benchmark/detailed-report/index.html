@@ -1,0 +1,133 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta
+      name="description"
+      content="Explorer-view CPU profile analysis for the LVCE virtual DOM"
+    />
+    <title>LVCE Virtual DOM detailed benchmark</title>
+    <link rel="stylesheet" href="./styles.css" />
+  </head>
+  <body>
+    <main>
+      <header class="hero">
+        <div>
+          <p class="eyebrow">Real-world workload</p>
+          <h1>Explorer CPU profile</h1>
+          <p class="intro">
+            Every explorer-view e2e test runs sequentially in one Chromium page
+            while V8 samples the page and all worker execution contexts.
+          </p>
+        </div>
+        <div class="hero-links">
+          <a class="json-link" href="../">Synthetic benchmark</a>
+          <a class="json-link" href="./profiles/manifest.json">
+            CPU profiles
+          </a>
+          <a class="json-link" href="./benchmark-results.json">Raw analysis</a>
+        </div>
+      </header>
+
+      <section
+        class="metadata"
+        id="metadata"
+        aria-label="Run metadata"
+      ></section>
+
+      <section class="panel">
+        <div class="panel-heading">
+          <div>
+            <p class="eyebrow">Filtered self time</p>
+            <h2>Largest virtual DOM hotspots</h2>
+          </div>
+          <p class="hint">Unrelated functions are excluded</p>
+        </div>
+        <div class="chart" id="chart"></div>
+      </section>
+
+      <section class="panel table-panel">
+        <div class="panel-heading">
+          <div>
+            <p class="eyebrow">Sampled stacks</p>
+            <h2>Virtual DOM functions</h2>
+          </div>
+          <p class="hint">Self and inclusive CPU time</p>
+        </div>
+        <div class="table-scroll">
+          <table>
+            <thead>
+              <tr>
+                <th>Function</th>
+                <th>Self</th>
+                <th>Inclusive</th>
+                <th>Samples</th>
+                <th>Contexts</th>
+              </tr>
+            </thead>
+            <tbody id="hotspots"></tbody>
+          </table>
+        </div>
+      </section>
+
+      <section class="panel table-panel">
+        <div class="panel-heading">
+          <div>
+            <p class="eyebrow">End-to-end duration</p>
+            <h2>Slowest explorer tests</h2>
+          </div>
+          <p class="hint">Top 50 sequential tests</p>
+        </div>
+        <div class="table-scroll">
+          <table>
+            <thead>
+              <tr>
+                <th>Test</th>
+                <th>Status</th>
+                <th>Duration</th>
+              </tr>
+            </thead>
+            <tbody id="tests"></tbody>
+          </table>
+        </div>
+      </section>
+
+      <section class="panel table-panel">
+        <div class="panel-heading">
+          <div>
+            <p class="eyebrow">Execution contexts</p>
+            <h2>Page and worker profiles</h2>
+          </div>
+          <p class="hint">Browser-wide V8 sampling</p>
+        </div>
+        <div class="table-scroll">
+          <table>
+            <thead>
+              <tr>
+                <th>Context</th>
+                <th>Total sampled</th>
+                <th>Virtual DOM inclusive</th>
+                <th>Samples</th>
+              </tr>
+            </thead>
+            <tbody id="contexts"></tbody>
+          </table>
+        </div>
+      </section>
+
+      <section class="methodology">
+        <p class="eyebrow">Methodology</p>
+        <h2>What is included</h2>
+        <p>
+          The Chrome DevTools Protocol records one V8 CPU profile for the page
+          and every worker from before navigation until the final test result.
+          The analysis attributes each sample to its leaf function, reconstructs
+          parent stacks for inclusive time, and keeps functions whose source URL
+          or function name belongs to the virtual DOM implementation.
+        </p>
+      </section>
+    </main>
+    <script type="module" src="./app.js"></script>
+  </body>
+</html>

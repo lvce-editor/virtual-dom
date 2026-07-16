@@ -22,7 +22,7 @@ jobs:
       matrix:
         os: [ubuntu-24.04, macos-14, windows-2025]
     runs-on: ${{ matrix.os }}
-    timeout-minutes: 30
+    timeout-minutes: 90
     steps:
       - uses: actions/checkout@v7
       - uses: actions/setup-node@v6
@@ -66,6 +66,13 @@ jobs:
         working-directory: ./packages/benchmark
         run: npm run benchmark
         env:
+          PLAYWRIGHT_BROWSERS_PATH: 0
+      - name: Run detailed explorer benchmark
+        if: matrix.os == 'ubuntu-24.04'
+        working-directory: ./packages/benchmark
+        run: npm run benchmark:detailed
+        env:
+          DETAILED_BENCHMARK_TIMEOUT_MS: 3600000
           PLAYWRIGHT_BROWSERS_PATH: 0
       - name: Upload benchmark results
         if: matrix.os == 'ubuntu-24.04'

@@ -13,3 +13,24 @@ npm run benchmark
 The command writes a static report to `packages/benchmark/dist`. The number of
 warmup and measured samples can be adjusted with
 `BENCHMARK_WARMUP_ITERATIONS` and `BENCHMARK_ITERATIONS`.
+
+## Detailed explorer benchmark
+
+The detailed benchmark downloads the explorer-view e2e tests, starts
+`@lvce-editor/server`, runs every test sequentially through `/tests/_all.html`,
+and records browser-wide V8 CPU samples for the page and its workers:
+
+```sh
+npm run benchmark:detailed
+```
+
+The report is written to `packages/benchmark/dist/detailed-benchmark`. It
+includes downloadable Chrome CPU profiles for each execution context, the
+slowest e2e tests, and virtual-DOM-related CPU hotspots with unrelated
+functions filtered out.
+
+For local development, `EXPLORER_VIEW_PATH` can point at an existing
+explorer-view checkout and `DETAILED_BENCHMARK_FILTER` can select a smaller
+test subset. `DETAILED_BENCHMARK_TIMEOUT_MS` controls the full-suite timeout,
+and `DETAILED_BENCHMARK_SAMPLING_INTERVAL_US` controls the V8 sampling
+interval.
