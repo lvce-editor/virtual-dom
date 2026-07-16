@@ -133,24 +133,19 @@ export const setProp = (
   eventMap: any,
   newEventMap?: any,
 ): void => {
-  if (key === 'ariaActivedescendant') {
-    setOptionalAttribute($Element, 'aria-activedescendant', value)
-    return
-  }
-
-  if (key === 'ariaOwns') {
-    setOptionalAttribute($Element, 'aria-owns', value)
-    return
-  }
-
-  if (key === 'ariaControls') {
-    $Element.setAttribute('aria-controls', value)
-    return
-  }
-
-  if (key === 'ariaLabelledBy') {
-    $Element.setAttribute('aria-labelledby', value)
-    return
+  switch (key) {
+    case 'ariaActivedescendant':
+      setOptionalAttribute($Element, 'aria-activedescendant', value)
+      return
+    case 'ariaControls':
+      $Element.setAttribute('aria-controls', value)
+      return
+    case 'ariaLabelledBy':
+      $Element.setAttribute('aria-labelledby', value)
+      return
+    case 'ariaOwns':
+      setOptionalAttribute($Element, 'aria-owns', value)
+      return
   }
 
   if (key === 'height' || key === 'width') {
