@@ -19,7 +19,9 @@ warmup and measured samples can be adjusted with
 The detailed benchmark downloads the explorer-view e2e tests, starts
 `@lvce-editor/server`, loads `/tests/_all.html` once using Explorer's
 `--reuse-page` mode, applies Explorer's per-test workspace and sidebar reset,
-and records browser-wide V8 CPU samples for the page and its workers:
+and records browser-wide V8 CPU samples for the page and its workers. The
+workload is pinned to the explorer-view `v7.9.0` release and verified against
+commit `ff1124ff6d67c79c6838b5aa7cd0bceee4a96976`:
 
 ```sh
 npm run benchmark:detailed
@@ -31,6 +33,7 @@ slowest e2e tests, and virtual-DOM-related CPU hotspots with unrelated
 functions filtered out.
 
 For local development, `EXPLORER_VIEW_PATH` can point at an existing
-explorer-view checkout and `DETAILED_BENCHMARK_FILTER` can select a smaller
-test subset. `DETAILED_BENCHMARK_TIMEOUT_MS` controls the full-suite timeout,
+explorer-view checkout, `EXPLORER_VIEW_REF` can select a different git ref, and
+`DETAILED_BENCHMARK_FILTER` can select a smaller test subset.
+`DETAILED_BENCHMARK_TIMEOUT_MS` controls the full-suite timeout,
 `DETAILED_BENCHMARK_SAMPLING_INTERVAL_US` controls the V8 sampling interval.
