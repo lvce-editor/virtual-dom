@@ -7,9 +7,17 @@ on:
 
 permissions:
   contents: read
+  pages: write
+  id-token: write
+
+concurrency:
+  group: pages
+  cancel-in-progress: false
 
 jobs:
   ci:
+    permissions:
+      contents: read
     strategy:
       matrix:
         os: [ubuntu-24.04, macos-14, windows-2025]
@@ -78,9 +86,6 @@ jobs:
 
   deploy:
     needs: ci
-    permissions:
-      pages: write
-      id-token: write
     environment:
       name: github-pages
       url: ${{ steps.deployment.outputs.page_url }}
