@@ -1,0 +1,90 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta
+      name="description"
+      content="Playwright performance results for the LVCE virtual DOM"
+    />
+    <title>LVCE Virtual DOM benchmark</title>
+    <link rel="stylesheet" href="./styles.css" />
+  </head>
+  <body>
+    <main>
+      <header class="hero">
+        <div>
+          <p class="eyebrow">Continuous performance</p>
+          <h1>Virtual DOM benchmark</h1>
+          <p class="intro">
+            Krausest-style table operations measured in Chromium around virtual
+            DOM diffing, DOM patching, and forced layout.
+          </p>
+        </div>
+        <a class="json-link" href="./benchmark-results.json">View raw JSON</a>
+      </header>
+
+      <section
+        class="metadata"
+        id="metadata"
+        aria-label="Run metadata"
+      ></section>
+
+      <section class="panel">
+        <div class="panel-heading">
+          <div>
+            <p class="eyebrow">Duration in milliseconds</p>
+            <h2>Median result by operation</h2>
+          </div>
+          <label>
+            Sort
+            <select id="sort">
+              <option value="suite">Benchmark order</option>
+              <option value="fastest">Fastest first</option>
+              <option value="slowest">Slowest first</option>
+              <option value="name">Name</option>
+            </select>
+          </label>
+        </div>
+        <div class="chart" id="chart"></div>
+      </section>
+
+      <section class="panel table-panel">
+        <div class="panel-heading">
+          <div>
+            <p class="eyebrow">All measurements</p>
+            <h2>Detailed results</h2>
+          </div>
+          <p class="hint">Lower is better</p>
+        </div>
+        <div class="table-scroll">
+          <table>
+            <thead>
+              <tr>
+                <th>Operation</th>
+                <th>Median</th>
+                <th>Mean</th>
+                <th>P95</th>
+                <th>σ</th>
+                <th>Range</th>
+              </tr>
+            </thead>
+            <tbody id="results"></tbody>
+          </table>
+        </div>
+      </section>
+
+      <section class="methodology">
+        <p class="eyebrow">Methodology</p>
+        <h2>What is measured</h2>
+        <p>
+          Each sample resets the fixture outside the timed region. Timing starts
+          immediately before data-to-virtual-DOM work and ends after diffing,
+          patching, and a forced browser layout. Every sample validates its
+          final row state before it is accepted.
+        </p>
+      </section>
+    </main>
+    <script type="module" src="./app.js"></script>
+  </body>
+</html>

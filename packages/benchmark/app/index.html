@@ -1,0 +1,32 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>LVCE Virtual DOM benchmark fixture</title>
+    <link rel="stylesheet" href="./styles.css" />
+    <script type="importmap">
+      {
+        "imports": {
+          "@lvce-editor/constants": "/node_modules/@lvce-editor/constants/dist/index.js"
+        }
+      }
+    </script>
+  </head>
+  <body>
+    <main>
+      <header>
+        <p class="eyebrow">Playwright benchmark fixture</p>
+        <h1>LVCE Virtual DOM</h1>
+        <p>
+          Krausest-style table operations measured around diff, patch, and
+          layout.
+        </p>
+      </header>
+      <div class="toolbar" id="toolbar"></div>
+      <output id="status">Choose an operation to run it once.</output>
+      <div class="table-shell" id="benchmark-root"></div>
+    </main>
+    <script type="module" src="./app.js"></script>
+  </body>
+</html>

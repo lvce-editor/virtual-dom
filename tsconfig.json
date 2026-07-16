@@ -2,6 +2,7 @@
   "files": [],
   "include": [],
   "references": [
+    { "path": "./packages/benchmark" },
     { "path": "./packages/build" },
     { "path": "./packages/virtual-dom" },
     { "path": "./packages/virtual-dom-worker" }
