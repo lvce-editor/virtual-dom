@@ -42,7 +42,7 @@
         <div class="panel-heading">
           <div>
             <p class="eyebrow">Duration in milliseconds</p>
-            <h2>Median result by operation</h2>
+            <h2>Median of independent run medians</h2>
           </div>
           <label>
             Sort
@@ -86,10 +86,13 @@
         <p class="eyebrow">Methodology</p>
         <h2>What is measured</h2>
         <p>
-          Each sample resets the fixture outside the timed region. Timing starts
-          immediately before data-to-virtual-DOM work and ends after diffing,
-          patching, and a forced browser layout. Every sample validates its
-          final row state before it is accepted.
+          By default, each operation is measured in five fresh browser
+          processes. Every run includes warmup samples followed by measured
+          samples, and the report shows the median of those run medians. Table
+          operations include virtual DOM work, DOM patching, and forced layout.
+          The focused <code>setProps</code> and native DOM creation cases retain
+          detached elements and exclude layout so their targeted cost stays
+          visible.
         </p>
       </section>
     </main>

@@ -17,6 +17,10 @@ const formatPercent = (value, total) => {
   return `${((value / total) * 100).toFixed(1)}%`
 }
 
+const formatPercentValue = (value) => {
+  return `${value.toFixed(3)}%`
+}
+
 const createMetaCard = (label, value, detail) => {
   const $card = document.createElement('article')
   $card.className = 'meta-card'
@@ -163,12 +167,20 @@ const renderMetadata = (report) => {
       `${report.summary.skipped} skipped · ${failureDetail}`,
     ),
     createMetaCard(
-      'Virtual DOM CPU',
-      formatDuration(report.analysis.virtualDomInclusiveMs),
-      `${formatPercent(
+      'Median VDOM share',
+      formatPercentValue(report.repeatStatistics.virtualDomPercent.median),
+      `${formatPercentValue(
+        report.repeatStatistics.virtualDomPercent.min,
+      )}–${formatPercentValue(
+        report.repeatStatistics.virtualDomPercent.max,
+      )} across ${report.config.repeats} runs`,
+    ),
+    createMetaCard(
+      'Shown profile',
+      `Run ${report.representativeRun}`,
+      `${formatDuration(
         report.analysis.virtualDomInclusiveMs,
-        report.analysis.totalProfiledMs,
-      )} of sampled stacks`,
+      )} virtual DOM inclusive`,
     ),
     createMetaCard(
       'Profiles',
@@ -199,8 +211,10 @@ const render = (report) => {
   document.title = report.title
   $workloadTitle.textContent = `${report.workload.label} CPU profile`
   $workloadDescription.textContent =
-    `Every ${report.workload.id} e2e test runs through one load of the ` +
-    '--reuse-page runner while V8 samples the page and all worker execution contexts.'
+    `By default, five fresh browser runs execute every ${report.workload.id} ` +
+    'e2e test through the --reuse-page runner while V8 samples the page and ' +
+    'all worker execution contexts. The profile shown below has the median ' +
+    'normalized virtual DOM CPU share.'
   renderMetadata(report)
   renderChart(report)
   renderHotspots(report)

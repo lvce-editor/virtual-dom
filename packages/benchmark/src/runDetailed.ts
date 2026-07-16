@@ -8,13 +8,11 @@ import { chromium, type BrowserContext, type Page } from 'playwright'
 import type { BenchmarkTests } from './benchmarkTests.ts'
 import { startCpuProfile, type CpuProfileCaptureResult } from './cpuProfile.ts'
 import { startDetailedBenchmarkServer } from './serverProcess.ts'
+import { getStatistics } from './statistics.ts'
 
 const execFileAsync = promisify(execFile)
 const packageRoot = new URL('..', import.meta.url)
 const reportRoot = new URL('detailed-report/', packageRoot)
-const browserProfilePath = fileURLToPath(
-  new URL('.tmp/chromium-profile/', packageRoot),
-)
 
 interface DetailedBenchmarkOptions {
   readonly allowedFailures?: readonly string[]
@@ -29,6 +27,32 @@ interface TestResult {
   readonly name: string
   readonly start: number
   readonly status: 'fail' | 'pass' | 'skip'
+}
+
+interface RunSummary {
+  readonly allowedFailed: number
+  readonly duration: number
+  readonly failed: number
+  readonly passed: number
+  readonly skipped: number
+  readonly total: number
+  readonly unexpectedFailed: number
+}
+
+interface DetailedBenchmarkRun {
+  readonly analysis: CpuProfileCaptureResult['analysis']
+  readonly browserVersion: string
+  readonly capture: {
+    readonly detachedTargetCount: number
+  }
+  readonly index: number
+  readonly profiles: CpuProfileCaptureResult['profiles']
+  readonly profilesPath: string
+  readonly runError: string
+  readonly summary: RunSummary
+  readonly tests: readonly TestResult[]
+  readonly userAgent: string
+  readonly virtualDomShare: number
 }
 
 const readPositiveInteger = (name: string, fallback: number): number => {
@@ -137,7 +161,9 @@ const closeBrowser = async (
   }
 }
 
-const getDevToolsWebSocketUrl = async (): Promise<string> => {
+const getDevToolsWebSocketUrl = async (
+  browserProfilePath: string,
+): Promise<string> => {
   const content = await readFile(
     join(browserProfilePath, 'DevToolsActivePort'),
     'utf8',
@@ -149,28 +175,51 @@ const getDevToolsWebSocketUrl = async (): Promise<string> => {
   return `ws://127.0.0.1:${port}${path}`
 }
 
-export const runDetailedBenchmark = async (
-  options: DetailedBenchmarkOptions,
-): Promise<void> => {
-  const outputRoot = new URL(`dist/${options.outputPath}/`, packageRoot)
-  const profilesPath = fileURLToPath(new URL('profiles/', outputRoot))
-  const timeout = readPositiveInteger(
-    'DETAILED_BENCHMARK_TIMEOUT_MS',
-    30 * 60 * 1000,
-  )
-  const filter = process.env.DETAILED_BENCHMARK_FILTER
-  const samplingInterval = readPositiveInteger(
-    'DETAILED_BENCHMARK_SAMPLING_INTERVAL_US',
-    1000,
-  )
-  const workload = await options.getTests()
-  await rm(outputRoot, { force: true, recursive: true })
-  await rm(browserProfilePath, { force: true, recursive: true })
-  await mkdir(outputRoot, { recursive: true })
-  await mkdir(browserProfilePath, { recursive: true })
+const getSummary = (
+  results: readonly TestResult[],
+  allowedFailures: ReadonlySet<string>,
+): RunSummary => {
+  const failedResults = results.filter((result) => result.status === 'fail')
+  const allowedFailed = failedResults.filter((result) =>
+    allowedFailures.has(result.name),
+  ).length
+  const duration = results.reduce((total, result) => total + result.duration, 0)
+  return {
+    allowedFailed,
+    duration: Math.round(duration * 1000) / 1000,
+    failed: failedResults.length,
+    passed: results.filter((result) => result.status === 'pass').length,
+    skipped: results.filter((result) => result.status === 'skip').length,
+    total: results.length,
+    unexpectedFailed: failedResults.length - allowedFailed,
+  }
+}
 
-  process.stdout.write('Starting @lvce-editor/server...\n')
-  const server = await startDetailedBenchmarkServer(workload.testPath)
+const runBenchmarkOnce = async ({
+  allowedFailures,
+  browserProfilePath,
+  filter,
+  index,
+  outputPath,
+  samplingInterval,
+  serverUrl,
+  timeout,
+  workload,
+}: {
+  readonly allowedFailures: ReadonlySet<string>
+  readonly browserProfilePath: string
+  readonly filter: string | undefined
+  readonly index: number
+  readonly outputPath: string
+  readonly samplingInterval: number
+  readonly serverUrl: string
+  readonly timeout: number
+  readonly workload: BenchmarkTests
+}): Promise<DetailedBenchmarkRun> => {
+  await rm(browserProfilePath, { force: true, recursive: true })
+  await rm(outputPath, { force: true, recursive: true })
+  await mkdir(browserProfilePath, { recursive: true })
+  await mkdir(outputPath, { recursive: true })
   let context: BrowserContext | undefined
   let captureResult: CpuProfileCaptureResult | undefined
   let results: readonly TestResult[] = []
@@ -195,19 +244,21 @@ export const runDetailedBenchmark = async (
       console.error(`[browser] ${error.stack ?? error.message}`)
     })
 
-    process.stdout.write('Starting browser-wide V8 CPU profile...\n')
+    process.stdout.write(
+      `Run ${index}: starting browser-wide V8 CPU profile...\n`,
+    )
     const capture = await startCpuProfile({
-      outputPath: profilesPath,
+      outputPath,
       samplingInterval,
-      webSocketUrl: await getDevToolsWebSocketUrl(),
+      webSocketUrl: await getDevToolsWebSocketUrl(browserProfilePath),
     })
     try {
-      const url = new URL('/tests/_all.html', server.url)
+      const url = new URL('/tests/_all.html', serverUrl)
       if (filter) {
         url.searchParams.set('filter', filter)
       }
       process.stdout.write(
-        `Running ${workload.id} tests with --reuse-page at ${url.href}\n`,
+        `Run ${index}: running ${workload.id} tests with --reuse-page at ${url.href}\n`,
       )
       await page.goto(url.href, {
         timeout: 60_000,
@@ -218,48 +269,127 @@ export const runDetailedBenchmark = async (
     } catch (error) {
       runError = getErrorMessage(error)
     } finally {
-      process.stdout.write('Stopping and downloading CPU profile...\n')
+      process.stdout.write(
+        `Run ${index}: stopping and downloading CPU profile...\n`,
+      )
       captureResult = await capture.stop()
     }
   } finally {
     await closeBrowser(context)
-    await server.close()
     await rm(browserProfilePath, { force: true, recursive: true })
   }
 
   if (!captureResult) {
-    throw new Error('Chrome CPU profiles were not captured')
+    throw new Error(`Chrome CPU profiles were not captured for run ${index}`)
   }
   const { analysis } = captureResult
-  const passed = results.filter((result) => result.status === 'pass').length
-  const failedResults = results.filter((result) => result.status === 'fail')
-  const allowedFailures = options.allowedFailures
-    ? new Set(options.allowedFailures)
-    : new Set<string>()
-  const allowedFailed = failedResults.filter((result) =>
-    allowedFailures.has(result.name),
-  ).length
-  const unexpectedFailed = failedResults.length - allowedFailed
-  const failed = failedResults.length
-  const skipped = results.filter((result) => result.status === 'skip').length
-  const duration = results.reduce((total, result) => total + result.duration, 0)
+  return {
+    analysis,
+    browserVersion: browserVersion ?? 'unknown',
+    capture: {
+      detachedTargetCount: captureResult.detachedTargetCount,
+    },
+    index,
+    profiles: captureResult.profiles,
+    profilesPath: outputPath,
+    runError,
+    summary: getSummary(results, allowedFailures),
+    tests: results.toSorted((left, right) => right.duration - left.duration),
+    userAgent,
+    virtualDomShare:
+      analysis.totalProfiledMs === 0
+        ? 0
+        : analysis.virtualDomInclusiveMs / analysis.totalProfiledMs,
+  }
+}
+
+const selectRepresentativeRun = (
+  runs: readonly DetailedBenchmarkRun[],
+): DetailedBenchmarkRun => {
+  const sorted = runs.toSorted(
+    (left, right) => left.virtualDomShare - right.virtualDomShare,
+  )
+  const selected = sorted[Math.floor(sorted.length / 2)]
+  if (!selected) {
+    throw new Error('At least one detailed benchmark run is required')
+  }
+  return selected
+}
+
+export const runDetailedBenchmark = async (
+  options: DetailedBenchmarkOptions,
+): Promise<void> => {
+  const outputRoot = new URL(`dist/${options.outputPath}/`, packageRoot)
+  const profilesPath = fileURLToPath(new URL('profiles/', outputRoot))
+  const temporaryRoot = fileURLToPath(
+    new URL(`.tmp/detailed-benchmark/${options.outputPath}/`, packageRoot),
+  )
+  const timeout = readPositiveInteger(
+    'DETAILED_BENCHMARK_TIMEOUT_MS',
+    30 * 60 * 1000,
+  )
+  const filter = process.env.DETAILED_BENCHMARK_FILTER
+  const samplingInterval = readPositiveInteger(
+    'DETAILED_BENCHMARK_SAMPLING_INTERVAL_US',
+    1000,
+  )
+  const repeats = readPositiveInteger('DETAILED_BENCHMARK_REPEATS', 5)
+  const workload = await options.getTests()
+  const allowedFailures = new Set(options.allowedFailures)
+  await rm(outputRoot, { force: true, recursive: true })
+  await rm(temporaryRoot, { force: true, recursive: true })
+  await mkdir(outputRoot, { recursive: true })
+  await mkdir(temporaryRoot, { recursive: true })
+
+  process.stdout.write('Starting @lvce-editor/server...\n')
+  const server = await startDetailedBenchmarkServer(workload.testPath)
+  const runs: DetailedBenchmarkRun[] = []
+  try {
+    for (let index = 1; index <= repeats; index++) {
+      runs.push(
+        await runBenchmarkOnce({
+          allowedFailures,
+          browserProfilePath: join(temporaryRoot, `browser-${index}`),
+          filter,
+          index,
+          outputPath: join(temporaryRoot, `profiles-${index}`),
+          samplingInterval,
+          serverUrl: server.url,
+          timeout,
+          workload,
+        }),
+      )
+    }
+  } finally {
+    await server.close()
+  }
+
+  const representativeRun = selectRepresentativeRun(runs)
+  const virtualDomPercentStatistics = getStatistics(
+    runs.map((run) => run.virtualDomShare * 100),
+  )
+  const durationStatistics = getStatistics(
+    runs.map((run) => run.summary.duration),
+  )
   const commit = await getGitValue(['rev-parse', 'HEAD'])
   const branch = await getGitValue(['rev-parse', '--abbrev-ref', 'HEAD'])
   const cpu = cpus()[0]
   const report = {
-    analysis,
+    analysis: representativeRun.analysis,
     branch,
     browser: {
       name: 'Chromium',
-      userAgent,
-      version: browserVersion ?? 'unknown',
+      userAgent: representativeRun.userAgent,
+      version: representativeRun.browserVersion,
     },
+    capture: representativeRun.capture,
     commit,
     config: {
       ...(options.allowedFailures && {
         allowedFailures: options.allowedFailures,
       }),
       ...(filter && { filter }),
+      repeats,
       reusePage: true,
       samplingInterval,
       timeout,
@@ -272,25 +402,33 @@ export const runDetailedBenchmark = async (
       platform: process.platform,
     },
     generatedAt: new Date().toISOString(),
-    profiles: captureResult.profiles,
+    profiles: representativeRun.profiles,
+    repeatStatistics: {
+      durationMs: durationStatistics,
+      virtualDomPercent: virtualDomPercentStatistics,
+    },
+    representativeRun: representativeRun.index,
     repository: 'lvce-editor/virtual-dom',
-    runError,
-    schemaVersion: 2,
+    runError: representativeRun.runError,
+    runs: runs.map((run) => ({
+      analysis: {
+        profileCount: run.analysis.profileCount,
+        sampleCount: run.analysis.sampleCount,
+        totalProfiledMs: run.analysis.totalProfiledMs,
+        virtualDomInclusiveMs: run.analysis.virtualDomInclusiveMs,
+        virtualDomSelfMs: run.analysis.virtualDomSelfMs,
+      },
+      capture: run.capture,
+      index: run.index,
+      runError: run.runError,
+      summary: run.summary,
+      virtualDomShare: run.virtualDomShare,
+    })),
+    schemaVersion: 3,
     serverVersion: server.version,
-    summary: {
-      allowedFailed,
-      duration: Math.round(duration * 1000) / 1000,
-      failed,
-      passed,
-      skipped,
-      total: results.length,
-      unexpectedFailed,
-    },
-    tests: results.toSorted((left, right) => right.duration - left.duration),
+    summary: representativeRun.summary,
+    tests: representativeRun.tests,
     title: `LVCE Virtual DOM ${workload.label.toLowerCase()} benchmark`,
-    capture: {
-      detachedTargetCount: captureResult.detachedTargetCount,
-    },
     workload: {
       commit: workload.commit,
       id: workload.id,
@@ -300,20 +438,29 @@ export const runDetailedBenchmark = async (
   }
 
   await cp(reportRoot, outputRoot, { recursive: true })
+  await cp(representativeRun.profilesPath, profilesPath, { recursive: true })
   await writeFile(
     new URL('benchmark-results.json', outputRoot),
     `${JSON.stringify(report, null, 2)}\n`,
   )
+  await rm(temporaryRoot, { force: true, recursive: true })
   process.stdout.write(
     `Detailed benchmark written to ${fileURLToPath(outputRoot)}\n`,
   )
 
-  if (runError) {
-    throw new Error(`${workload.label} benchmark failed: ${runError}`)
+  const errors = runs
+    .filter((run) => run.runError)
+    .map((run) => `run ${run.index}: ${run.runError}`)
+  if (errors.length > 0) {
+    throw new Error(`${workload.label} benchmark failed:\n${errors.join('\n')}`)
   }
+  const unexpectedFailed = runs.reduce(
+    (total, run) => total + run.summary.unexpectedFailed,
+    0,
+  )
   if (unexpectedFailed > 0) {
     throw new Error(
-      `${unexpectedFailed} unexpected ${workload.id} e2e tests failed`,
+      `${unexpectedFailed} unexpected ${workload.id} e2e tests failed across all runs`,
     )
   }
 }

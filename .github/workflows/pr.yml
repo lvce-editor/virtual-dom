@@ -50,6 +50,12 @@ jobs:
         run: npx playwright install chromium
         env:
           PLAYWRIGHT_BROWSERS_PATH: 0
+      - name: Run synthetic benchmarks
+        if: matrix.os == 'ubuntu-24.04'
+        working-directory: ./packages/benchmark
+        run: npm run benchmark
+        env:
+          PLAYWRIGHT_BROWSERS_PATH: 0
       - name: Run detailed explorer benchmark
         if: matrix.os == 'ubuntu-24.04'
         working-directory: ./packages/benchmark

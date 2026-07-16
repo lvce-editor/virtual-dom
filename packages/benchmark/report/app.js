@@ -46,7 +46,7 @@ const renderChart = (results) => {
     const $name = document.createElement('strong')
     $name.textContent = result.name
     const $detail = document.createElement('small')
-    $detail.textContent = `${result.samples.length} measured samples`
+    $detail.textContent = `${result.samples.length} independent run medians`
     $label.append($name, $detail)
 
     const $track = document.createElement('div')
@@ -103,8 +103,8 @@ const render = (report) => {
     ),
     createMetaCard(
       'Samples',
-      `${report.config.iterations} measured`,
-      `${report.config.warmupIterations} warmup per operation`,
+      `${report.config.repeats} independent runs`,
+      `${report.config.iterations} measured · ${report.config.warmupIterations} warmup each`,
     ),
     createMetaCard('Commit', report.commit.slice(0, 12), report.branch),
     createMetaCard(
