@@ -43,7 +43,10 @@ npm run benchmark:activity-bar
 
 Its report is written to
 `packages/benchmark/dist/activity-bar-benchmark`, which is published as a
-separate GitHub Pages route.
+separate GitHub Pages route. Three account context-menu tests are retained in
+the profile and reported as allowed failures because the generic benchmark
+server does not provide their signed-in account states. Any other test failure
+still fails the benchmark job.
 
 For local development, `EXPLORER_VIEW_PATH` and `ACTIVITY_BAR_WORKER_PATH` can
 point at existing checkouts. `EXPLORER_VIEW_REF` and

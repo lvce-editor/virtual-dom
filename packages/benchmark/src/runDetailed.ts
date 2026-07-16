@@ -17,6 +17,7 @@ const browserProfilePath = fileURLToPath(
 )
 
 interface DetailedBenchmarkOptions {
+  readonly allowedFailures?: readonly string[]
   readonly getTests: () => Promise<BenchmarkTests>
   readonly outputPath: string
 }
@@ -231,7 +232,15 @@ export const runDetailedBenchmark = async (
   }
   const { analysis } = captureResult
   const passed = results.filter((result) => result.status === 'pass').length
-  const failed = results.filter((result) => result.status === 'fail').length
+  const failedResults = results.filter((result) => result.status === 'fail')
+  const allowedFailures = options.allowedFailures
+    ? new Set(options.allowedFailures)
+    : new Set<string>()
+  const allowedFailed = failedResults.filter((result) =>
+    allowedFailures.has(result.name),
+  ).length
+  const unexpectedFailed = failedResults.length - allowedFailed
+  const failed = failedResults.length
   const skipped = results.filter((result) => result.status === 'skip').length
   const duration = results.reduce((total, result) => total + result.duration, 0)
   const commit = await getGitValue(['rev-parse', 'HEAD'])
@@ -247,6 +256,9 @@ export const runDetailedBenchmark = async (
     },
     commit,
     config: {
+      ...(options.allowedFailures && {
+        allowedFailures: options.allowedFailures,
+      }),
       ...(filter && { filter }),
       reusePage: true,
       samplingInterval,
@@ -266,11 +278,13 @@ export const runDetailedBenchmark = async (
     schemaVersion: 2,
     serverVersion: server.version,
     summary: {
+      allowedFailed,
       duration: Math.round(duration * 1000) / 1000,
       failed,
       passed,
       skipped,
       total: results.length,
+      unexpectedFailed,
     },
     tests: results.toSorted((left, right) => right.duration - left.duration),
     title: `LVCE Virtual DOM ${workload.label.toLowerCase()} benchmark`,
@@ -297,7 +311,9 @@ export const runDetailedBenchmark = async (
   if (runError) {
     throw new Error(`${workload.label} benchmark failed: ${runError}`)
   }
-  if (failed > 0) {
-    throw new Error(`${failed} ${workload.id} e2e tests failed`)
+  if (unexpectedFailed > 0) {
+    throw new Error(
+      `${unexpectedFailed} unexpected ${workload.id} e2e tests failed`,
+    )
   }
 }

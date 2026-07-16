@@ -151,11 +151,16 @@ const renderContexts = (report) => {
 
 const renderMetadata = (report) => {
   const generatedAt = new Date(report.generatedAt)
+  const allowedFailed = report.summary.allowedFailed || 0
+  const failureDetail =
+    allowedFailed === 0
+      ? `${report.summary.failed} failed`
+      : `${report.summary.failed} failed · ${allowedFailed} allowed`
   $metadata.append(
     createMetaCard(
       `${report.workload.label} tests`,
       `${report.summary.passed} passed`,
-      `${report.summary.skipped} skipped · ${report.summary.failed} failed`,
+      `${report.summary.skipped} skipped · ${failureDetail}`,
     ),
     createMetaCard(
       'Virtual DOM CPU',
