@@ -1,16 +1,6 @@
 import * as AttachEvent from '../AttachEvent/AttachEvent.ts'
 import * as SetStyle from '../SetStyle/SetStyle.ts'
 
-const optionalAttributeProps = new Map([
-  ['ariaActivedescendant', 'aria-activedescendant'],
-  ['ariaOwns', 'aria-owns'],
-])
-
-const mappedAttributeProps = new Map([
-  ['ariaControls', 'aria-controls'],
-  ['ariaLabelledBy', 'aria-labelledby'],
-])
-
 const removedAttributeProps = new Map([
   ['ariaActivedescendant', 'aria-activedescendant'],
   ['ariaControls', 'aria-controls'],
@@ -143,20 +133,19 @@ export const setProp = (
   eventMap: any,
   newEventMap?: any,
 ): void => {
-  const optionalAttributeName = optionalAttributeProps.get(key)
-  if (optionalAttributeName) {
-    setOptionalAttribute($Element, optionalAttributeName, value)
-    return
-  }
-
-  const mappedAttributeName = mappedAttributeProps.get(key)
-  if (mappedAttributeName) {
-    $Element.setAttribute(mappedAttributeName, value)
-    return
-  }
-
-  if (key === 'childCount' || key === 'type') {
-    return
+  switch (key) {
+    case 'ariaActivedescendant':
+      setOptionalAttribute($Element, 'aria-activedescendant', value)
+      return
+    case 'ariaControls':
+      $Element.setAttribute('aria-controls', value)
+      return
+    case 'ariaLabelledBy':
+      $Element.setAttribute('aria-labelledby', value)
+      return
+    case 'ariaOwns':
+      setOptionalAttribute($Element, 'aria-owns', value)
+      return
   }
 
   if (key === 'height' || key === 'width') {
