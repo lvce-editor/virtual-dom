@@ -7,7 +7,6 @@ void test('analyzeCpuProfiles filters virtual dom functions and includes descend
     {
       contextName: 'worker: explorerViewWorkerMain.js',
       file: './profiles/01-worker.cpuprofile',
-      label: 'explorer.empty.js',
       profile: {
         endTime: 3000,
         nodes: [

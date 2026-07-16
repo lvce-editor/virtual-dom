@@ -127,9 +127,7 @@ const renderContexts = (report) => {
     $link.className = 'profile-link'
     $link.href = context.file
     $link.textContent = context.name
-    const $test = document.createElement('small')
-    $test.textContent = context.label
-    $name.append($link, $test)
+    $name.append($link)
     const values = [
       formatDuration(context.totalProfiledMs),
       `${formatDuration(context.virtualDomInclusiveMs)} (${formatPercent(

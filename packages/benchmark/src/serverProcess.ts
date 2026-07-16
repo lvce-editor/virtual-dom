@@ -2,6 +2,7 @@ import { fork, type ChildProcess } from 'node:child_process'
 import { readFile } from 'node:fs/promises'
 import { createServer } from 'node:net'
 import { fileURLToPath } from 'node:url'
+import { prepareExplorerServer } from './prepareExplorerServer.ts'
 
 const serverPath = fileURLToPath(
   import.meta.resolve('@lvce-editor/server/bin/server.js'),
@@ -132,6 +133,7 @@ export interface DetailedBenchmarkServer {
 export const startDetailedBenchmarkServer = async (
   testPath: string,
 ): Promise<DetailedBenchmarkServer> => {
+  await prepareExplorerServer()
   const port = await getPort()
   const child = fork(serverPath, {
     cwd: testPath,

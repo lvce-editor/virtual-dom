@@ -48,51 +48,78 @@ const getGitValue = async (args: readonly string[]): Promise<string> => {
   }
 }
 
-const getErrorMessage = (error: unknown): string => {
-  return error instanceof Error ? error.stack || error.message : String(error)
+const isRecord = (value: unknown): value is Record<string, unknown> => {
+  return typeof value === 'object' && value !== null && !Array.isArray(value)
 }
 
-const runTest = async (
-  page: Page,
-  serverUrl: string,
-  testFile: string,
-  timeout: number,
-): Promise<TestResult> => {
-  const start = performance.now()
-  try {
-    const htmlFile = testFile.replace(/\.js$/, '.html')
-    const url = new URL(`/tests/${htmlFile}`, serverUrl)
-    await page.goto(url.href, {
-      timeout,
-      waitUntil: 'networkidle',
-    })
-    const overlay = page.locator('#TestOverlay')
-    await overlay.waitFor({ state: 'visible', timeout })
-    const status = await overlay.getAttribute('data-state')
-    const error = (await overlay.textContent()) ?? ''
-    if (status !== 'fail' && status !== 'pass' && status !== 'skip') {
-      throw new Error(`Unexpected test state: ${status}`)
-    }
-    const end = performance.now()
-    return {
-      duration: Math.round((end - start) * 1000) / 1000,
-      end,
-      error: status === 'fail' ? error : '',
-      name: testFile,
-      start,
-      status,
-    }
-  } catch (error) {
-    const end = performance.now()
-    return {
-      duration: Math.round((end - start) * 1000) / 1000,
-      end,
-      error: getErrorMessage(error),
-      name: testFile,
-      start,
-      status: 'fail',
-    }
+const parseString = (value: unknown, field: string): string => {
+  if (typeof value !== 'string') {
+    throw new TypeError(`Expected ${field} to be a string`)
   }
+  return value
+}
+
+const parseNumber = (value: unknown, field: string): number => {
+  if (typeof value !== 'number' || !Number.isFinite(value)) {
+    throw new TypeError(`Expected ${field} to be a finite number`)
+  }
+  return value
+}
+
+const parseStatus = (value: unknown): TestResult['status'] => {
+  const statuses: readonly TestResult['status'][] = ['fail', 'pass', 'skip']
+  if (
+    typeof value === 'string' &&
+    statuses.includes(value as TestResult['status'])
+  ) {
+    return value as TestResult['status']
+  }
+  throw new TypeError('Expected test status to be fail, pass, or skip')
+}
+
+const parseTestResult = (value: unknown): TestResult => {
+  if (!isRecord(value)) {
+    throw new TypeError('Expected test result to be an object')
+  }
+  const start = parseNumber(value.start, 'test start')
+  const end = parseNumber(value.end, 'test end')
+  return {
+    duration: Math.round((end - start) * 1000) / 1000,
+    end,
+    error: value.error === undefined ? '' : parseString(value.error, 'error'),
+    name: parseString(value.name, 'test name'),
+    start,
+    status: parseStatus(value.status),
+  }
+}
+
+const waitForTestResults = async (
+  page: Page,
+  timeout: number,
+): Promise<readonly TestResult[]> => {
+  const selector = '.TestResults'
+  await page.locator(selector).waitFor({ state: 'attached', timeout })
+  await page.waitForFunction(
+    (value) => {
+      const text = document.querySelector(value)?.textContent
+      return typeof text === 'string' && text.trim().length > 0
+    },
+    selector,
+    { timeout },
+  )
+  const text = await page.locator(selector).textContent()
+  if (!text) {
+    throw new Error('Explorer e2e test results are empty')
+  }
+  const parsed = JSON.parse(text) as unknown
+  if (!Array.isArray(parsed)) {
+    throw new TypeError('Expected explorer e2e test results to be an array')
+  }
+  return parsed.map(parseTestResult)
+}
+
+const getErrorMessage = (error: unknown): string => {
+  return error instanceof Error ? error.stack || error.message : String(error)
 }
 
 const closeBrowser = async (
@@ -121,13 +148,9 @@ const main = async (): Promise<void> => {
     30 * 60 * 1000,
   )
   const filter = process.env.DETAILED_BENCHMARK_FILTER
-  const testTimeout = readPositiveInteger(
-    'DETAILED_BENCHMARK_TEST_TIMEOUT_MS',
-    60_000,
-  )
   const samplingInterval = readPositiveInteger(
     'DETAILED_BENCHMARK_SAMPLING_INTERVAL_US',
-    10_000,
+    1000,
   )
   const explorerView = await getExplorerViewTests()
   await rm(outputRoot, { force: true, recursive: true })
@@ -139,7 +162,7 @@ const main = async (): Promise<void> => {
   const server = await startDetailedBenchmarkServer(explorerView.testPath)
   let context: BrowserContext | undefined
   let captureResult: CpuProfileCaptureResult | undefined
-  const results: TestResult[] = []
+  let results: readonly TestResult[] = []
   let userAgent = 'unknown'
   let browserVersion: string | undefined
   let runError = ''
@@ -168,29 +191,18 @@ const main = async (): Promise<void> => {
       webSocketUrl: await getDevToolsWebSocketUrl(),
     })
     try {
-      const testFiles = filter
-        ? explorerView.testFiles.filter((testFile) => testFile.includes(filter))
-        : explorerView.testFiles
-      const deadline = Date.now() + timeout
-      process.stdout.write(
-        `Running ${testFiles.length} explorer-view tests in one page...\n`,
-      )
-      for (const [index, testFile] of testFiles.entries()) {
-        const remaining = deadline - Date.now()
-        if (remaining <= 0) {
-          throw new Error('Detailed benchmark timed out')
-        }
-        process.stdout.write(`[${index + 1}/${testFiles.length}] ${testFile}\n`)
-        results.push(
-          await runTest(
-            page,
-            server.url,
-            testFile,
-            Math.min(testTimeout, remaining),
-          ),
-        )
-        await capture.checkpoint(testFile)
+      const url = new URL('/tests/_all.html', server.url)
+      if (filter) {
+        url.searchParams.set('filter', filter)
       }
+      process.stdout.write(
+        `Running explorer-view tests with --reuse-page at ${url.href}\n`,
+      )
+      await page.goto(url.href, {
+        timeout: 60_000,
+        waitUntil: 'domcontentloaded',
+      })
+      results = await waitForTestResults(page, timeout)
       userAgent = await page.evaluate(() => globalThis.navigator.userAgent)
     } catch (error) {
       runError = getErrorMessage(error)
@@ -226,8 +238,8 @@ const main = async (): Promise<void> => {
     commit,
     config: {
       ...(filter && { filter }),
+      reusePage: true,
       samplingInterval,
-      testTimeout,
       timeout,
     },
     environment: {
