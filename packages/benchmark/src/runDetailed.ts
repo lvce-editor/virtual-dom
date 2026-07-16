@@ -118,6 +118,10 @@ const waitForTestResults = async (
   return parsed.map(parseTestResult)
 }
 
+const getErrorMessage = (error: unknown): string => {
+  return error instanceof Error ? error.stack || error.message : String(error)
+}
+
 const closeBrowser = async (
   context: BrowserContext | undefined,
 ): Promise<void> => {
@@ -136,10 +140,6 @@ const getDevToolsWebSocketUrl = async (): Promise<string> => {
     throw new Error('Chrome did not write a valid DevToolsActivePort file')
   }
   return `ws://127.0.0.1:${port}${path}`
-}
-
-const getErrorMessage = (error: unknown): string => {
-  return error instanceof Error ? error.stack || error.message : String(error)
 }
 
 const main = async (): Promise<void> => {
@@ -195,7 +195,9 @@ const main = async (): Promise<void> => {
       if (filter) {
         url.searchParams.set('filter', filter)
       }
-      process.stdout.write(`Running explorer-view tests at ${url.href}\n`)
+      process.stdout.write(
+        `Running explorer-view tests with --reuse-page at ${url.href}\n`,
+      )
       await page.goto(url.href, {
         timeout: 60_000,
         waitUntil: 'domcontentloaded',
@@ -236,6 +238,7 @@ const main = async (): Promise<void> => {
     commit,
     config: {
       ...(filter && { filter }),
+      reusePage: true,
       samplingInterval,
       timeout,
     },

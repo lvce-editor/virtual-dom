@@ -70,10 +70,11 @@ const downloadTests = async (): Promise<ExplorerViewTests> => {
     'set',
     'packages/e2e',
   ])
+  const testPath = join(downloadRoot, 'packages', 'e2e')
   return {
     commit: await getCommit(downloadRoot),
     source: `${repositoryUrl}#${ref}`,
-    testPath: join(downloadRoot, 'packages', 'e2e'),
+    testPath,
   }
 }
 
