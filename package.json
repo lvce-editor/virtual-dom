@@ -4,6 +4,7 @@
   "license": "MIT",
   "type": "module",
   "scripts": {
+    "benchmark": "npm run build && npm run benchmark --prefix packages/benchmark",
     "build": "node packages/build/src/build.js",
     "e2e:headless": "lerna run e2e:headless",
     "format": "prettier --write .",
