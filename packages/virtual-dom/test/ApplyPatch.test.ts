@@ -4,6 +4,7 @@
 import { expect, jest, test } from '@jest/globals'
 import type { Patch } from '../src/parts/Patch/Patch.ts'
 import * as ApplyPatch from '../src/parts/ApplyPatch/ApplyPatch.ts'
+import * as Instances from '../src/parts/Instances/Instances.ts'
 import * as PatchType from '../src/parts/PatchType/PatchType.ts'
 import { renderInto } from '../src/parts/VirtualDom/VirtualDom.ts'
 import * as VirtualDomElements from '../src/parts/VirtualDomElements/VirtualDomElements.ts'
@@ -19,6 +20,33 @@ test('attribute change', () => {
   const $Node = document.createElement('div')
   ApplyPatch.applyPatch($Node, patches)
   expect($Node.id).toBe('test')
+})
+
+test('set reference node when child does not exist yet', () => {
+  const uid = 'new-editor'
+  const $Root = document.createElement('div')
+  const $Editor = document.createElement('div')
+  $Editor.className = 'Editor'
+  Instances.set(uid, {
+    state: {
+      $Viewlet: $Editor,
+    },
+  })
+  const patches: readonly Patch[] = [
+    {
+      index: 0,
+      type: PatchType.NavigateChild,
+    },
+    {
+      type: PatchType.SetReferenceNodeUid,
+      uid,
+    },
+  ]
+
+  ApplyPatch.applyPatch($Root, patches)
+
+  expect($Root.childNodes).toHaveLength(1)
+  expect($Root.firstChild).toBe($Editor)
 })
 
 test('attribute remove', () => {

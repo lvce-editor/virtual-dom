@@ -25,7 +25,8 @@ const handleNavigateChild = (
   const nextPatch = patches[patchIndex + 1]
   if (
     nextPatch &&
-    nextPatch.type === PatchType.Replace &&
+    (nextPatch.type === PatchType.Replace ||
+      nextPatch.type === PatchType.SetReferenceNodeUid) &&
     patch.index === $Children.length
   ) {
     const $Placeholder = document.createComment('virtual-dom-placeholder')
