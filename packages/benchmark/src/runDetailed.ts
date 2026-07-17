@@ -459,20 +459,8 @@ export const runDetailedBenchmark = async (
     0,
   )
   if (unexpectedFailed > 0) {
-    const unexpectedFailureNames = [
-      ...new Set(
-        runs.flatMap((run) =>
-          run.tests
-            .filter(
-              (test) =>
-                test.status === 'fail' && !allowedFailures.has(test.name),
-            )
-            .map((test) => test.name),
-        ),
-      ),
-    ].toSorted((left, right) => left.localeCompare(right))
     throw new Error(
-      `${unexpectedFailed} unexpected ${workload.id} e2e tests failed across all runs: ${unexpectedFailureNames.join(', ')}`,
+      `${unexpectedFailed} unexpected ${workload.id} e2e tests failed across all runs`,
     )
   }
 }
