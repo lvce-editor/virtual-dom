@@ -470,7 +470,7 @@ export const runDetailedBenchmark = async (
             .map((test) => test.name),
         ),
       ),
-    ].toSorted()
+    ].toSorted((left, right) => left.localeCompare(right))
     throw new Error(
       `${unexpectedFailed} unexpected ${workload.id} e2e tests failed across all runs: ${unexpectedFailureNames.join(', ')}`,
     )
