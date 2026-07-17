@@ -4,6 +4,8 @@ import * as SetStyle from '../SetStyle/SetStyle.ts'
 const removedAttributeProps = new Map([
   ['ariaActivedescendant', 'aria-activedescendant'],
   ['ariaControls', 'aria-controls'],
+  ['ariaDescribedBy', 'aria-describedby'],
+  ['ariaInvalid', 'aria-invalid'],
   ['ariaLabelledBy', 'aria-labelledby'],
   ['ariaOwns', 'aria-owns'],
   ['className', 'class'],
@@ -139,6 +141,12 @@ export const setProp = (
       return
     case 'ariaControls':
       $Element.setAttribute('aria-controls', value)
+      return
+    case 'ariaDescribedBy':
+      $Element.setAttribute('aria-describedby', value)
+      return
+    case 'ariaInvalid':
+      $Element.setAttribute('aria-invalid', value)
       return
     case 'ariaLabelledBy':
       $Element.setAttribute('aria-labelledby', value)

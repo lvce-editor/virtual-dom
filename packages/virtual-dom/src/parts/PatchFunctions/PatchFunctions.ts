@@ -7,6 +7,8 @@ const propertyToAttribute: Record<string, string> = {
   htmlFor: 'for',
   ariaActivedescendant: 'aria-activedescendant',
   ariaControls: 'aria-controls',
+  ariaDescribedBy: 'aria-describedby',
+  ariaInvalid: 'aria-invalid',
   ariaLabelledBy: 'aria-labelledby',
   ariaOwns: 'aria-owns',
   inputType: 'type',

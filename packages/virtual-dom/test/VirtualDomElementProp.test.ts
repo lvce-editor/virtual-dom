@@ -86,6 +86,17 @@ test('aria attributes - sets and removes attributes', () => {
   VirtualDomElementProp.setProp($Element, 'ariaControls', 'controls-id', {})
   expect($Element.getAttribute('aria-controls')).toBe('controls-id')
 
+  VirtualDomElementProp.setProp(
+    $Element,
+    'ariaDescribedBy',
+    'description-id',
+    {},
+  )
+  expect($Element.getAttribute('aria-describedby')).toBe('description-id')
+
+  VirtualDomElementProp.setProp($Element, 'ariaInvalid', 'true', {})
+  expect($Element.getAttribute('aria-invalid')).toBe('true')
+
   VirtualDomElementProp.setProp($Element, 'ariaOwns', 'test-id', {})
   expect($Element.getAttribute('aria-owns')).toBe('test-id')
 
@@ -94,6 +105,11 @@ test('aria attributes - sets and removes attributes', () => {
 
   VirtualDomElementProp.setProp($Element, 'ariaLabelledBy', 'label-id', {})
   expect($Element.getAttribute('aria-labelledby')).toBe('label-id')
+
+  VirtualDomElementProp.removeProp($Element, 'ariaDescribedBy')
+  VirtualDomElementProp.removeProp($Element, 'ariaInvalid')
+  expect($Element.hasAttribute('aria-describedby')).toBe(false)
+  expect($Element.hasAttribute('aria-invalid')).toBe(false)
 })
 
 test('input type - sets input type', () => {
