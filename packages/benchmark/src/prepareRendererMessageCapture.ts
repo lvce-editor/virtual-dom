@@ -3,10 +3,23 @@ import { join } from 'node:path'
 import { getStaticCommitRoot } from './staticServerPaths.ts'
 
 const captureMarker = 'virtual-dom-message-benchmark-capture'
-const captureSetup = `// ${captureMarker}
+const legacyCaptureSetup = `// ${captureMarker}
 const ____receivedMessages = [];
 globalThis.____receivedMessages = ____receivedMessages;
 const ____captureRendererWorkerMessage = event => {
+  ____receivedMessages.push(event.data);
+};
+`
+const captureSetup = `// ${captureMarker}
+const ____receivedMessages = [];
+const ____receivedMessageTimings = [];
+globalThis.____receivedMessages = ____receivedMessages;
+globalThis.____receivedMessageTimings = ____receivedMessageTimings;
+const ____captureRendererWorkerMessage = event => {
+  ____receivedMessageTimings.push({
+    index: ____receivedMessages.length,
+    receivedAt: performance.now(),
+  });
   ____receivedMessages.push(event.data);
 };
 `
@@ -14,8 +27,11 @@ const launchAnchor = '  const result = await launchRendererWorker();'
 const stateAssignmentRegex = / {2}state(?:\$\w+)?\.rpc = result\.value;/
 
 export const addRendererMessageCapture = (content: string): string => {
-  if (content.includes(captureMarker)) {
+  if (content.includes('globalThis.____receivedMessageTimings')) {
     return content
+  }
+  if (content.includes(legacyCaptureSetup)) {
+    return content.replace(legacyCaptureSetup, () => captureSetup)
   }
   const launchIndex = content.indexOf(launchAnchor)
   if (launchIndex === -1) {

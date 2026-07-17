@@ -40,9 +40,9 @@ const renderMetadata = (report) => {
       `${report.total.received.toLocaleString()} renderer messages inspected`,
     ),
     createMetaCard(
-      'Serialized size',
-      formatBytes(report.total.jsonBytes),
-      'compact UTF-8 JSON',
+      'All message size',
+      formatBytes(report.total.receivedJsonBytes),
+      `${report.total.rendererCommands.toLocaleString()} renderer commands`,
     ),
     createMetaCard(
       'Workloads',
@@ -73,13 +73,33 @@ const renderWorkloads = (report) => {
     $bytes.textContent = formatBytes(result.messages.virtualDom.jsonBytes)
     const $received = document.createElement('td')
     $received.textContent = result.messages.received.toLocaleString()
+    const $commandBytes = document.createElement('td')
+    $commandBytes.textContent = formatBytes(
+      result.messages.rendererCommands.jsonBytes,
+    )
+    const $noOps = document.createElement('td')
+    $noOps.textContent = `${result.messages.rendererCommands.emptyPatches.toLocaleString()} / ${result.messages.rendererCommands.duplicateCss.toLocaleString()}`
+    const $frameSpacing = document.createElement('td')
+    $frameSpacing.textContent =
+      result.messages.rendererCommands.renderBatches.under16Ms.toLocaleString()
     const $data = document.createElement('td')
     $data.append(
       createLink(result.messages.virtualDomPath, 'VDOM calls'),
       document.createTextNode(' · '),
       createLink(result.messages.receivedPath, 'all messages'),
+      document.createTextNode(' · '),
+      createLink(result.messages.timingsPath, 'timings'),
     )
-    $row.append($name, $calls, $bytes, $received, $data)
+    $row.append(
+      $name,
+      $calls,
+      $bytes,
+      $received,
+      $commandBytes,
+      $noOps,
+      $frameSpacing,
+      $data,
+    )
     fragment.append($row)
   }
   $workloads.replaceChildren(fragment)
@@ -88,7 +108,7 @@ const renderWorkloads = (report) => {
 const renderMethods = (report) => {
   const fragment = document.createDocumentFragment()
   for (const result of report.workloads) {
-    for (const method of result.messages.virtualDom.methods) {
+    for (const method of result.messages.rendererCommands.methods) {
       const $row = document.createElement('tr')
       for (const value of [
         result.workload.label,

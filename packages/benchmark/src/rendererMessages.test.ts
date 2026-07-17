@@ -1,6 +1,8 @@
 import assert from 'node:assert/strict'
 import { test } from 'node:test'
 import {
+  getReceivedMessageJsonBytes,
+  getRendererCommandSummary,
   getVirtualDomMessageCalls,
   getVirtualDomMessageSummary,
   type JsonValue,
@@ -50,6 +52,52 @@ void test('getVirtualDomMessageCalls extracts direct and batched virtual DOM cal
       params: [3, [{ text: 'About', type: 4 }]],
     },
   ])
+})
+
+void test('getRendererCommandSummary reports no-op CSS, patches, and frame spacing', () => {
+  const messages: readonly JsonValue[] = [
+    {
+      method: 'Viewlet.sendMultiple',
+      params: [
+        [
+          ['Viewlet.setCss', 1, 'a'],
+          ['Viewlet.setPatches', 1, []],
+        ],
+      ],
+    },
+    {
+      method: 'Viewlet.sendMultiple',
+      params: [[['Viewlet.setCss', 1, 'a']]],
+    },
+    {
+      method: 'Css.addCssStyleSheet',
+      params: ['theme', 'body {}'],
+    },
+    {
+      method: 'Css.addCssStyleSheet',
+      params: ['theme', 'body {}'],
+    },
+  ]
+  const summary = getRendererCommandSummary(messages, [
+    { index: 0, receivedAt: 100 },
+    { index: 1, receivedAt: 110 },
+    { index: 2, receivedAt: 120 },
+    { index: 3, receivedAt: 130 },
+  ])
+
+  assert.equal(summary.count, 5)
+  assert.equal(summary.duplicateCss, 2)
+  assert.equal(summary.emptyPatches, 1)
+  assert.deepEqual(summary.renderBatches, {
+    count: 2,
+    minIntervalMs: 10,
+    under16Ms: 1,
+  })
+  assert.equal(summary.jsonBytes > 0, true)
+  assert.equal(
+    getReceivedMessageJsonBytes(messages),
+    Buffer.byteLength(JSON.stringify(messages), 'utf8'),
+  )
 })
 
 void test('getVirtualDomMessageSummary measures UTF-8 JSON bytes', () => {
