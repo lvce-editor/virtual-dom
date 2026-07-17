@@ -12,8 +12,8 @@
     "test": "node --experimental-strip-types --test src/cpuProfile.test.ts"
   },
   "devDependencies": {
-    "@lvce-editor/server": "^0.91.12",
-    "@types/node": "^26.1.0",
+    "@lvce-editor/server": "^0.91.19",
+    "@types/node": "^26.1.1",
     "playwright": "^1.61.1"
   }
 }
