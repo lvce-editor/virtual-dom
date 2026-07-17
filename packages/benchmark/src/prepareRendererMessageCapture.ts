@@ -31,7 +31,7 @@ export const addRendererMessageCapture = (content: string): string => {
     return content
   }
   if (content.includes(legacyCaptureSetup)) {
-    return content.replace(legacyCaptureSetup, captureSetup)
+    return content.replace(legacyCaptureSetup, () => captureSetup)
   }
   const launchIndex = content.indexOf(launchAnchor)
   if (launchIndex === -1) {
