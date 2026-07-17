@@ -16,6 +16,6 @@
   "license": "MIT",
   "devDependencies": {
     "@types/node": "^26.1.1",
-    "execa": "^9.6.1"
+    "execa": "^10.0.0"
   }
 }
