@@ -1,12 +1,6 @@
-import { readFile, readdir, writeFile } from 'node:fs/promises'
-import { dirname, join } from 'node:path'
-import { fileURLToPath } from 'node:url'
-
-const staticServerPackagePath = fileURLToPath(
-  import.meta.resolve('@lvce-editor/static-server/package.json'),
-)
-const staticRoot = join(dirname(staticServerPackagePath), 'static')
-const commitHashRegex = /^[a-z\d]{7}$/
+import { readFile, writeFile } from 'node:fs/promises'
+import { join } from 'node:path'
+import { getStaticCommitRoot } from './staticServerPaths.ts'
 const resetOccurrence = `    await invoke('Layout.reset');`
 const resetReplacement = `    await invoke('FileSystem.remove', 'memfs:///workspace');
     await invoke('Layout.reset');
@@ -14,14 +8,9 @@ const resetReplacement = `    await invoke('FileSystem.remove', 'memfs:///worksp
     await invoke('Layout.showSideBar');`
 
 const getTestWorkerPath = async (): Promise<string> => {
-  const dirents = await readdir(staticRoot)
-  const commitHash = dirents.find((dirent) => commitHashRegex.test(dirent))
-  if (!commitHash) {
-    throw new Error('Could not find the static server commit directory')
-  }
+  const staticCommitRoot = await getStaticCommitRoot()
   return join(
-    staticRoot,
-    commitHash,
+    staticCommitRoot,
     'packages',
     'test-worker',
     'dist',

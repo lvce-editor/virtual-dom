@@ -1,0 +1,190 @@
+:root {
+  color-scheme: dark;
+  font-family:
+    Inter,
+    ui-sans-serif,
+    system-ui,
+    -apple-system,
+    BlinkMacSystemFont,
+    sans-serif;
+  background: #080b12;
+  color: #eef2ff;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+body {
+  margin: 0;
+  background:
+    radial-gradient(circle at top left, #1b3150 0, transparent 34rem), #080b12;
+}
+
+main {
+  width: min(1180px, calc(100% - 2rem));
+  margin: 0 auto;
+  padding: 3rem 0 5rem;
+}
+
+.hero {
+  display: flex;
+  justify-content: space-between;
+  gap: 2rem;
+  align-items: flex-start;
+  margin-bottom: 2rem;
+}
+
+h1,
+h2,
+p {
+  margin-top: 0;
+}
+
+h1 {
+  margin-bottom: 0.75rem;
+  font-size: clamp(2rem, 5vw, 4rem);
+  line-height: 0.98;
+}
+
+h2 {
+  margin-bottom: 0;
+}
+
+.eyebrow {
+  margin-bottom: 0.5rem;
+  color: #83d4ff;
+  font-size: 0.75rem;
+  font-weight: 700;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+}
+
+.intro,
+.hint,
+.methodology {
+  color: #a9b4c9;
+}
+
+.intro {
+  max-width: 48rem;
+  line-height: 1.65;
+}
+
+nav {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  gap: 0.5rem;
+  min-width: 13rem;
+}
+
+a {
+  color: #83d4ff;
+}
+
+.metadata {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  gap: 1rem;
+  margin-bottom: 1rem;
+}
+
+.metadata article,
+.panel,
+.methodology {
+  border: 1px solid #263348;
+  border-radius: 1rem;
+  background: rgb(12 18 29 / 88%);
+}
+
+.metadata article {
+  display: flex;
+  flex-direction: column;
+  gap: 0.4rem;
+  padding: 1rem;
+}
+
+.metadata span,
+.metadata small {
+  color: #94a3b8;
+}
+
+.metadata strong {
+  font-size: 1.45rem;
+}
+
+.panel,
+.methodology {
+  margin-top: 1rem;
+  padding: 1.25rem;
+}
+
+.panel-heading {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-end;
+  gap: 1rem;
+  margin-bottom: 1rem;
+}
+
+.hint {
+  margin-bottom: 0;
+  font-size: 0.85rem;
+}
+
+.table-scroll {
+  overflow-x: auto;
+}
+
+table {
+  width: 100%;
+  border-collapse: collapse;
+}
+
+th,
+td {
+  padding: 0.85rem;
+  border-bottom: 1px solid #202b3d;
+  text-align: left;
+  vertical-align: top;
+}
+
+th {
+  color: #94a3b8;
+  font-size: 0.75rem;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+td strong,
+td small {
+  display: block;
+}
+
+td small {
+  margin-top: 0.25rem;
+  color: #7f8da3;
+}
+
+.methodology {
+  line-height: 1.7;
+}
+
+code {
+  color: #c4b5fd;
+}
+
+.error {
+  color: #fca5a5;
+}
+
+@media (max-width: 720px) {
+  .hero {
+    flex-direction: column;
+  }
+
+  nav {
+    align-items: flex-start;
+  }
+}
