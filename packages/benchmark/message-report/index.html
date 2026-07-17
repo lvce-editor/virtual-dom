@@ -48,6 +48,9 @@
                 <th>VDOM calls</th>
                 <th>Serialized size</th>
                 <th>All messages</th>
+                <th>Command bytes</th>
+                <th>Empty patches / duplicate CSS</th>
+                <th>Render intervals &lt;16 ms</th>
                 <th>Captured data</th>
               </tr>
             </thead>
@@ -62,7 +65,7 @@
             <p class="eyebrow">Protocol calls</p>
             <h2>Traffic by method</h2>
           </div>
-          <p class="hint">DOM snapshots and patch sets</p>
+          <p class="hint">All direct and batched renderer commands</p>
         </div>
         <div class="table-scroll">
           <table>
@@ -87,11 +90,11 @@
           records only messages received from its dedicated Renderer Worker.
           Chromium's DevTools Protocol returns a JSON-safe copy after
           unsupported host objects such as <code>MessagePort</code> are removed.
-          The analysis extracts direct and batched <code>Viewlet.setDom</code>,
-          <code>Viewlet.setDom2</code>, and
-          <code>Viewlet.setPatches</code> calls. Size is the sum of each
-          normalized call encoded as compact UTF-8 JSON. It is a stable payload
-          metric, not an estimate of engine-specific retained heap size.
+          The analysis extracts all direct and batched renderer commands, plus
+          the virtual DOM subset. It reports empty patch sets, repeated CSS, and
+          arrival intervals between render batches. Size is compact UTF-8 JSON,
+          a stable payload metric rather than an estimate of engine-specific
+          retained heap size.
         </p>
       </section>
     </main>

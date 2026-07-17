@@ -5,8 +5,14 @@ import { getStaticCommitRoot } from './staticServerPaths.ts'
 const captureMarker = 'virtual-dom-message-benchmark-capture'
 const captureSetup = `// ${captureMarker}
 const ____receivedMessages = [];
+const ____receivedMessageTimings = [];
 globalThis.____receivedMessages = ____receivedMessages;
+globalThis.____receivedMessageTimings = ____receivedMessageTimings;
 const ____captureRendererWorkerMessage = event => {
+  ____receivedMessageTimings.push({
+    index: ____receivedMessages.length,
+    receivedAt: performance.now(),
+  });
   ____receivedMessages.push(event.data);
 };
 `

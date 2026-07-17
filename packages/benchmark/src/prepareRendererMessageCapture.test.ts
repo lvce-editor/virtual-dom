@@ -20,6 +20,8 @@ void test('addRendererMessageCapture instruments only the renderer worker RPC', 
   const result = addRendererMessageCapture(source)
 
   assert.match(result, /globalThis\.____receivedMessages/)
+  assert.match(result, /globalThis\.____receivedMessageTimings/)
+  assert.match(result, /receivedAt: performance\.now\(\)/)
   assert.match(
     result,
     /result\.value\.ipc\.addEventListener\('message', ____captureRendererWorkerMessage\)/,

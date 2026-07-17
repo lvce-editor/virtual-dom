@@ -11,7 +11,10 @@ import { getExplorerViewTests } from './explorerView.ts'
 import { prepareAboutViewServer } from './prepareAboutViewServer.ts'
 import { prepareRendererMessageCapture } from './prepareRendererMessageCapture.ts'
 import {
+  getReceivedMessageJsonBytes,
+  getReceivedRendererMessageTimings,
   getReceivedRendererMessages,
+  getRendererCommandSummary,
   getVirtualDomMessageCalls,
   getVirtualDomMessageSummary,
 } from './rendererMessages.ts'
@@ -42,7 +45,10 @@ interface WorkloadResult {
   readonly browserVersion: string
   readonly messages: {
     readonly received: number
+    readonly receivedJsonBytes: number
     readonly receivedPath: string
+    readonly rendererCommands: ReturnType<typeof getRendererCommandSummary>
+    readonly timingsPath: string
     readonly virtualDom: ReturnType<typeof getVirtualDomMessageSummary>
     readonly virtualDomPath: string
   }
@@ -115,6 +121,9 @@ const runWorkload = async (
   let receivedMessages: Awaited<
     ReturnType<typeof getReceivedRendererMessages>
   > = []
+  let receivedMessageTimings: Awaited<
+    ReturnType<typeof getReceivedRendererMessageTimings>
+  > = []
   try {
     page.on('console', (message) => {
       if (message.type() === 'error') {
@@ -142,6 +151,7 @@ const runWorkload = async (
     }
     try {
       receivedMessages = await getReceivedRendererMessages(page)
+      receivedMessageTimings = await getReceivedRendererMessageTimings(page)
     } catch (error) {
       runError = addRunError(runError, error)
     }
@@ -152,10 +162,15 @@ const runWorkload = async (
 
   const virtualDomCalls = getVirtualDomMessageCalls(receivedMessages)
   const receivedPath = `./messages/${workload.id}.json`
+  const timingsPath = `./message-timings/${workload.id}.json`
   const virtualDomPath = `./virtual-dom-messages/${workload.id}.json`
   await writeFile(
     new URL(receivedPath, outputRoot),
     `${JSON.stringify(receivedMessages, null, 2)}\n`,
+  )
+  await writeFile(
+    new URL(timingsPath, outputRoot),
+    `${JSON.stringify(receivedMessageTimings, null, 2)}\n`,
   )
   await writeFile(
     new URL(virtualDomPath, outputRoot),
@@ -165,7 +180,13 @@ const runWorkload = async (
     browserVersion,
     messages: {
       received: receivedMessages.length,
+      receivedJsonBytes: getReceivedMessageJsonBytes(receivedMessages),
       receivedPath,
+      rendererCommands: getRendererCommandSummary(
+        receivedMessages,
+        receivedMessageTimings,
+      ),
+      timingsPath,
       virtualDom: getVirtualDomMessageSummary(virtualDomCalls),
       virtualDomPath,
     },
@@ -189,6 +210,7 @@ const run = async (): Promise<void> => {
   const filter = process.env.RENDERER_MESSAGE_BENCHMARK_FILTER
   await rm(outputRoot, { force: true, recursive: true })
   await mkdir(new URL('messages/', outputRoot), { recursive: true })
+  await mkdir(new URL('message-timings/', outputRoot), { recursive: true })
   await mkdir(new URL('virtual-dom-messages/', outputRoot), { recursive: true })
   await prepareRendererMessageCapture()
 
@@ -197,10 +219,18 @@ const run = async (): Promise<void> => {
     results.push(await runWorkload(options, timeout, filter))
   }
 
-  const total = { jsonBytes: 0, received: 0, virtualDom: 0 }
+  const total = {
+    jsonBytes: 0,
+    received: 0,
+    receivedJsonBytes: 0,
+    rendererCommands: 0,
+    virtualDom: 0,
+  }
   for (const result of results) {
     total.jsonBytes += result.messages.virtualDom.jsonBytes
     total.received += result.messages.received
+    total.receivedJsonBytes += result.messages.receivedJsonBytes
+    total.rendererCommands += result.messages.rendererCommands.count
     total.virtualDom += result.messages.virtualDom.count
   }
   const cpu = cpus()[0]
@@ -226,7 +256,7 @@ const run = async (): Promise<void> => {
       unit: 'bytes',
     },
     repository: 'lvce-editor/virtual-dom',
-    schemaVersion: 1,
+    schemaVersion: 2,
     title: 'LVCE Virtual DOM renderer message benchmark',
     total,
     workloads: results,

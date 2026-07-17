@@ -96,6 +96,11 @@ compact JSON representation of each normalized call encoded as UTF-8. This
 measures stable, comparable serialized payload bytes; it does not estimate
 V8's engine-specific retained heap size.
 
+The report also summarizes every direct and batched renderer command, including
+empty patch sets, repeated stylesheet content, and the arrival spacing of
+`Viewlet.sendMultiple` render batches. Message timing files are aligned with
+the existing all-message files by their message index.
+
 The report is written to
 `packages/benchmark/dist/renderer-message-benchmark`. Downloadable JSON files
 contain all JSON-safe renderer messages and the filtered virtual DOM calls for
