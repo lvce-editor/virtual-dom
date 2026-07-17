@@ -77,6 +77,13 @@ jobs:
         env:
           DETAILED_BENCHMARK_TIMEOUT_MS: 3600000
           PLAYWRIGHT_BROWSERS_PATH: 0
+      - name: Run renderer message benchmark
+        if: matrix.os == 'ubuntu-24.04'
+        working-directory: ./packages/benchmark
+        run: npm run benchmark:renderer-messages
+        env:
+          RENDERER_MESSAGE_BENCHMARK_TIMEOUT_MS: 3600000
+          PLAYWRIGHT_BROWSERS_PATH: 0
       - name: Upload benchmark results
         if: matrix.os == 'ubuntu-24.04'
         uses: actions/upload-artifact@v7

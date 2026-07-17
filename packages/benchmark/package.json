@@ -9,7 +9,8 @@
     "benchmark:about-view": "node --experimental-strip-types src/runAboutView.ts",
     "benchmark:activity-bar": "node --experimental-strip-types src/runActivityBar.ts",
     "benchmark:detailed": "node --experimental-strip-types src/runExplorer.ts",
-    "test": "node --experimental-strip-types --test src/cpuProfile.test.ts"
+    "benchmark:renderer-messages": "node --experimental-strip-types src/runRendererMessageBenchmark.ts",
+    "test": "node --experimental-strip-types --test \"src/*.test.ts\""
   },
   "devDependencies": {
     "@lvce-editor/server": "^0.91.12",

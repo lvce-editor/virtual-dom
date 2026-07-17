@@ -1,0 +1,100 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta
+      name="description"
+      content="Real-world renderer-worker virtual DOM message sizes"
+    />
+    <title>LVCE Virtual DOM renderer message benchmark</title>
+    <link rel="stylesheet" href="./styles.css" />
+  </head>
+  <body>
+    <main>
+      <header class="hero">
+        <div>
+          <p class="eyebrow">Real-world workload</p>
+          <h1>Renderer message benchmark</h1>
+          <p class="intro">
+            Virtual DOM calls received by renderer-process while the pinned
+            Activity Bar, Explorer, and About end-to-end suites run.
+          </p>
+        </div>
+        <nav>
+          <a href="../">Synthetic benchmark</a>
+          <a href="../detailed-benchmark/">Explorer CPU profile</a>
+          <a href="../activity-bar-benchmark/">Activity Bar CPU profile</a>
+          <a href="../about-view-benchmark/">About CPU profile</a>
+          <a href="./benchmark-results.json">Raw analysis</a>
+        </nav>
+      </header>
+
+      <section class="metadata" id="metadata"></section>
+
+      <section class="panel">
+        <div class="panel-heading">
+          <div>
+            <p class="eyebrow">Worker to frontend</p>
+            <h2>Virtual DOM traffic by workload</h2>
+          </div>
+          <p class="hint">Compact UTF-8 JSON bytes</p>
+        </div>
+        <div class="table-scroll">
+          <table>
+            <thead>
+              <tr>
+                <th>Workload</th>
+                <th>VDOM calls</th>
+                <th>Serialized size</th>
+                <th>All messages</th>
+                <th>Captured data</th>
+              </tr>
+            </thead>
+            <tbody id="workloads"></tbody>
+          </table>
+        </div>
+      </section>
+
+      <section class="panel">
+        <div class="panel-heading">
+          <div>
+            <p class="eyebrow">Protocol calls</p>
+            <h2>Traffic by method</h2>
+          </div>
+          <p class="hint">DOM snapshots and patch sets</p>
+        </div>
+        <div class="table-scroll">
+          <table>
+            <thead>
+              <tr>
+                <th>Workload</th>
+                <th>Method</th>
+                <th>Calls</th>
+                <th>Serialized size</th>
+              </tr>
+            </thead>
+            <tbody id="methods"></tbody>
+          </table>
+        </div>
+      </section>
+
+      <section class="methodology">
+        <p class="eyebrow">Methodology</p>
+        <h2>What the byte count means</h2>
+        <p>
+          The benchmark instruments the copied renderer-process bundle and
+          records only messages received from its dedicated Renderer Worker.
+          Chromium's DevTools Protocol returns a JSON-safe copy after
+          unsupported host objects such as <code>MessagePort</code> are removed.
+          The analysis extracts direct and batched <code>Viewlet.setDom</code>,
+          <code>Viewlet.setDom2</code>, and
+          <code>Viewlet.setPatches</code> calls. Size is the sum of each
+          normalized call encoded as compact UTF-8 JSON. It is a stable payload
+          metric, not an estimate of engine-specific retained heap size.
+        </p>
+      </section>
+    </main>
+    <script type="module" src="./app.js"></script>
+  </body>
+</html>

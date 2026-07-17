@@ -74,6 +74,33 @@ By default each real-world workload runs in five fresh browser profiles. Each
 report shows the run with the median normalized virtual DOM CPU share and
 includes the distribution across all runs.
 
+## Renderer message benchmark
+
+The renderer message benchmark runs the pinned Activity Bar, Explorer, and
+About suites once each and measures the virtual DOM data received by
+renderer-process:
+
+```sh
+npm run benchmark:renderer-messages
+```
+
+The benchmark instruments the renderer-process bundle included in the local
+copy of `@lvce-editor/static-server`. It records only messages from the
+dedicated Renderer Worker in `globalThis.____receivedMessages`, then retrieves a
+JSON-safe copy through Chromium's DevTools Protocol. Host objects such as
+`MessagePort` are omitted.
+
+Direct and batched `Viewlet.setDom`, `Viewlet.setDom2`, and
+`Viewlet.setPatches` calls are extracted. The reported size is the sum of the
+compact JSON representation of each normalized call encoded as UTF-8. This
+measures stable, comparable serialized payload bytes; it does not estimate
+V8's engine-specific retained heap size.
+
+The report is written to
+`packages/benchmark/dist/renderer-message-benchmark`. Downloadable JSON files
+contain all JSON-safe renderer messages and the filtered virtual DOM calls for
+each workload.
+
 For local development, `EXPLORER_VIEW_PATH`, `ACTIVITY_BAR_WORKER_PATH`, and
 `ABOUT_VIEW_PATH` can point at existing checkouts. `EXPLORER_VIEW_REF`,
 `ACTIVITY_BAR_WORKER_REF`, and `ABOUT_VIEW_REF` can select different git refs,
@@ -81,3 +108,6 @@ and `DETAILED_BENCHMARK_FILTER` can select a smaller test subset.
 `DETAILED_BENCHMARK_TIMEOUT_MS` controls the full-suite timeout,
 `DETAILED_BENCHMARK_SAMPLING_INTERVAL_US` controls the V8 sampling interval,
 and `DETAILED_BENCHMARK_REPEATS` controls the number of fresh browser runs.
+`RENDERER_MESSAGE_BENCHMARK_FILTER` can select a smaller test subset for the
+renderer message benchmark, and `RENDERER_MESSAGE_BENCHMARK_TIMEOUT_MS`
+controls its per-suite timeout.
