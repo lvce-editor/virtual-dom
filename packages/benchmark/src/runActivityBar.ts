@@ -1,12 +1,9 @@
 import { getActivityBarWorkerTests } from './activityBarWorker.ts'
+import { activityBarAllowedFailures } from './allowedFailures.ts'
 import { runDetailedBenchmark } from './runDetailed.ts'
 
 await runDetailedBenchmark({
-  allowedFailures: [
-    'activity-bar.account.context-menu.logging-in.js',
-    'activity-bar.account.context-menu.logging-out.js',
-    'activity-bar.account.context-menu.signed-in.js',
-  ],
+  allowedFailures: activityBarAllowedFailures,
   getTests: getActivityBarWorkerTests,
   outputPath: 'activity-bar-benchmark',
 })

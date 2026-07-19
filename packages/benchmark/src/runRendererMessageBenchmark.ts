@@ -7,6 +7,10 @@ import { chromium } from 'playwright'
 import type { BenchmarkTests } from './benchmarkTests.ts'
 import { getAboutViewTests } from './aboutView.ts'
 import { getActivityBarWorkerTests } from './activityBarWorker.ts'
+import {
+  activityBarAllowedFailures,
+  explorerAllowedFailures,
+} from './allowedFailures.ts'
 import { getExplorerViewTests } from './explorerView.ts'
 import { prepareAboutViewServer } from './prepareAboutViewServer.ts'
 import { prepareRendererMessageCapture } from './prepareRendererMessageCapture.ts'
@@ -29,12 +33,6 @@ const execFileAsync = promisify(execFile)
 const packageRoot = new URL('..', import.meta.url)
 const outputRoot = new URL('dist/renderer-message-benchmark/', packageRoot)
 const reportRoot = new URL('message-report/', packageRoot)
-const activityBarAllowedFailures = [
-  'activity-bar.account.context-menu.logging-in.js',
-  'activity-bar.account.context-menu.logging-out.js',
-  'activity-bar.account.context-menu.signed-in.js',
-]
-
 interface WorkloadOptions {
   readonly allowedFailures?: readonly string[]
   readonly getTests: () => Promise<BenchmarkTests>
@@ -64,6 +62,7 @@ const workloads: readonly WorkloadOptions[] = [
     getTests: getActivityBarWorkerTests,
   },
   {
+    allowedFailures: explorerAllowedFailures,
     getTests: getExplorerViewTests,
   },
   {
