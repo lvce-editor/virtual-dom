@@ -4,7 +4,7 @@ import {
   VirtualDomElements,
 } from '/dist/virtual-dom/dist/index.js'
 import { setProps } from '/dist/virtual-dom/dist/parts/VirtualDomElementProps/VirtualDomElementProps.js'
-import { diffTree } from '/dist/virtual-dom-worker/dist/index.js'
+import { AriaRoles, diffTree } from '/dist/virtual-dom-worker/dist/index.js'
 
 const adjectives = [
   'pretty',
@@ -84,7 +84,7 @@ const microScenarioProps = {
   childCount: 0,
   className: 'ExplorerItem',
   draggable: true,
-  role: 'treeitem',
+  role: AriaRoles.TreeItem,
   tabIndex: -1,
   title: 'Explorer item',
   type: VirtualDomElements.Div,

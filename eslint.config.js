@@ -3,6 +3,7 @@ import * as actions from '@lvce-editor/eslint-plugin-github-actions'
 
 export default [
   ...config.default,
+  ...config.recommendedVirtualDom,
   ...config.recommendedTsconfig,
   ...actions.default,
   {
@@ -25,6 +26,33 @@ export default [
     files: ['packages/e2e/**/*.ts'],
     rules: {
       'e2e/no-imports': 'off',
+    },
+  },
+  {
+    files: ['packages/**/*.test.ts'],
+    rules: {
+      'virtual-dom/clickable-div-needs-role': 'off',
+      'virtual-dom/no-inline-event-handlers': 'off',
+      'virtual-dom/no-object-attribute-values': 'off',
+      'virtual-dom/prefer-constants': 'off',
+      'virtual-dom/prefer-merge-class-names': 'off',
+      'virtual-dom/valid-child-count': 'off',
+    },
+  },
+  {
+    files: [
+      'packages/virtual-dom-worker/src/parts/VirtualDomDiff/VirtualDomDiff.ts',
+      'packages/virtual-dom/src/parts/ApplyPatch/ApplyPatch.ts',
+      'packages/virtual-dom/src/parts/IpcState/IpcState.ts',
+    ],
+    rules: {
+      'virtual-dom/prefer-state-destructuring': 'off',
+    },
+  },
+  {
+    files: ['packages/benchmark/app/app.js'],
+    rules: {
+      'virtual-dom/valid-child-count': 'off',
     },
   },
 ]
