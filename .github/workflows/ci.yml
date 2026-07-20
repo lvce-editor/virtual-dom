@@ -88,6 +88,13 @@ jobs:
         env:
           DETAILED_BENCHMARK_TIMEOUT_MS: 3600000
           PLAYWRIGHT_BROWSERS_PATH: 0
+      - name: Run detailed title bar benchmark
+        if: matrix.os == 'ubuntu-24.04'
+        working-directory: ./packages/benchmark
+        run: npm run benchmark:title-bar
+        env:
+          DETAILED_BENCHMARK_TIMEOUT_MS: 3600000
+          PLAYWRIGHT_BROWSERS_PATH: 0
       - name: Run renderer message benchmark
         if: matrix.os == 'ubuntu-24.04'
         working-directory: ./packages/benchmark
