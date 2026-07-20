@@ -10,6 +10,7 @@
     "benchmark:activity-bar": "node --experimental-strip-types src/runActivityBar.ts",
     "benchmark:detailed": "node --experimental-strip-types src/runExplorer.ts",
     "benchmark:renderer-messages": "node --experimental-strip-types src/runRendererMessageBenchmark.ts",
+    "benchmark:title-bar": "node --experimental-strip-types src/runTitleBar.ts",
     "test": "node --experimental-strip-types --test \"src/*.test.ts\""
   },
   "devDependencies": {

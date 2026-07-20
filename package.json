@@ -12,6 +12,7 @@
     "benchmark:activity-bar": "npm run benchmark:activity-bar --workspace=packages/benchmark",
     "benchmark:detailed": "npm run benchmark:detailed --workspace=packages/benchmark",
     "benchmark:renderer-messages": "npm run build && npm run benchmark:renderer-messages --workspace=packages/benchmark",
+    "benchmark:title-bar": "npm run benchmark:title-bar --workspace=packages/benchmark",
     "build": "node packages/build/src/build.js",
     "e2e:headless": "npm run e2e:headless --workspace=packages/e2e",
     "format": "prettier --write .",

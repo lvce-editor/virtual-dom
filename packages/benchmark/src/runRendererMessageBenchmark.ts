@@ -28,6 +28,7 @@ import {
   type RunSummary,
   waitForTestResults,
 } from './testResults.ts'
+import { getTitleBarWorkerTests } from './titleBarWorker.ts'
 
 const execFileAsync = promisify(execFile)
 const packageRoot = new URL('..', import.meta.url)
@@ -68,6 +69,9 @@ const workloads: readonly WorkloadOptions[] = [
   {
     getTests: getAboutViewTests,
     prepare: prepareAboutViewServer,
+  },
+  {
+    getTests: getTitleBarWorkerTests,
   },
 ]
 
