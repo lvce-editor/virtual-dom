@@ -89,6 +89,42 @@ const microScenarioProps = {
   title: 'Explorer item',
   type: VirtualDomElements.Div,
 }
+const idCellDom = {
+  childCount: 1,
+  type: VirtualDomElements.Td,
+}
+const labelCellDom = {
+  childCount: 1,
+  type: VirtualDomElements.Td,
+}
+const labelDom = {
+  childCount: 1,
+  className: 'row-label',
+  type: VirtualDomElements.Span,
+}
+const removeCellDom = {
+  childCount: 1,
+  type: VirtualDomElements.Td,
+}
+const removeIconDom = {
+  childCount: 1,
+  className: 'remove-icon',
+  type: VirtualDomElements.Span,
+}
+const removeIconTextDom = {
+  childCount: 0,
+  text: '×',
+  type: VirtualDomElements.Text,
+}
+const emptyCellDom = {
+  childCount: 0,
+  type: VirtualDomElements.Td,
+}
+const tableDom = {
+  childCount: 1,
+  className: 'benchmark-table',
+  type: VirtualDomElements.Table,
+}
 
 const $root = document.querySelector('#benchmark-root')
 const $status = document.querySelector('#status')
@@ -125,57 +161,29 @@ const createRowDom = (row) => {
       key: row.id,
       type: VirtualDomElements.Tr,
     },
-    {
-      childCount: 1,
-      type: VirtualDomElements.Td,
-    },
+    idCellDom,
     {
       childCount: 0,
       text: String(row.id),
       type: VirtualDomElements.Text,
     },
-    {
-      childCount: 1,
-      type: VirtualDomElements.Td,
-    },
-    {
-      childCount: 1,
-      className: 'row-label',
-      type: VirtualDomElements.Span,
-    },
+    labelCellDom,
+    labelDom,
     {
       childCount: 0,
       text: row.label,
       type: VirtualDomElements.Text,
     },
-    {
-      childCount: 1,
-      type: VirtualDomElements.Td,
-    },
-    {
-      childCount: 1,
-      className: 'remove-icon',
-      type: VirtualDomElements.Span,
-    },
-    {
-      childCount: 0,
-      text: '×',
-      type: VirtualDomElements.Text,
-    },
-    {
-      childCount: 0,
-      type: VirtualDomElements.Td,
-    },
+    removeCellDom,
+    removeIconDom,
+    removeIconTextDom,
+    emptyCellDom,
   ]
 }
 
 const createDom = () => {
   const dom = [
-    {
-      childCount: 1,
-      className: 'benchmark-table',
-      type: VirtualDomElements.Table,
-    },
+    tableDom,
     {
       childCount: rows.length,
       type: VirtualDomElements.TBody,
