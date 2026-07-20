@@ -7,8 +7,8 @@ const temporaryRoot = join(packageRoot, '.tmp')
 
 export const getActivityBarWorkerTests = async (): Promise<BenchmarkTests> => {
   return getBenchmarkTests({
-    defaultCommit: '8c8c7a8275e85e8a15fcd15130df49fae07659ea',
-    defaultRef: 'v7.10.0',
+    defaultCommit: '61aa9a5d6200b3b139d4fa12532d5ff23052b29c',
+    defaultRef: 'v7.12.0',
     downloadRoot: join(temporaryRoot, 'activity-bar-worker'),
     id: 'activity-bar-worker',
     label: 'Activity bar',
