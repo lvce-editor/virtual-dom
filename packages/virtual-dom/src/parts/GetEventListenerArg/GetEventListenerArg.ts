@@ -74,6 +74,23 @@ const handleClipboardDataFiles = (event: ClipboardEvent): readonly File[] => {
   return files
 }
 
+const getTargetName = (event: any): string => {
+  const { target } = event
+  if (target.name) {
+    return target.name
+  }
+  const namedTarget =
+    target.closest?.('[name]') || target.parentElement?.closest?.('[name]')
+  if (
+    event.currentTarget?.contains &&
+    namedTarget !== event.currentTarget &&
+    !event.currentTarget.contains(namedTarget)
+  ) {
+    return ''
+  }
+  return namedTarget?.getAttribute?.('name') || namedTarget?.name || ''
+}
+
 export const getEventListenerArg = (param: string, event: any): any => {
   switch (param) {
     case 'event.altKey':
@@ -119,7 +136,7 @@ export const getEventListenerArg = (param: string, event: any): any => {
     case 'event.target.href':
       return event.target.href
     case 'event.target.name':
-      return event.target.name || ''
+      return getTargetName(event)
     case 'event.target.nodeName':
       return event.target.nodeName
     case 'event.target.scrollTop':
