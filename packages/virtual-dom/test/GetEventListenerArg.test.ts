@@ -40,3 +40,87 @@ test('getEventListenerArg - event.clipboardData.files returns empty array withou
 
   expect(result).toEqual([])
 })
+
+test('getEventListenerArg - event.target.name returns the target name', () => {
+  const button = document.createElement('button')
+  button.name = 'refresh'
+
+  const result = getEventListenerArg('event.target.name', { target: button })
+
+  expect(result).toBe('refresh')
+})
+
+test('getEventListenerArg - event.target.name returns the named button for an icon click', () => {
+  const button = document.createElement('button')
+  button.name = 'refresh'
+  const icon = document.createElement('span')
+  icon.className = 'MaskIcon'
+  button.append(icon)
+
+  const result = getEventListenerArg('event.target.name', { target: icon })
+
+  expect(result).toBe('refresh')
+})
+
+test('getEventListenerArg - event.target.name returns the named button for a deeply nested icon click', () => {
+  const button = document.createElement('button')
+  button.name = 'refresh'
+  const icon = document.createElement('span')
+  const iconDecoration = document.createElement('span')
+  icon.append(iconDecoration)
+  button.append(icon)
+
+  const result = getEventListenerArg('event.target.name', {
+    target: iconDecoration,
+  })
+
+  expect(result).toBe('refresh')
+})
+
+test('getEventListenerArg - event.target.name uses the nearest named ancestor', () => {
+  const outer = document.createElement('div')
+  outer.setAttribute('name', 'outer')
+  const button = document.createElement('button')
+  button.name = 'inner'
+  const icon = document.createElement('span')
+  button.append(icon)
+  outer.append(button)
+
+  const result = getEventListenerArg('event.target.name', { target: icon })
+
+  expect(result).toBe('inner')
+})
+
+test('getEventListenerArg - event.target.name returns an empty string without a named target', () => {
+  const icon = document.createElement('span')
+
+  const result = getEventListenerArg('event.target.name', { target: icon })
+
+  expect(result).toBe('')
+})
+
+test('getEventListenerArg - event.target.name does not escape the event listener root', () => {
+  const namedOuter = document.createElement('div')
+  namedOuter.setAttribute('name', 'outer')
+  const eventRoot = document.createElement('div')
+  const icon = document.createElement('span')
+  eventRoot.append(icon)
+  namedOuter.append(eventRoot)
+
+  const result = getEventListenerArg('event.target.name', {
+    currentTarget: eventRoot,
+    target: icon,
+  })
+
+  expect(result).toBe('')
+})
+
+test('getEventListenerArg - event.target.name supports a non-DOM event target', () => {
+  const result = getEventListenerArg('event.target.name', {
+    target: {
+      name: 'refresh',
+    },
+  })
+
+  expect(result).toBe('refresh')
+})
