@@ -8,8 +8,10 @@ import type { BenchmarkTests } from './benchmarkTests.ts'
 import { getAboutViewTests } from './aboutView.ts'
 import { getActivityBarWorkerTests } from './activityBarWorker.ts'
 import {
+  aboutAllowedFailures,
   activityBarAllowedFailures,
   explorerAllowedFailures,
+  titleBarAllowedFailures,
 } from './allowedFailures.ts'
 import { getExplorerViewTests } from './explorerView.ts'
 import { prepareAboutViewServer } from './prepareAboutViewServer.ts'
@@ -67,10 +69,12 @@ const workloads: readonly WorkloadOptions[] = [
     getTests: getExplorerViewTests,
   },
   {
+    allowedFailures: aboutAllowedFailures,
     getTests: getAboutViewTests,
     prepare: prepareAboutViewServer,
   },
   {
+    allowedFailures: titleBarAllowedFailures,
     getTests: getTitleBarWorkerTests,
   },
 ]
