@@ -112,6 +112,14 @@ test('aria attributes - sets and removes attributes', () => {
   expect($Element.hasAttribute('aria-invalid')).toBe(false)
 })
 
+test('serialized aria attributes - sets raw attribute names', () => {
+  const $Element = document.createElement('div')
+  VirtualDomElementProp.setProp($Element, 'aria-label', 'Live preview', {})
+  VirtualDomElementProp.setProp($Element, 'aria-expanded', false, {})
+  expect($Element.getAttribute('aria-label')).toBe('Live preview')
+  expect($Element.getAttribute('aria-expanded')).toBe('false')
+})
+
 test('input type - sets input type', () => {
   const $Element = document.createElement('input')
   VirtualDomElementProp.setProp($Element, 'inputType', 'checkbox', {})

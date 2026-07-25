@@ -260,3 +260,33 @@ test('compareNodes - reference node uid unchanged', () => {
   const patches = CompareNodes.compareNodes(oldNode, newNode)
   expect(patches).toEqual([])
 })
+
+test('compareNodes - reference node attributes changed', () => {
+  const oldNode: VirtualDomNode = {
+    className: 'TreeCanvas',
+    'data-state': 'summer',
+    type: VirtualDomElements.Reference,
+    uid: 'ref-1',
+    childCount: 0,
+  }
+  const newNode: VirtualDomNode = {
+    className: 'TreeCanvas TreeCanvasAutumn',
+    'data-state': 'autumn',
+    type: VirtualDomElements.Reference,
+    uid: 'ref-1',
+    childCount: 0,
+  }
+  const patches = CompareNodes.compareNodes(oldNode, newNode)
+  expect(patches).toEqual([
+    {
+      type: PatchType.SetAttribute,
+      key: 'className',
+      value: 'TreeCanvas TreeCanvasAutumn',
+    },
+    {
+      type: PatchType.SetAttribute,
+      key: 'data-state',
+      value: 'autumn',
+    },
+  ])
+})

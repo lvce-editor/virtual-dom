@@ -24,7 +24,6 @@ export const compareNodes = (
         uid: newNode.uid,
       })
     }
-    return patches
   }
 
   // Handle text nodes
@@ -42,8 +41,12 @@ export const compareNodes = (
   }
 
   // Compare attributes
-  const oldKeys = GetKeys.getKeys(oldNode)
-  const newKeys = GetKeys.getKeys(newNode)
+  const oldKeys = GetKeys.getKeys(oldNode).filter(
+    (key) => oldNode.type !== VirtualDomElements.Reference || key !== 'uid',
+  )
+  const newKeys = GetKeys.getKeys(newNode).filter(
+    (key) => newNode.type !== VirtualDomElements.Reference || key !== 'uid',
+  )
 
   // Check for attribute changes
   for (const key of newKeys) {
