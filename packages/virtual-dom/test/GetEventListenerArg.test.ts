@@ -124,3 +124,29 @@ test('getEventListenerArg - event.target.name supports a non-DOM event target', 
 
   expect(result).toBe('refresh')
 })
+
+test('getEventListenerArg - returns nested event target values', () => {
+  const event = {
+    target: {
+      currentTime: 12.5,
+      error: {
+        code: 4,
+        message: 'Format error',
+      },
+    },
+  }
+
+  expect(getEventListenerArg('event.target.currentTime', event)).toBe(12.5)
+  expect(getEventListenerArg('event.target.error.code', event)).toBe(4)
+  expect(getEventListenerArg('event.target.error.message', event)).toBe(
+    'Format error',
+  )
+})
+
+test('getEventListenerArg - returns undefined when a nested event target value is missing', () => {
+  const event = {
+    target: {},
+  }
+
+  expect(getEventListenerArg('event.target.error.code', event)).toBeUndefined()
+})

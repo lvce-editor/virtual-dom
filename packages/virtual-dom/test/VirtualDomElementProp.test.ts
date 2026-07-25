@@ -1,7 +1,7 @@
 /**
  * @jest-environment jsdom
  */
-import { expect, test } from '@jest/globals'
+import { expect, jest, test } from '@jest/globals'
 import * as VirtualDomElementProp from '../src/parts/VirtualDomElementProp/VirtualDomElementProp.ts'
 
 test('maskImage - sets mask image style', () => {
@@ -148,4 +148,44 @@ test('setting id to empty string removes id', () => {
   const $Element = document.createElement('div')
   VirtualDomElementProp.setProp($Element, 'id', '', {})
   expect($Element.id).toBe('')
+})
+
+test('media event properties attach event listeners', () => {
+  const $Element = document.createElement('video')
+  const eventMap = {
+    handleError: (): void => {},
+    handleLoadedData: (): void => {},
+    handleTimeUpdate: (): void => {},
+  }
+  jest.spyOn($Element, 'addEventListener')
+
+  VirtualDomElementProp.setProp($Element, 'onError', 'handleError', eventMap)
+  VirtualDomElementProp.setProp(
+    $Element,
+    'onLoadedData',
+    'handleLoadedData',
+    eventMap,
+  )
+  VirtualDomElementProp.setProp(
+    $Element,
+    'onTimeUpdate',
+    'handleTimeUpdate',
+    eventMap,
+  )
+
+  expect($Element.addEventListener).toHaveBeenCalledWith(
+    'error',
+    expect.any(Function),
+    undefined,
+  )
+  expect($Element.addEventListener).toHaveBeenCalledWith(
+    'loadeddata',
+    expect.any(Function),
+    undefined,
+  )
+  expect($Element.addEventListener).toHaveBeenCalledWith(
+    'timeupdate',
+    expect.any(Function),
+    undefined,
+  )
 })
