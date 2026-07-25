@@ -36,6 +36,7 @@ const eventProps = new Set([
   'onDragOver',
   'onDragStart',
   'onDrop',
+  'onError',
   'onFocus',
   'onFocusIn',
   'onFocusOut',
@@ -43,6 +44,7 @@ const eventProps = new Set([
   'onKeydown',
   'onKeyDown',
   'onKeyUp',
+  'onLoadedData',
   'onMouseDown',
   'onMouseMove',
   'onMouseOut',
@@ -55,6 +57,7 @@ const eventProps = new Set([
   'onScroll',
   'onSelectionChange',
   'onSubmit',
+  'onTimeUpdate',
   'onWheel',
 ])
 
