@@ -38,6 +38,35 @@ test('diffTrees - add new node', () => {
   ])
 })
 
+test('diffTrees - add deeply nested tree', () => {
+  const depth = 20_000
+  let root: VirtualDomTreeNode = {
+    node: {
+      type: VirtualDomElements.Div,
+      childCount: 0,
+    },
+    children: [],
+  }
+  for (let i = 1; i < depth; i++) {
+    root = {
+      node: {
+        type: VirtualDomElements.Div,
+        childCount: 1,
+      },
+      children: [root],
+    }
+  }
+  const patches: Patch[] = []
+
+  DiffTrees.diffTrees([], [root], patches, [])
+
+  expect(patches).toHaveLength(1)
+  expect(patches[0]).toMatchObject({
+    type: PatchType.Add,
+  })
+  expect(patches[0].nodes).toHaveLength(depth)
+})
+
 test.todo('diffTrees - remove old node')
 
 test.todo('diffTrees - add node with children')
