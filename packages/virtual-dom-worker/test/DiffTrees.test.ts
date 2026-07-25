@@ -64,7 +64,11 @@ test('diffTrees - add deeply nested tree', () => {
   expect(patches[0]).toMatchObject({
     type: PatchType.Add,
   })
-  expect(patches[0].nodes).toHaveLength(depth)
+  const patch = patches[0]
+  if (patch.type !== PatchType.Add) {
+    throw new Error('expected add patch')
+  }
+  expect(patch.nodes).toHaveLength(depth)
 })
 
 test.todo('diffTrees - remove old node')
