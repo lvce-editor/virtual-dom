@@ -17,13 +17,14 @@ export const compareNodes = (
   const patches: Patch[] = []
 
   // Handle reference nodes - special handling for uid changes
-  if (oldNode.type === VirtualDomElements.Reference) {
-    if (oldNode.uid !== newNode.uid) {
-      patches.push({
-        type: PatchType.SetReferenceNodeUid,
-        uid: newNode.uid,
-      })
-    }
+  if (
+    oldNode.type === VirtualDomElements.Reference &&
+    oldNode.uid !== newNode.uid
+  ) {
+    patches.push({
+      type: PatchType.SetReferenceNodeUid,
+      uid: newNode.uid,
+    })
   }
 
   // Handle text nodes
