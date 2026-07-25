@@ -91,6 +91,18 @@ const getTargetName = (event: any): string => {
   return namedTarget?.getAttribute?.('name') || namedTarget?.name || ''
 }
 
+const getNestedProperty = (value: any, path: string): any => {
+  const parts = path.split('.')
+  let current = value
+  for (const part of parts) {
+    if (current === undefined || current === null) {
+      return undefined
+    }
+    current = current[part]
+  }
+  return current
+}
+
 export const getEventListenerArg = (param: string, event: any): any => {
   switch (param) {
     case 'event.altKey':
@@ -158,20 +170,12 @@ export const getEventListenerArg = (param: string, event: any): any => {
         typeof param === 'string' &&
         param.startsWith('event.currentTarget.')
       ) {
-        const rest = param.slice('event.currentTarget.'.length)
-        const parts = rest.split('.')
-        let current: any = event.currentTarget
-        for (const part of parts) {
-          current = current[part]
-        }
-        return current
+        const path = param.slice('event.currentTarget.'.length)
+        return getNestedProperty(event.currentTarget, path)
       }
-      if (
-        typeof param === 'string' &&
-        param.startsWith('event.target.dataset')
-      ) {
-        const rest = param.slice('event.target.dataset.'.length)
-        return event.target.dataset[rest]
+      if (typeof param === 'string' && param.startsWith('event.target.')) {
+        const path = param.slice('event.target.'.length)
+        return getNestedProperty(event.target, path)
       }
       return param
   }
