@@ -135,6 +135,11 @@ export const setProp = (
   eventMap: any,
   newEventMap?: any,
 ): void => {
+  if (key.startsWith('aria-')) {
+    $Element.setAttribute(key, String(value))
+    return
+  }
+
   switch (key) {
     case 'ariaActivedescendant':
       setOptionalAttribute($Element, 'aria-activedescendant', value)

@@ -19,12 +19,20 @@ const renderDomElement = (
   return $Element
 }
 
-const renderReferenceNode = (element: VirtualDomNode): any => {
+const renderReferenceNode = (
+  element: VirtualDomNode,
+  eventMap: any,
+  newEventMap: any,
+): any => {
   const instance = Instances.get(element.uid)
   if (!instance || !instance.state) {
     return document.createTextNode('Reference node not found')
   }
   const $Node = instance.state.$Viewlet
+  const props = Object.fromEntries(
+    Object.entries(element).filter(([key]) => key !== 'uid'),
+  )
+  VirtualDomElementProps.setProps($Node, props, eventMap, newEventMap)
   return $Node
 }
 
@@ -35,7 +43,7 @@ export const render = (
 ): Node => {
   switch (element.type) {
     case VirtualDomElements.Reference:
-      return renderReferenceNode(element)
+      return renderReferenceNode(element, eventMap, newEventMap)
     case VirtualDomElements.Text:
       return renderDomTextNode(element)
     default:
