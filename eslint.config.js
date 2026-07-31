@@ -1,11 +1,11 @@
 import * as config from '@lvce-editor/eslint-config'
-import * as actions from '@lvce-editor/eslint-plugin-github-actions'
+import { defineConfig } from 'eslint/config'
 
-export default [
+export default defineConfig([
   ...config.default,
   ...config.recommendedVirtualDom,
   ...config.recommendedTsconfig,
-  ...actions.default,
+  ...config.recommendedActions,
   {
     rules: {
       '@typescript-eslint/prefer-readonly-parameter-types': 'off',
@@ -55,4 +55,4 @@ export default [
       'virtual-dom/valid-child-count': 'off',
     },
   },
-]
+])
