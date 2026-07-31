@@ -2,6 +2,7 @@
  * @jest-environment jsdom
  */
 import { expect, test } from '@jest/globals'
+import * as EventState from '../src/parts/EventState/EventState.ts'
 import { rememberFocus } from '../src/parts/RememberFocus/RememberFocus.ts'
 
 test('rememberFocus - preserves focus on tree element', () => {
@@ -31,4 +32,15 @@ test('rememberFocus - preserves focus on tree element', () => {
 
   // Verify focus was preserved
   expect(document.activeElement).toBe($NewViewlet)
+})
+
+test('rememberFocus - restores event handling when rendering throws', () => {
+  const $Viewlet = document.createElement('div')
+
+  try {
+    expect(() => rememberFocus($Viewlet, [], {}, 1)).toThrow()
+    expect(EventState.enabled()).toBe(false)
+  } finally {
+    EventState.stopIgnore()
+  }
 })
