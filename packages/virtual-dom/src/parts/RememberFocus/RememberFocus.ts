@@ -113,42 +113,44 @@ export const rememberFocus = (
   uid = 0,
 ): any => {
   EventState.startIgnore()
-  const oldLeft = $Viewlet.style.left
-  const oldTop = $Viewlet.style.top
-  const oldWidth = $Viewlet.style.width
-  const oldHeight = $Viewlet.style.height
-  const activeElement = getActiveElementInside($Viewlet)
-  const isTreeFocused = activeElement?.getAttribute('role') === 'tree'
-  const isRootTree =
-    $Viewlet.getAttribute('role') === 'tree' && activeElement === $Viewlet
-  const focused = activeElement?.getAttribute('name') || null
-  const $Hidden = createHiddenContainer(activeElement, focused)
-  if (uid) {
-    const numericUid = Number(uid)
-    const inputMap = getInputMap($Viewlet)
-    $Viewlet = renderWithUid(
-      $Viewlet,
-      dom,
-      eventMap,
-      numericUid,
-      inputMap,
-      focused,
-      $Hidden,
-    )
+  try {
+    const oldLeft = $Viewlet.style.left
+    const oldTop = $Viewlet.style.top
+    const oldWidth = $Viewlet.style.width
+    const oldHeight = $Viewlet.style.height
+    const activeElement = getActiveElementInside($Viewlet)
+    const isTreeFocused = activeElement?.getAttribute('role') === 'tree'
+    const isRootTree =
+      $Viewlet.getAttribute('role') === 'tree' && activeElement === $Viewlet
+    const focused = activeElement?.getAttribute('name') || null
+    const $Hidden = createHiddenContainer(activeElement, focused)
+    if (uid) {
+      const numericUid = Number(uid)
+      const inputMap = getInputMap($Viewlet)
+      $Viewlet = renderWithUid(
+        $Viewlet,
+        dom,
+        eventMap,
+        numericUid,
+        inputMap,
+        focused,
+        $Hidden,
+      )
+    }
+    if (!uid) {
+      VirtualDom.renderInto($Viewlet, dom, eventMap)
+    }
+    $Hidden.remove()
+
+    restoreFocus($Viewlet, isRootTree, isTreeFocused, focused)
+
+    $Viewlet.style.top = oldTop
+    $Viewlet.style.left = oldLeft
+    $Viewlet.style.height = oldHeight
+    $Viewlet.style.width = oldWidth
+
+    return $Viewlet
+  } finally {
+    EventState.stopIgnore()
   }
-  if (!uid) {
-    VirtualDom.renderInto($Viewlet, dom, eventMap)
-  }
-  $Hidden.remove()
-
-  restoreFocus($Viewlet, isRootTree, isTreeFocused, focused)
-
-  $Viewlet.style.top = oldTop
-  $Viewlet.style.left = oldLeft
-  $Viewlet.style.height = oldHeight
-  $Viewlet.style.width = oldWidth
-
-  EventState.stopIgnore()
-
-  return $Viewlet
 }
