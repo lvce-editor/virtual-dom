@@ -31,6 +31,21 @@ const createHiddenContainer = (
   return $Hidden
 }
 
+const updateAttributes = ($Previous: HTMLElement, $New: HTMLElement): void => {
+  const newAttributeNames = new Set($New.getAttributeNames())
+  for (const attributeName of $Previous.getAttributeNames()) {
+    if (!newAttributeNames.has(attributeName)) {
+      $Previous.removeAttribute(attributeName)
+    }
+  }
+  for (const attributeName of newAttributeNames) {
+    $Previous.setAttribute(
+      attributeName,
+      $New.getAttribute(attributeName) as string,
+    )
+  }
+}
+
 const restoreFocusedElement = (
   $Hidden: HTMLDivElement,
   $New: HTMLElement,
@@ -46,8 +61,7 @@ const restoreFocusedElement = (
   if (!$Previous) {
     return
   }
-  $Previous.className = $NewFocused.className
-  $Previous.placeholder = $NewFocused.placeholder
+  updateAttributes($Previous, $NewFocused)
   if ($NewFocused.childNodes) {
     $Previous.replaceChildren(...$NewFocused.childNodes)
   }
