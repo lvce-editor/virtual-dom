@@ -4,6 +4,7 @@
 import { expect, test } from '@jest/globals'
 import * as EventState from '../src/parts/EventState/EventState.ts'
 import { rememberFocus } from '../src/parts/RememberFocus/RememberFocus.ts'
+import * as VirtualDomElements from '../src/parts/VirtualDomElements/VirtualDomElements.ts'
 
 test('rememberFocus - preserves focus on tree element', () => {
   // Create initial DOM structure
@@ -43,4 +44,52 @@ test('rememberFocus - restores event handling when rendering throws', () => {
   } finally {
     EventState.stopIgnore()
   }
+})
+
+test('rememberFocus - updates attributes on the preserved focused element', () => {
+  Object.defineProperty(globalThis, 'CSS', {
+    configurable: true,
+    value: {
+      escape: (value: string) => value,
+    },
+  })
+  const $Viewlet = document.createElement('div')
+  const $Toggle = document.createElement('button')
+  $Toggle.className = 'SearchFieldButton'
+  $Toggle.name = 'ToggleReplace'
+  $Toggle.setAttribute('aria-expanded', 'false')
+  $Toggle.dataset.stale = 'true'
+  $Viewlet.append($Toggle)
+  document.body.append($Viewlet)
+  $Toggle.focus()
+
+  const dom = [
+    {
+      childCount: 1,
+      className: 'FindWidget',
+      type: VirtualDomElements.Div,
+    },
+    {
+      'aria-expanded': true,
+      childCount: 0,
+      className: 'SearchFieldButton SearchFieldButtonChecked',
+      name: 'ToggleReplace',
+      title: 'Toggle Replace',
+      type: VirtualDomElements.Button,
+    },
+  ]
+
+  const $NewViewlet = rememberFocus($Viewlet, dom, {}, 1)
+  const $NewToggle = (
+    $NewViewlet as HTMLElement
+  ).querySelector<HTMLButtonElement>('[name="ToggleReplace"]')
+
+  expect($NewToggle).toBe($Toggle)
+  expect(document.activeElement).toBe($Toggle)
+  expect($NewToggle?.className).toBe(
+    'SearchFieldButton SearchFieldButtonChecked',
+  )
+  expect($NewToggle?.getAttribute('aria-expanded')).toBe('true')
+  expect($NewToggle?.dataset.stale).toBeUndefined()
+  expect($NewToggle?.title).toBe('Toggle Replace')
 })
