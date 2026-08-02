@@ -75,11 +75,15 @@ const renderWithUid = (
   uid: number,
   inputMap: Record<string, string>,
   focused: string | null,
-  $Hidden: HTMLDivElement,
+  activeElement: Element | null | undefined,
 ): HTMLElement => {
   const newEventMap = RegisterEventListeners.getEventListenerMap(uid)
   const $New = VirtualDom.render(dom, eventMap, newEventMap)
     .firstChild as HTMLElement
+  const $Hidden = createHiddenContainer(
+    $New.contains(activeElement || null) ? undefined : activeElement,
+    focused,
+  )
   ComponentUid.setComponentUid($New, uid)
   const $$NewInputs = QueryInputs.queryInputs($New)
   for (const $Input of $$NewInputs) {
@@ -89,6 +93,7 @@ const renderWithUid = (
   if (focused) {
     restoreFocusedElement($Hidden, $New, focused)
   }
+  $Hidden.remove()
   return $New
 }
 
@@ -137,7 +142,6 @@ export const rememberFocus = (
     const isRootTree =
       $Viewlet.getAttribute('role') === 'tree' && activeElement === $Viewlet
     const focused = activeElement?.getAttribute('name') || null
-    const $Hidden = createHiddenContainer(activeElement, focused)
     if (uid) {
       const numericUid = Number(uid)
       const inputMap = getInputMap($Viewlet)
@@ -148,13 +152,14 @@ export const rememberFocus = (
         numericUid,
         inputMap,
         focused,
-        $Hidden,
+        activeElement,
       )
     }
     if (!uid) {
+      const $Hidden = createHiddenContainer(activeElement, focused)
       VirtualDom.renderInto($Viewlet, dom, eventMap)
+      $Hidden.remove()
     }
-    $Hidden.remove()
 
     restoreFocus($Viewlet, isRootTree, isTreeFocused, focused)
 
