@@ -75,6 +75,19 @@ const handleClipboardDataFiles = (event: ClipboardEvent): readonly File[] => {
   return files
 }
 
+const handleClipboardDataFiles2 = (
+  event: ClipboardEvent,
+): readonly number[] => {
+  if (!event.clipboardData) {
+    return []
+  }
+  const fileItems = [...event.clipboardData.items].filter(
+    (item) => item.kind === 'file',
+  )
+  const promises = fileItems.map(unwrapItem)
+  return promises.map((promise) => FileHandles.add(promise))
+}
+
 const getTargetName = (event: any): string => {
   const { target } = event
   if (target.name) {
@@ -116,6 +129,8 @@ export const getEventListenerArg = (param: string, event: any): any => {
       return event.clientY
     case 'event.clipboardData.files':
       return handleClipboardDataFiles(event)
+    case 'event.clipboardData.files2':
+      return handleClipboardDataFiles2(event)
     case 'event.ctrlKey':
       return event.ctrlKey
     case 'event.data':

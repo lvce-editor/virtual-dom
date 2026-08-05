@@ -65,6 +65,35 @@ test('getEventListenerArg - event.clipboardData.files returns empty array withou
   expect(result).toEqual([])
 })
 
+test('getEventListenerArg - clipboard data ids retain native files', async () => {
+  const file = new File(['content'], 'Main.elm', { type: 'text/plain' })
+  const event = {
+    clipboardData: {
+      items: [
+        {
+          getAsFile: (): File => file,
+          kind: 'file',
+          type: 'text/plain',
+        },
+        {
+          kind: 'string',
+          type: 'text/plain',
+        },
+      ],
+    },
+  }
+
+  const ids = getEventListenerArg('event.clipboardData.files2', event)
+
+  await expect(getFileHandles(ids)).resolves.toEqual([
+    { kind: 'file-legacy', type: 'text/plain', value: file },
+  ])
+})
+
+test('getEventListenerArg - clipboard data ids are empty without clipboard data', () => {
+  expect(getEventListenerArg('event.clipboardData.files2', {})).toEqual([])
+})
+
 test('getEventListenerArg - event.target.name returns the target name', () => {
   const button = document.createElement('button')
   button.name = 'refresh'
