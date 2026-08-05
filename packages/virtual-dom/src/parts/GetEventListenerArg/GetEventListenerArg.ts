@@ -118,6 +118,12 @@ const getNestedProperty = (value: any, path: string): any => {
 }
 
 export const getEventListenerArg = (param: string, event: any): any => {
+  if (param === 'event.clipboardData.files') {
+    return handleClipboardDataFiles(event)
+  }
+  if (param === 'event.clipboardData.files2') {
+    return handleClipboardDataFiles2(event)
+  }
   switch (param) {
     case 'event.altKey':
       return event.altKey
@@ -127,10 +133,6 @@ export const getEventListenerArg = (param: string, event: any): any => {
       return event.clientX
     case 'event.clientY':
       return event.clientY
-    case 'event.clipboardData.files':
-      return handleClipboardDataFiles(event)
-    case 'event.clipboardData.files2':
-      return handleClipboardDataFiles2(event)
     case 'event.ctrlKey':
       return event.ctrlKey
     case 'event.data':
