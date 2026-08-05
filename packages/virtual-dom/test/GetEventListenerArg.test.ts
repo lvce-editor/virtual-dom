@@ -2,8 +2,8 @@
  * @jest-environment jsdom
  */
 import { expect, test } from '@jest/globals'
-import { getEventListenerArg } from '../src/parts/GetEventListenerArg/GetEventListenerArg.ts'
 import { getFileHandles } from '../src/parts/FileHandles/FileHandles.ts'
+import { getEventListenerArg } from '../src/parts/GetEventListenerArg/GetEventListenerArg.ts'
 
 test('getEventListenerArg - data transfer ids retain the native file alongside the file system handle', async () => {
   const file = new File(['content'], 'notes.txt', { type: 'text/plain' })
