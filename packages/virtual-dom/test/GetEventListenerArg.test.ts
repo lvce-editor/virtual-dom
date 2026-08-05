@@ -3,6 +3,30 @@
  */
 import { expect, test } from '@jest/globals'
 import { getEventListenerArg } from '../src/parts/GetEventListenerArg/GetEventListenerArg.ts'
+import { getFileHandles } from '../src/parts/FileHandles/FileHandles.ts'
+
+test('getEventListenerArg - data transfer ids retain the native file alongside the file system handle', async () => {
+  const file = new File(['content'], 'notes.txt', { type: 'text/plain' })
+  const handle = { kind: 'file', name: 'notes.txt' }
+  const event = {
+    dataTransfer: {
+      items: [
+        {
+          getAsFile: (): File => file,
+          getAsFileSystemHandle: async (): Promise<typeof handle> => handle,
+          kind: 'file',
+          type: 'text/plain',
+        },
+      ],
+    },
+  }
+
+  const ids = getEventListenerArg('event.dataTransfer.files2', event)
+
+  await expect(getFileHandles(ids)).resolves.toEqual([
+    { file, kind: 'file', type: 'text/plain', value: handle },
+  ])
+})
 
 test('getEventListenerArg - event.clipboardData.files returns pasted files array', () => {
   const firstFile = new File(['a'], 'first.txt', {
