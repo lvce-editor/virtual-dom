@@ -154,12 +154,14 @@ test('media event properties attach event listeners', () => {
   const $Element = document.createElement('video')
   const eventMap = {
     handleError: (): void => {},
+    handleLoad: (): void => {},
     handleLoadedData: (): void => {},
     handleTimeUpdate: (): void => {},
   }
   jest.spyOn($Element, 'addEventListener')
 
   VirtualDomElementProp.setProp($Element, 'onError', 'handleError', eventMap)
+  VirtualDomElementProp.setProp($Element, 'onLoad', 'handleLoad', eventMap)
   VirtualDomElementProp.setProp(
     $Element,
     'onLoadedData',
@@ -175,6 +177,11 @@ test('media event properties attach event listeners', () => {
 
   expect($Element.addEventListener).toHaveBeenCalledWith(
     'error',
+    expect.any(Function),
+    undefined,
+  )
+  expect($Element.addEventListener).toHaveBeenCalledWith(
+    'load',
     expect.any(Function),
     undefined,
   )
