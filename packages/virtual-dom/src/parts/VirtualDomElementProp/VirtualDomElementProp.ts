@@ -44,6 +44,7 @@ const eventProps = new Set([
   'onKeydown',
   'onKeyDown',
   'onKeyUp',
+  'onLoad',
   'onLoadedData',
   'onMouseDown',
   'onMouseMove',
