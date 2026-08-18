@@ -26,8 +26,8 @@ The Explorer benchmark downloads the explorer-view e2e tests, starts
 `@lvce-editor/server`, loads `/tests/_all.html` once using Explorer's
 `--reuse-page` mode, applies Explorer's per-test workspace and sidebar reset,
 and records browser-wide V8 CPU samples for the page and its workers. The
-workload is pinned to the explorer-view `v7.9.0` release and verified against
-commit `ff1124ff6d67c79c6838b5aa7cd0bceee4a96976`:
+workload is pinned to the explorer-view `v7.27.1` release and verified against
+commit `78ce679f96fd5b3f4b7840826f4ce77b1f60852d`:
 
 ```sh
 npm run benchmark:detailed
@@ -45,8 +45,8 @@ when that caller is present on the stack.
 
 The activity bar benchmark uses the same profiling process with the
 activity-bar-worker e2e suite. The workload is pinned to
-activity-bar-worker `v7.10.0` at commit
-`8c8c7a8275e85e8a15fcd15130df49fae07659ea`:
+activity-bar-worker `v7.23.0` at commit
+`25836d6423028fe7e4d28d0db951397eef78e43b`:
 
 ```sh
 npm run benchmark:activity-bar
@@ -60,8 +60,8 @@ server does not provide their signed-in account states. Any other test failure
 still fails the benchmark job.
 
 The About benchmark profiles the about-view e2e suite. The workload is pinned
-to about-view `v7.8.0` at commit
-`6e92dde363c4c04a60f2eadd258121aac29dd9ea`:
+to about-view `v7.22.0` at commit
+`6bfd0c1862208d3710541223fef1c8672c05bf25`:
 
 ```sh
 npm run benchmark:about-view
@@ -71,8 +71,8 @@ Its report is written to `packages/benchmark/dist/about-view-benchmark` and is
 published as a separate GitHub Pages route.
 
 The Title Bar benchmark profiles the title-bar-worker e2e suite. The workload
-is pinned to title-bar-worker `v4.9.2` at commit
-`b473917aa420a4565ff8bb5defe60b1d95491b27`:
+is pinned to title-bar-worker `v4.19.0` at commit
+`4a72984401ceac702c696b733180d0440fdb3eee`:
 
 ```sh
 npm run benchmark:title-bar
