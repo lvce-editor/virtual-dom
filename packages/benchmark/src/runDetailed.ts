@@ -348,13 +348,17 @@ export const runDetailedBenchmark = async (
   if (errors.length > 0) {
     throw new Error(`${workload.label} benchmark failed:\n${errors.join('\n')}`)
   }
-  const unexpectedFailed = runs.reduce(
-    (total, run) => total + run.summary.unexpectedFailed,
-    0,
+  const unexpectedFailures = runs.flatMap((run) =>
+    run.tests
+      .filter(
+        (result) =>
+          result.status === 'fail' && !allowedFailures.has(result.name),
+      )
+      .map((result) => `run ${run.index}: ${result.name}`),
   )
-  if (unexpectedFailed > 0) {
+  if (unexpectedFailures.length > 0) {
     throw new Error(
-      `${unexpectedFailed} unexpected ${workload.id} e2e tests failed across all runs`,
+      `${unexpectedFailures.length} unexpected ${workload.id} e2e tests failed across all runs:\n${unexpectedFailures.join('\n')}`,
     )
   }
 }

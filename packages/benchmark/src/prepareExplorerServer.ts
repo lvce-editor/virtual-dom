@@ -8,6 +8,10 @@ const resetRemovalOccurrenceRegex =
   /(^[ \t]*)await (invoke(?:\$\w+)?)\('FileSystem\.remove', 'memfs:\/\/\/workspace'\);/m
 const resetOccurrenceRegex =
   /(^[ \t]*)await (invoke(?:\$\w+)?)\('Layout\.reset'\);/m
+const workspaceSetPathReplacementRegex =
+  /await invoke(?:\$\w+)?\('FileSystem\.mkdir', path\);/
+const workspaceSetPathOccurrenceRegex =
+  /(^[ \t]*const setPath = async path => \{\n)([ \t]*)await (invoke(?:\$\w+)?)\('Workspace\.setPath', path\);/m
 
 export const addExplorerResetHook = (content: string): string => {
   if (resetReplacementRegex.test(content)) {
@@ -39,6 +43,22 @@ ${indent}await ${invoke}('Layout.showSideBar');`
   return content.replace(match[0], () => resetReplacement)
 }
 
+export const addWorkspaceSetPathHook = (content: string): string => {
+  if (workspaceSetPathReplacementRegex.test(content)) {
+    return content
+  }
+  const match = workspaceSetPathOccurrenceRegex.exec(content)
+  const header = match?.[1]
+  const indent = match?.[2]
+  const invoke = match?.[3]
+  if (!match || header === undefined || indent === undefined || !invoke) {
+    throw new Error('Could not find the workspace setPath helper')
+  }
+  const replacement = `${header}${indent}await ${invoke}('FileSystem.mkdir', path);
+${indent}await ${invoke}('Workspace.setPath', path);`
+  return content.replace(match[0], () => replacement)
+}
+
 const getTestWorkerPath = async (): Promise<string> => {
   const staticCommitRoot = await getStaticCommitRoot()
   return join(
@@ -53,7 +73,8 @@ const getTestWorkerPath = async (): Promise<string> => {
 export const prepareExplorerServer = async (): Promise<void> => {
   const testWorkerPath = await getTestWorkerPath()
   const content = await readFile(testWorkerPath, 'utf8')
-  const instrumented = addExplorerResetHook(content)
+  const withExplorerReset = addExplorerResetHook(content)
+  const instrumented = addWorkspaceSetPathHook(withExplorerReset)
   if (instrumented !== content) {
     await writeFile(testWorkerPath, instrumented)
   }
