@@ -25,7 +25,10 @@ const applyPendingPatches = (state: DiffState, skip = 0): void => {
 }
 
 const syncAncestorNavigation = (state: DiffState): void => {
-  while (state.siblingOffset === state.maxSiblingOffset) {
+  while (
+    state.indexStack.length > 2 &&
+    state.siblingOffset === state.maxSiblingOffset
+  ) {
     state.pendingPatches.push(PatchType.NavigateParent, 0)
     state.indexStack.pop()
     state.indexStack.pop()
@@ -202,6 +205,9 @@ const addRemainingNewNodes = (
   state: DiffState,
   newNodes: readonly VirtualDomNode[],
 ): void => {
+  if (state.j < newNodes.length && state.pendingPatches.length === 0) {
+    syncAncestorNavigation(state)
+  }
   applyPendingPatches(state)
   while (state.j < newNodes.length) {
     if (
