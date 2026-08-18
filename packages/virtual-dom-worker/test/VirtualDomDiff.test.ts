@@ -865,6 +865,48 @@ test('diff - add sibling while old sibling traversal is complete', () => {
   ])
 })
 
+test('diff - add sibling after updating the existing text child', () => {
+  const oldNodes = [
+    {
+      type: VirtualDomElements.Div,
+      childCount: 1,
+    },
+    text('a'),
+  ]
+  const newNodes = [
+    {
+      type: VirtualDomElements.Div,
+      childCount: 2,
+    },
+    text('b'),
+    text('c'),
+  ]
+  const patches = diff(oldNodes, newNodes)
+  expect(patches).toEqual([
+    {
+      index: 0,
+      type: PatchType.NavigateChild,
+    },
+    {
+      type: PatchType.SetText,
+      value: 'b',
+    },
+    {
+      type: PatchType.NavigateParent,
+    },
+    {
+      nodes: [
+        {
+          childCount: 0,
+          text: 'c',
+          type: VirtualDomElements.Text,
+        },
+      ],
+      type: PatchType.Add,
+    },
+  ])
+})
+
 test('diff - add data attributes', () => {
   const oldNodes = [
     {
@@ -1005,6 +1047,9 @@ test('diff - child removed, sibling added', () => {
     {
       type: PatchType.RemoveChild,
       index: 0,
+    },
+    {
+      type: PatchType.NavigateParent,
     },
     {
       type: PatchType.Add,
