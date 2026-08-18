@@ -28,6 +28,34 @@ test('getEventListenerArg - data transfer ids retain the native file alongside t
   ])
 })
 
+test('getEventListenerArg - reads the native file before the drag data store expires', async () => {
+  const file = new File(['content'], 'notes.txt', { type: 'text/plain' })
+  const handle = { kind: 'file', name: 'notes.txt' }
+  let dataStoreExpired = false
+  const event = {
+    dataTransfer: {
+      items: [
+        {
+          getAsFile: (): File | null => (dataStoreExpired ? null : file),
+          getAsFileSystemHandle: async (): Promise<typeof handle> => {
+            await Promise.resolve()
+            dataStoreExpired = true
+            return handle
+          },
+          kind: 'file',
+          type: 'text/plain',
+        },
+      ],
+    },
+  }
+
+  const ids = getEventListenerArg('event.dataTransfer.files2', event)
+
+  await expect(getFileHandles(ids)).resolves.toEqual([
+    { file, kind: 'file', type: 'text/plain', value: handle },
+  ])
+})
+
 test('getEventListenerArg - event.clipboardData.files returns pasted files array', () => {
   const firstFile = new File(['a'], 'first.txt', {
     type: 'text/plain',

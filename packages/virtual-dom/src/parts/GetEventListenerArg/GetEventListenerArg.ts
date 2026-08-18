@@ -14,13 +14,14 @@ const unwrapItemString = async (item: DataTransferItem): Promise<any> => {
 const unwrapItemFile = async (item: DataTransferItem): Promise<any> => {
   // @ts-ignore
   if (item.getAsFileSystemHandle) {
+    const nativeFile = item.getAsFile()
     // @ts-ignore
-    const file = await item.getAsFileSystemHandle()
+    const fileHandle = await item.getAsFileSystemHandle()
     return {
-      file: item.getAsFile(),
+      file: nativeFile,
       kind: 'file',
       type: item.type,
-      value: file,
+      value: fileHandle,
     }
   }
   const file = item.getAsFile()
