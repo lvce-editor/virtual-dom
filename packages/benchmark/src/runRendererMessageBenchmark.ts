@@ -56,6 +56,7 @@ interface WorkloadResult {
   readonly runError: string
   readonly serverVersion: string
   readonly summary: RunSummary
+  readonly unexpectedFailures: readonly string[]
   readonly workload: Omit<BenchmarkTests, 'testPath'>
 }
 
@@ -183,6 +184,7 @@ const runWorkload = async (
     new URL(virtualDomPath, outputRoot),
     `${JSON.stringify(virtualDomCalls, null, 2)}\n`,
   )
+  const allowedFailures = new Set(options.allowedFailures)
   return {
     browserVersion,
     messages: {
@@ -199,7 +201,13 @@ const runWorkload = async (
     },
     runError,
     serverVersion: server.version,
-    summary: getSummary(results, new Set(options.allowedFailures)),
+    summary: getSummary(results, allowedFailures),
+    unexpectedFailures: results
+      .filter(
+        (result) =>
+          result.status === 'fail' && !allowedFailures.has(result.name),
+      )
+      .map((result) => result.name),
     workload: {
       commit: workload.commit,
       id: workload.id,
@@ -284,7 +292,7 @@ const run = async (): Promise<void> => {
     }
     if (result.summary.unexpectedFailed > 0) {
       workloadErrors.push(
-        `${result.workload.label}: ${result.summary.unexpectedFailed} unexpected e2e tests failed`,
+        `${result.workload.label}: ${result.summary.unexpectedFailed} unexpected e2e tests failed:\n${result.unexpectedFailures.join('\n')}`,
       )
     }
     return workloadErrors
