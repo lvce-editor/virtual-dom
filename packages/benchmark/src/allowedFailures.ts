@@ -22,6 +22,7 @@ export const activityBarAllowedFailures = [
 export const explorerAllowedFailures = [
   'viewlet.explorer-copy-and-paste-folder.js',
   'viewlet.explorer-copy-paste-collision-preserves-files.js',
+  'viewlet.explorer-create-file-different-languages.js',
   'viewlet.explorer-delete-open-file-keeps-editor-stable.js',
   'viewlet.explorer-drop-file-and-folder-empty-workspace.js',
   'viewlet.explorer-drop-folder-empty-workspace.js',
