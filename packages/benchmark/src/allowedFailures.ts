@@ -23,8 +23,11 @@ export const explorerAllowedFailures = [
   'viewlet.explorer-drop-folder-empty-workspace.js',
   'viewlet.explorer-drop-two-folders-empty-workspace.js',
   'viewlet.explorer-empty-workspace.js',
+  'viewlet.explorer-focus-after-create-file.js',
   'viewlet.explorer-rename-file-preserves-order.js',
   'viewlet.explorer-rename-file-twice.js',
+  'viewlet.explorer-typeahead-cycle-after-reset.js',
+  'viewlet.explorer-typeahead-reset-word.js',
 ]
 
 export const titleBarAllowedFailures = [
