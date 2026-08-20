@@ -7,6 +7,7 @@ import { promisify } from 'node:util'
 import { chromium, type BrowserContext } from 'playwright'
 import type { BenchmarkTests } from './benchmarkTests.ts'
 import { startCpuProfile, type CpuProfileCaptureResult } from './cpuProfile.ts'
+import { parseUrl } from './parseUrl.ts'
 import { startDetailedBenchmarkServer } from './serverProcess.ts'
 import { getStatistics } from './statistics.ts'
 import {
@@ -147,7 +148,7 @@ const runBenchmarkOnce = async ({
       webSocketUrl: await getDevToolsWebSocketUrl(browserProfilePath),
     })
     try {
-      const url = new URL('/tests/_all.html', serverUrl)
+      const url = parseUrl('/tests/_all.html', serverUrl)
       if (filter) {
         url.searchParams.set('filter', filter)
       }
