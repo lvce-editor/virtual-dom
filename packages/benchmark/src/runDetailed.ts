@@ -7,6 +7,7 @@ import { promisify } from 'node:util'
 import { chromium, type BrowserContext } from 'playwright'
 import type { BenchmarkTests } from './benchmarkTests.ts'
 import { startCpuProfile, type CpuProfileCaptureResult } from './cpuProfile.ts'
+import { parseUrl } from './parseUrl.ts'
 import { startDetailedBenchmarkServer } from './serverProcess.ts'
 import { getStatistics } from './statistics.ts'
 import {
@@ -147,7 +148,7 @@ const runBenchmarkOnce = async ({
       webSocketUrl: await getDevToolsWebSocketUrl(browserProfilePath),
     })
     try {
-      const url = new URL('/tests/_all.html', serverUrl)
+      const url = parseUrl('/tests/_all.html', serverUrl)
       if (filter) {
         url.searchParams.set('filter', filter)
       }
@@ -348,13 +349,17 @@ export const runDetailedBenchmark = async (
   if (errors.length > 0) {
     throw new Error(`${workload.label} benchmark failed:\n${errors.join('\n')}`)
   }
-  const unexpectedFailed = runs.reduce(
-    (total, run) => total + run.summary.unexpectedFailed,
-    0,
+  const unexpectedFailures = runs.flatMap((run) =>
+    run.tests
+      .filter(
+        (result) =>
+          result.status === 'fail' && !allowedFailures.has(result.name),
+      )
+      .map((result) => `run ${run.index}: ${result.name}`),
   )
-  if (unexpectedFailed > 0) {
+  if (unexpectedFailures.length > 0) {
     throw new Error(
-      `${unexpectedFailed} unexpected ${workload.id} e2e tests failed across all runs`,
+      `${unexpectedFailures.length} unexpected ${workload.id} e2e tests failed across all runs:\n${unexpectedFailures.join('\n')}`,
     )
   }
 }

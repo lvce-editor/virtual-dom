@@ -7,8 +7,8 @@ const temporaryRoot = join(packageRoot, '.tmp')
 
 export const getExplorerViewTests = async (): Promise<BenchmarkTests> => {
   return getBenchmarkTests({
-    defaultCommit: '0cfcbf6679dbb0a54d4a3416d7fd61569a62b5a7',
-    defaultRef: 'v7.15.1',
+    defaultCommit: '78ce679f96fd5b3f4b7840826f4ce77b1f60852d',
+    defaultRef: 'v7.27.1',
     downloadRoot: join(temporaryRoot, 'explorer-view'),
     id: 'explorer-view',
     label: 'Explorer',

@@ -9,6 +9,7 @@ import {
 import { extname, join, normalize, relative, resolve } from 'node:path'
 import { fileURLToPath } from 'node:url'
 import { ensureBuild } from './ensureBuild.ts'
+import { parseUrl } from './parseUrl.ts'
 
 const packageRoot = fileURLToPath(new URL('..', import.meta.url))
 const root = join(packageRoot, '../..')
@@ -89,7 +90,9 @@ const handleRequest = async (
   response: ServerResponse,
 ): Promise<void> => {
   try {
-    const requestUrl = new URL(request.url ?? '/', 'http://127.0.0.1')
+    const url = request.url ?? '/'
+    const baseUrl = 'http://127.0.0.1'
+    const requestUrl = parseUrl(url, baseUrl)
     const path = decodeURIComponent(requestUrl.pathname)
 
     if (path.startsWith('/dist/')) {

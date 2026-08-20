@@ -2,8 +2,77 @@
  * @jest-environment jsdom
  */
 import { expect, test } from '@jest/globals'
+import { acquire } from '../src/parts/DropData/DropData.ts'
 import { getFileHandles } from '../src/parts/FileHandles/FileHandles.ts'
 import { getEventListenerArg } from '../src/parts/GetEventListenerArg/GetEventListenerArg.ts'
+
+test('getEventListenerArg - event.dropId retains ordered drop data', async () => {
+  const file = new File(['content'], 'notes.txt', { type: 'text/plain' })
+  const handle = { kind: 'file', name: 'notes.txt' }
+  let resolveString: ((value: string) => void) | undefined
+  const event = {
+    dataTransfer: {
+      items: [
+        {
+          getAsString(callback: (value: string) => void): void {
+            resolveString = callback
+          },
+          kind: 'string',
+          type: 'text/plain',
+        },
+        {
+          getAsFile: (): File => file,
+          getAsFileSystemHandle: (): Promise<typeof handle> =>
+            Promise.resolve(handle),
+          kind: 'file',
+          type: 'text/plain',
+        },
+      ],
+    },
+    type: 'drop',
+  }
+
+  const dropId = getEventListenerArg('event.dropId', event)
+  resolveString?.('hello')
+  const items = acquire(dropId)
+
+  if (items[0].kind !== 'string') {
+    throw new Error('Expected string item')
+  }
+  expect(await items[0].value).toBe('hello')
+  expect(items[0]).toMatchObject({
+    index: 0,
+    kind: 'string',
+    type: 'text/plain',
+  })
+  expect(items[1]).toMatchObject({
+    file,
+    index: 1,
+    kind: 'file',
+    type: 'text/plain',
+  })
+  if (items[1].kind !== 'file') {
+    throw new Error('Expected file item')
+  }
+  await expect(items[1].fileSystemHandle).resolves.toEqual(handle)
+})
+
+test('getEventListenerArg - event.dropId is unique and one-shot', () => {
+  const event = { dataTransfer: { items: [] }, type: 'drop' }
+  const first = getEventListenerArg('event.dropId', event)
+  const second = getEventListenerArg('event.dropId', event)
+
+  expect(first).not.toBe(second)
+  expect(acquire(first)).toEqual([])
+  expect(() => acquire(first)).toThrow('Drop data not found')
+  expect(acquire(second)).toEqual([])
+})
+
+test('getEventListenerArg - event.dropId is only available for drops', () => {
+  expect(() =>
+    getEventListenerArg('event.dropId', { type: 'dragover' }),
+  ).toThrow('event.dropId is only available for drop events')
+})
 
 test('getEventListenerArg - data transfer ids retain the native file alongside the file system handle', async () => {
   const file = new File(['content'], 'notes.txt', { type: 'text/plain' })
