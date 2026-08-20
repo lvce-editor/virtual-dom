@@ -27,6 +27,10 @@ test('broad drag drop and clipboard e2e coverage', async ({ page }) => {
     file2Value: 'plain text item',
     clipboardFileLength: 1,
     clipboardFileName: 'pasted.txt',
+    dropIdType: 'number',
+    dropSessionFileName: 'session.txt',
+    dropSessionItemCount: 2,
+    dropSessionText: 'drop session text',
   })
   expect(result.updatedDragMetadata).toEqual({
     firstText: 'old payload',
