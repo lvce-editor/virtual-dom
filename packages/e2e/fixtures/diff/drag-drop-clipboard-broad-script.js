@@ -5,6 +5,7 @@ import {
   text,
 } from './broad-test-helpers.js'
 import {
+  getDropData,
   getFileHandles,
   registerEventListeners,
   setComponentUid,
@@ -117,10 +118,14 @@ const runDropAndClipboard = async () => {
       name: 12,
       params: ['event.clipboardData.files'],
     },
+    {
+      name: 13,
+      params: ['event.dropId'],
+    },
   ])
   const initialDom = [{ type: VirtualDomElements.Div, childCount: 0 }]
   const updatedDom = [
-    { type: VirtualDomElements.Div, childCount: 3 },
+    { type: VirtualDomElements.Div, childCount: 4 },
     {
       type: VirtualDomElements.Div,
       id: 'drop-files-target',
@@ -142,6 +147,13 @@ const runDropAndClipboard = async () => {
       childCount: 1,
     },
     text('paste'),
+    {
+      type: VirtualDomElements.Div,
+      id: 'drop-session-target',
+      onDrop: 13,
+      childCount: 1,
+    },
+    text('drop session'),
   ]
   applyDiff($mount, initialDom, updatedDom, {}, uid)
 
@@ -179,6 +191,17 @@ const runDropAndClipboard = async () => {
   document.getElementById('paste-target').dispatchEvent(pasteEvent)
   const clipboardFiles = commands.at(-1).args[1]
 
+  const sessionTransfer = new DataTransfer()
+  sessionTransfer.items.add('drop session text', 'text/plain')
+  sessionTransfer.items.add(
+    new File(['session'], 'session.txt', { type: 'text/plain' }),
+  )
+  document
+    .getElementById('drop-session-target')
+    .dispatchEvent(createDropEvent(sessionTransfer))
+  const dropId = commands.at(-1).args[1]
+  const dropItems = getDropData(dropId)
+
   return {
     dropFileLength: dropFiles.length,
     dropFileName: dropFiles[0].name,
@@ -188,6 +211,10 @@ const runDropAndClipboard = async () => {
     file2Value: itemValues[0].value,
     clipboardFileLength: clipboardFiles.length,
     clipboardFileName: clipboardFiles[0].name,
+    dropIdType: typeof dropId,
+    dropSessionFileName: dropItems[1].file.name,
+    dropSessionItemCount: dropItems.length,
+    dropSessionText: await dropItems[0].value,
   }
 }
 
