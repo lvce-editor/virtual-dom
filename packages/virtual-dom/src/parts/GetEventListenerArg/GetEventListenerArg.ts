@@ -1,3 +1,4 @@
+import * as DropData from '../DropData/DropData.ts'
 import * as FileHandles from '../FileHandles/FileHandles.ts'
 
 const unwrapItemString = async (item: DataTransferItem): Promise<any> => {
@@ -152,6 +153,11 @@ export const getEventListenerArg = (param: string, event: any): any => {
       return event.deltaY
     case 'event.detail':
       return event.detail
+    case 'event.dropId':
+      if (event.type !== 'drop') {
+        throw new Error('event.dropId is only available for drop events')
+      }
+      return DropData.add(event.dataTransfer || null)
     case 'event.inputType':
       return event.inputType
     case 'event.isTrusted':
