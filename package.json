@@ -26,8 +26,8 @@
   },
   "devDependencies": {
     "@jest/globals": "^30.4.1",
-    "@lvce-editor/eslint-config": "^18.5.0",
-    "eslint": "^10.8.1",
+    "@lvce-editor/eslint-config": "^18.7.0",
+    "eslint": "^10.9.0",
     "jest": "^30.4.2",
     "jest-environment-jsdom": "^30.4.1",
     "prettier": "^3.9.6",
