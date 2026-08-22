@@ -1,7 +1,5 @@
 import { test, expect } from '../src/fixtures.ts'
 
-test.setTimeout(60_000)
-
 test('diff - add 10k direct element nodes', async ({ page }) => {
   await page.goto('/diff/large-dom-changes.html#add-direct-element-nodes')
 

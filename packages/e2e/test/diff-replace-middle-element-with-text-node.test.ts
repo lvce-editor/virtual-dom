@@ -1,8 +1,6 @@
 import { test, expect } from '../src/fixtures.ts'
 import { runLargeDomDiff } from './diff-large-dom-test-helper.ts'
 
-test.setTimeout(60_000)
-
 test('diff - replace middle element with text node', async ({ page }) => {
   const result = await runLargeDomDiff(page, 'replace-middle-element-with-text')
 
