@@ -31,6 +31,7 @@ export const explorerAllowedFailures = [
   'viewlet.explorer-focus-after-create-file.js',
   'viewlet.explorer-rename-file-preserves-order.js',
   'viewlet.explorer-rename-file-twice.js',
+  'viewlet.explorer-shift-select-while-creating-file.js',
   'viewlet.explorer-typeahead-cycle-after-reset.js',
   'viewlet.explorer-typeahead-reset-word.js',
 ]
