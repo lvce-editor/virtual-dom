@@ -140,28 +140,16 @@ export const removeProp = ($Element: VirtualDomElement, key: string): void => {
   $Element.removeAttribute(attributeName)
 }
 
-export const setProp = (
-  $Element: VirtualDomElement,
-  key: string,
-  value: any,
-  eventMap: any,
-  newEventMap?: any,
-): void => {
-  if (eventProps.has(key)) {
-    setEventProp($Element, key, value, eventMap, newEventMap)
+const setSvgProp = ($Element: SVGElement, key: string, value: any): void => {
+  if (key === 'style') {
+    SetStyle.setStyle($Element, value)
     return
   }
+  const attributeName = removedAttributeProps.get(key) || key
+  $Element.setAttribute(attributeName, String(value))
+}
 
-  if ($Element instanceof SVGElement) {
-    if (key === 'style') {
-      SetStyle.setStyle($Element, value)
-      return
-    }
-    const attributeName = removedAttributeProps.get(key) || key
-    $Element.setAttribute(attributeName, String(value))
-    return
-  }
-
+const setHtmlProp = ($Element: HTMLElement, key: string, value: any): void => {
   if (key.startsWith('aria-')) {
     $Element.setAttribute(key, String(value))
     return
@@ -235,4 +223,22 @@ export const setProp = (
   }
 
   $Element[key] = value
+}
+
+export const setProp = (
+  $Element: VirtualDomElement,
+  key: string,
+  value: any,
+  eventMap: any,
+  newEventMap?: any,
+): void => {
+  if (eventProps.has(key)) {
+    setEventProp($Element, key, value, eventMap, newEventMap)
+    return
+  }
+  if ($Element instanceof SVGElement) {
+    setSvgProp($Element, key, value)
+    return
+  }
+  setHtmlProp($Element, key, value)
 }
