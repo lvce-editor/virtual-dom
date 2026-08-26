@@ -2,7 +2,7 @@ import * as GetEventListenerOptions from '../GetEventListenerOptions/GetEventLis
 import * as GetWrappedListener from '../GetWrappedListener/GetWrappedListener.ts'
 
 const attachedListeners = new WeakMap<
-  HTMLElement,
+  Element,
   Map<string, { listener: EventListener; options: any }>
 >()
 
@@ -21,7 +21,7 @@ const getOptions = (fn: any): any => {
 }
 
 export const attachEvent = (
-  $Node: HTMLElement,
+  $Node: Element,
   eventMap: any,
   key: string,
   value: string,
@@ -57,7 +57,7 @@ export const attachEvent = (
   attachedListeners.set($Node, listenersByEvent)
 }
 
-export const detachEvent = ($Node: HTMLElement, key: string): void => {
+export const detachEvent = ($Node: Element, key: string): void => {
   const keyLower = key.toLowerCase()
   const listenersByEvent = attachedListeners.get($Node)
   const previous = listenersByEvent?.get(keyLower)

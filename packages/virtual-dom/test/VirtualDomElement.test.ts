@@ -44,6 +44,39 @@ test('render - creates input element with type', () => {
   expect(result.checked).toBe(true)
 })
 
+test.each([
+  [VirtualDomElements.Svg, 'svg'],
+  [VirtualDomElements.Rect, 'rect'],
+  [VirtualDomElements.Polygon, 'polygon'],
+  [VirtualDomElements.Path, 'path'],
+  [VirtualDomElements.Circle, 'circle'],
+])('render - creates SVG element %s as <%s>', (type, tagName) => {
+  const result = VirtualDomElement.render(
+    { childCount: 0, type },
+    {},
+  ) as Element
+
+  expect(result.namespaceURI).toBe('http://www.w3.org/2000/svg')
+  expect(result.nodeName.toLowerCase()).toBe(tagName)
+})
+
+test('render - applies SVG attributes', () => {
+  const result = VirtualDomElement.render(
+    {
+      childCount: 0,
+      fill: 'red',
+      points: '0,0 10,0 5,10',
+      'stroke-width': '2',
+      type: VirtualDomElements.Polygon,
+    },
+    {},
+  ) as Element
+
+  expect(result.getAttribute('fill')).toBe('red')
+  expect(result.getAttribute('points')).toBe('0,0 10,0 5,10')
+  expect(result.getAttribute('stroke-width')).toBe('2')
+})
+
 test('render - creates element with event listeners', () => {
   const mockHandler = jest.fn()
   const eventMap = {
