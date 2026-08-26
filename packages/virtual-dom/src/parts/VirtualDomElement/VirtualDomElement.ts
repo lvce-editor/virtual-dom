@@ -4,6 +4,22 @@ import * as Instances from '../Instances/Instances.ts'
 import * as VirtualDomElementProps from '../VirtualDomElementProps/VirtualDomElementProps.ts'
 import * as VirtualDomElements from '../VirtualDomElements/VirtualDomElements.ts'
 
+const svgNamespace = 'http://www.w3.org/2000/svg'
+
+const svgElementTypes = new Set([
+  VirtualDomElements.Circle,
+  VirtualDomElements.Defs,
+  VirtualDomElements.Ellipse,
+  VirtualDomElements.G,
+  VirtualDomElements.Line,
+  VirtualDomElements.Path,
+  VirtualDomElements.Polygon,
+  VirtualDomElements.Polyline,
+  VirtualDomElements.Rect,
+  VirtualDomElements.Svg,
+  VirtualDomElements.Use,
+])
+
 const renderDomTextNode = (element: any): Text => {
   return document.createTextNode(element.text)
 }
@@ -12,9 +28,11 @@ const renderDomElement = (
   element: VirtualDomNode,
   eventMap: any,
   newEventMap: any,
-): HTMLElement => {
+): Element => {
   const tag = ElementTagMap.getElementTag(element.type)
-  const $Element = document.createElement(tag)
+  const $Element = svgElementTypes.has(element.type)
+    ? document.createElementNS(svgNamespace, tag)
+    : document.createElement(tag)
   VirtualDomElementProps.setProps($Element, element, eventMap, newEventMap)
   return $Element
 }

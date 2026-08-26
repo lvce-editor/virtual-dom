@@ -12,7 +12,10 @@ const toCamelCase = (key: string): string => {
   return camelCaseKey
 }
 
-export const setStyle = ($Element: HTMLElement, styleString: string): void => {
+export const setStyle = (
+  $Element: HTMLElement | SVGElement,
+  styleString: string,
+): void => {
   if (typeof styleString !== 'string') {
     return
   }

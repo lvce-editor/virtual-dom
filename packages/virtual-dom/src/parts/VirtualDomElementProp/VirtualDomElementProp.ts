@@ -62,8 +62,10 @@ const eventProps = new Set([
   'onWheel',
 ])
 
+type VirtualDomElement = HTMLElement | SVGElement
+
 const setOptionalAttribute = (
-  $Element: HTMLElement,
+  $Element: VirtualDomElement,
   attributeName: string,
   value: any,
 ): void => {
@@ -95,7 +97,7 @@ const setPixelStyle = (
 }
 
 const setEventProp = (
-  $Element: HTMLElement,
+  $Element: VirtualDomElement,
   key: string,
   value: any,
   eventMap: any,
@@ -108,10 +110,16 @@ const setEventProp = (
   AttachEvent.attachEvent($Element, eventMap, eventName, value, newEventMap)
 }
 
-export const removeProp = ($Element: HTMLElement, key: string): void => {
+export const removeProp = ($Element: VirtualDomElement, key: string): void => {
   if (eventProps.has(key)) {
     const eventName = key.slice(2).toLowerCase()
     AttachEvent.detachEvent($Element, eventName)
+    return
+  }
+
+  if ($Element instanceof SVGElement) {
+    const attributeName = removedAttributeProps.get(key) || key
+    $Element.removeAttribute(attributeName)
     return
   }
 
@@ -133,12 +141,27 @@ export const removeProp = ($Element: HTMLElement, key: string): void => {
 }
 
 export const setProp = (
-  $Element: HTMLElement,
+  $Element: VirtualDomElement,
   key: string,
   value: any,
   eventMap: any,
   newEventMap?: any,
 ): void => {
+  if (eventProps.has(key)) {
+    setEventProp($Element, key, value, eventMap, newEventMap)
+    return
+  }
+
+  if ($Element instanceof SVGElement) {
+    if (key === 'style') {
+      SetStyle.setStyle($Element, value)
+      return
+    }
+    const attributeName = removedAttributeProps.get(key) || key
+    $Element.setAttribute(attributeName, String(value))
+    return
+  }
+
   if (key.startsWith('aria-')) {
     $Element.setAttribute(key, String(value))
     return
@@ -193,11 +216,6 @@ export const setProp = (
   if (key === 'maskImage') {
     $Element.style.maskImage = `url('${value}')`
     $Element.style.webkitMaskImage = `url('${value}')`
-    return
-  }
-
-  if (eventProps.has(key)) {
-    setEventProp($Element, key, value, eventMap, newEventMap)
     return
   }
 
