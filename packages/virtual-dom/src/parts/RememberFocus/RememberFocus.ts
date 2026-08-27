@@ -13,7 +13,9 @@ const getInputMap = ($Viewlet: HTMLElement): Record<string, string> => {
   const $$Inputs = QueryInputs.queryInputs($Viewlet)
   const inputMap = Object.create(null)
   for (const $Input of $$Inputs) {
-    inputMap[$Input.name] = $Input.value
+    if (!$Input.readOnly) {
+      inputMap[$Input.name] = $Input.value
+    }
   }
   return inputMap
 }
@@ -57,6 +59,9 @@ const restoreFocusedElement = (
   if (!$NewFocused) {
     return
   }
+  if ($NewFocused.readOnly) {
+    return
+  }
   const $Previous = $Hidden.firstChild as HTMLInputElement | null
   if (!$Previous) {
     return
@@ -87,7 +92,9 @@ const renderWithUid = (
   ComponentUid.setComponentUid($New, uid)
   const $$NewInputs = QueryInputs.queryInputs($New)
   for (const $Input of $$NewInputs) {
-    $Input.value = inputMap[$Input.name] || $Input.value || ''
+    if (!$Input.readOnly) {
+      $Input.value = inputMap[$Input.name] || $Input.value || ''
+    }
   }
   $Viewlet.replaceWith($New)
   if (focused) {
