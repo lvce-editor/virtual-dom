@@ -11,7 +11,10 @@ export {
   setDragInfo,
 } from '../DragInfo/DragInfo.ts'
 export { addFileHandle, getFileHandles } from '../FileHandles/FileHandles.ts'
-export { acquire as getDropData } from '../DropData/DropData.ts'
+export {
+  addItems as addDropData,
+  acquire as getDropData,
+} from '../DropData/DropData.ts'
 export type { RetainedDropItem } from '../DropData/DropData.ts'
 export type * from '../IDragInfo/IDragInfo.ts'
 export {
