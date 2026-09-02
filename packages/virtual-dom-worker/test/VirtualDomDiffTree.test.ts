@@ -541,12 +541,8 @@ test('diffTree - table structure', () => {
   const patches = diffTree(oldNodes, newNodes)
   expect(patches).toEqual([
     {
-      type: PatchType.NavigateChild,
-      index: 0,
-    },
-    {
-      type: PatchType.NavigateChild,
-      index: 0,
+      navigations: [PatchType.NavigateChild, 0, PatchType.NavigateChild, 0],
+      type: PatchType.MultiNavigation,
     },
     {
       type: PatchType.SetText,
@@ -589,16 +585,15 @@ test('diffTree - deep nested structure', () => {
   const patches = diffTree(oldNodes, newNodes)
   expect(patches).toEqual([
     {
-      type: PatchType.NavigateChild,
-      index: 0,
-    },
-    {
-      type: PatchType.NavigateChild,
-      index: 0,
-    },
-    {
-      type: PatchType.NavigateChild,
-      index: 0,
+      navigations: [
+        PatchType.NavigateChild,
+        0,
+        PatchType.NavigateChild,
+        0,
+        PatchType.NavigateChild,
+        0,
+      ],
+      type: PatchType.MultiNavigation,
     },
     {
       type: PatchType.SetText,
@@ -699,11 +694,8 @@ test('diffTree - add child nodes', () => {
   const patches = diffTree(oldNodes, newNodes)
   expect(patches).toEqual([
     {
-      type: PatchType.NavigateChild,
-      index: 0,
-    },
-    {
-      type: PatchType.NavigateParent,
+      navigations: [PatchType.NavigateChild, 0, PatchType.NavigateParent, 0],
+      type: PatchType.MultiNavigation,
     },
     {
       type: PatchType.Add,
@@ -779,57 +771,46 @@ test('diffTree - data3 editor row adds tokens before navigating to them', () => 
 
   expect(patches).toEqual([
     {
-      type: PatchType.NavigateChild,
-      index: 0,
-    },
-    {
-      type: PatchType.NavigateSibling,
-      index: 1,
-    },
-    {
-      type: PatchType.NavigateSibling,
-      index: 2,
-    },
-    {
-      type: PatchType.NavigateChild,
-      index: 0,
+      navigations: [
+        PatchType.NavigateChild,
+        0,
+        PatchType.NavigateSibling,
+        1,
+        PatchType.NavigateSibling,
+        2,
+        PatchType.NavigateChild,
+        0,
+      ],
+      type: PatchType.MultiNavigation,
     },
     {
       type: PatchType.SetText,
       value: '@cspell/dict-dotnet',
     },
     {
-      type: PatchType.NavigateParent,
-    },
-    {
-      type: PatchType.NavigateSibling,
-      index: 3,
-    },
-    {
-      type: PatchType.NavigateSibling,
-      index: 4,
-    },
-    {
-      type: PatchType.NavigateSibling,
-      index: 5,
-    },
-    {
-      type: PatchType.NavigateSibling,
-      index: 6,
-    },
-    {
-      type: PatchType.NavigateChild,
-      index: 0,
+      navigations: [
+        PatchType.NavigateParent,
+        0,
+        PatchType.NavigateSibling,
+        3,
+        PatchType.NavigateSibling,
+        4,
+        PatchType.NavigateSibling,
+        5,
+        PatchType.NavigateSibling,
+        6,
+        PatchType.NavigateChild,
+        0,
+      ],
+      type: PatchType.MultiNavigation,
     },
     {
       type: PatchType.SetText,
       value: '"',
     },
     {
-      type: PatchType.NavigateParent,
-    },
-    {
-      type: PatchType.NavigateParent,
+      navigations: [PatchType.NavigateParent, 0, PatchType.NavigateParent, 0],
+      type: PatchType.MultiNavigation,
     },
     {
       type: PatchType.Add,

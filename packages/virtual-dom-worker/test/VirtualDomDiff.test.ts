@@ -716,12 +716,8 @@ test('diff - table structure', () => {
   const patches = diff(oldNodes, newNodes)
   expect(patches).toEqual([
     {
-      type: PatchType.NavigateChild,
-      index: 0,
-    },
-    {
-      type: PatchType.NavigateChild,
-      index: 0,
+      navigations: [PatchType.NavigateChild, 0, PatchType.NavigateChild, 0],
+      type: PatchType.MultiNavigation,
     },
     {
       type: PatchType.SetText,
@@ -764,16 +760,15 @@ test('diff - deep nested structure', () => {
   const patches = diff(oldNodes, newNodes)
   expect(patches).toEqual([
     {
-      type: PatchType.NavigateChild,
-      index: 0,
-    },
-    {
-      type: PatchType.NavigateChild,
-      index: 0,
-    },
-    {
-      type: PatchType.NavigateChild,
-      index: 0,
+      navigations: [
+        PatchType.NavigateChild,
+        0,
+        PatchType.NavigateChild,
+        0,
+        PatchType.NavigateChild,
+        0,
+      ],
+      type: PatchType.MultiNavigation,
     },
     {
       type: PatchType.SetText,
@@ -1547,23 +1542,16 @@ test('nested elements removed 2', () => {
   const patches = diff(oldNodes, newNodes)
   expect(patches).toEqual([
     {
-      index: 0,
-      type: PatchType.NavigateChild,
-    },
-    {
-      index: 0,
-      type: PatchType.NavigateChild,
+      navigations: [PatchType.NavigateChild, 0, PatchType.NavigateChild, 0],
+      type: PatchType.MultiNavigation,
     },
     {
       index: 0,
       type: PatchType.RemoveChild,
     },
     {
-      type: PatchType.NavigateParent,
-    },
-    {
-      type: PatchType.NavigateSibling,
-      index: 1,
+      navigations: [PatchType.NavigateParent, 0, PatchType.NavigateSibling, 1],
+      type: PatchType.MultiNavigation,
     },
     {
       type: PatchType.SetAttribute,
@@ -1954,16 +1942,15 @@ test('large diff', () => {
   const patches = diff(oldNodes, newNodes)
   expect(patches).toEqual([
     {
-      type: PatchType.NavigateChild,
-      index: 0,
-    },
-    {
-      type: PatchType.NavigateChild,
-      index: 0,
-    },
-    {
-      type: PatchType.NavigateChild,
-      index: 0,
+      navigations: [
+        PatchType.NavigateChild,
+        0,
+        PatchType.NavigateChild,
+        0,
+        PatchType.NavigateChild,
+        0,
+      ],
+      type: PatchType.MultiNavigation,
     },
     {
       type: PatchType.SetAttribute,
@@ -1985,43 +1972,31 @@ test('large diff', () => {
       value: 'MaskIcon MaskIconChevronRight',
     },
 
-    // TODO this navigation seems wrong
     {
-      type: PatchType.NavigateParent,
-    },
-    {
-      type: PatchType.NavigateChild,
-      index: 0,
-    },
-    {
-      type: PatchType.NavigateChild,
-      index: 0,
-    },
-    {
-      type: PatchType.NavigateParent,
-    },
-    {
-      type: PatchType.NavigateChild,
-      index: 0,
-    },
-    {
-      type: PatchType.NavigateChild,
-      index: 0,
-    },
-    {
-      type: PatchType.NavigateParent,
-    },
-    {
-      type: PatchType.NavigateChild,
-      index: 0,
-    },
-    {
-      type: PatchType.NavigateChild,
-      index: 0,
-    },
-    {
-      type: PatchType.NavigateSibling,
-      index: 4,
+      // TODO this navigation seems wrong
+      navigations: [
+        PatchType.NavigateParent,
+        0,
+        PatchType.NavigateChild,
+        0,
+        PatchType.NavigateChild,
+        0,
+        PatchType.NavigateParent,
+        0,
+        PatchType.NavigateChild,
+        0,
+        PatchType.NavigateChild,
+        0,
+        PatchType.NavigateParent,
+        0,
+        PatchType.NavigateChild,
+        0,
+        PatchType.NavigateChild,
+        0,
+        PatchType.NavigateSibling,
+        4,
+      ],
+      type: PatchType.MultiNavigation,
     },
     // TODO this should not be in the diff, search header details hasn't changed
     {
@@ -2034,12 +2009,8 @@ test('large diff', () => {
       key: 'role',
     },
     {
-      type: PatchType.NavigateChild,
-      index: 0,
-    },
-    {
-      type: PatchType.NavigateSibling,
-      index: 4,
+      navigations: [PatchType.NavigateChild, 0, PatchType.NavigateSibling, 4],
+      type: PatchType.MultiNavigation,
     },
     {
       type: PatchType.SetAttribute,

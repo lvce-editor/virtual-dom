@@ -1,5 +1,6 @@
 import type { Patch } from '../Patch/Patch.ts'
 import type * as VirtualDomTree from '../VirtualDomTree/VirtualDomTree.ts'
+import * as AppendNavigationPatch from '../AppendNavigationPatch/AppendNavigationPatch.ts'
 import * as PatchType from '../PatchType/PatchType.ts'
 import * as CompareNodes from './CompareNodes.ts'
 import * as TreeToArray from './TreeToArray.ts'
@@ -10,17 +11,19 @@ const navigateToChild = (
   index: number,
 ): number => {
   if (currentChildIndex === -1) {
-    patches.push({
-      type: PatchType.NavigateChild,
+    AppendNavigationPatch.appendNavigationPatch(
+      patches,
+      PatchType.NavigateChild,
       index,
-    })
+    )
     return index
   }
   if (currentChildIndex !== index) {
-    patches.push({
-      type: PatchType.NavigateSibling,
+    AppendNavigationPatch.appendNavigationPatch(
+      patches,
+      PatchType.NavigateSibling,
       index,
-    })
+    )
   }
   return index
 }
@@ -30,9 +33,11 @@ const navigateToParent = (
   currentChildIndex: number,
 ): number => {
   if (currentChildIndex >= 0) {
-    patches.push({
-      type: PatchType.NavigateParent,
-    })
+    AppendNavigationPatch.appendNavigationPatch(
+      patches,
+      PatchType.NavigateParent,
+      0,
+    )
   }
   return -1
 }
