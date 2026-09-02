@@ -88,7 +88,12 @@ test('drop data can be registered from retained items', async () => {
   ])
 
   const items = acquire(id)
-  expect(items[0]).toMatchObject({ file, index: 0, kind: 'file', type: 'text/plain' })
+  expect(items[0]).toMatchObject({
+    file,
+    index: 0,
+    kind: 'file',
+    type: 'text/plain',
+  })
   if (items[0].kind !== 'file') {
     throw new Error('Expected file item')
   }
