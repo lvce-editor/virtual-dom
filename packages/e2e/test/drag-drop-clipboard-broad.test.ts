@@ -21,10 +21,6 @@ test('broad drag drop and clipboard e2e coverage', async ({ page }) => {
   expect(result.dropAndClipboard).toEqual({
     dropFileLength: 1,
     dropFileName: 'hello.txt',
-    file2IdsLength: 1,
-    file2Kind: 'string',
-    file2Type: 'text/plain',
-    file2Value: 'plain text item',
     clipboardFileLength: 1,
     clipboardFileName: 'pasted.txt',
     dropIdType: 'number',

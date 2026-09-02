@@ -50,16 +50,6 @@ const unwrapItem = (item: DataTransferItem): any => {
   }
 }
 
-const handleDataTransferFiles = (event: DragEvent): readonly number[] => {
-  if (!event.dataTransfer) {
-    return []
-  }
-  const items = [...event.dataTransfer.items]
-  const promises = items.map(unwrapItem)
-  const ids = promises.map((promise) => FileHandles.add(promise))
-  return ids
-}
-
 const handleClipboardDataFiles = (event: ClipboardEvent): readonly File[] => {
   if (!event.clipboardData) {
     return []
@@ -141,8 +131,6 @@ export const getEventListenerArg = (param: string, event: any): any => {
       return event.data
     case 'event.dataTransfer.files':
       return event.dataTransfer.files
-    case 'event.dataTransfer.files2':
-      return handleDataTransferFiles(event)
     case 'event.defaultPrevented':
       return event.defaultPrevented
     case 'event.deltaMode':

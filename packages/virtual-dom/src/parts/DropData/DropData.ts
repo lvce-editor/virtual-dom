@@ -79,10 +79,14 @@ const retainItems = (
   return items
 }
 
-export const add = (dataTransfer: DataTransfer | null): number => {
+export const addItems = (items: readonly RetainedDropItem[]): number => {
   const id = Id.create()
-  state[id] = retainItems(dataTransfer)
+  state[id] = items
   return id
+}
+
+export const add = (dataTransfer: DataTransfer | null): number => {
+  return addItems(retainItems(dataTransfer))
 }
 
 export const acquire = (id: number): readonly RetainedDropItem[] => {

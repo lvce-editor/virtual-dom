@@ -2,7 +2,7 @@
  * @jest-environment jsdom
  */
 import { expect, test } from '@jest/globals'
-import { acquire } from '../src/parts/DropData/DropData.ts'
+import { acquire, addItems } from '../src/parts/DropData/DropData.ts'
 import { getFileHandles } from '../src/parts/FileHandles/FileHandles.ts'
 import { getEventListenerArg } from '../src/parts/GetEventListenerArg/GetEventListenerArg.ts'
 
@@ -74,55 +74,31 @@ test('getEventListenerArg - event.dropId is only available for drops', () => {
   ).toThrow('event.dropId is only available for drop events')
 })
 
-test('getEventListenerArg - data transfer ids retain the native file alongside the file system handle', async () => {
+test('drop data can be registered from retained items', async () => {
   const file = new File(['content'], 'notes.txt', { type: 'text/plain' })
   const handle = { kind: 'file', name: 'notes.txt' }
-  const event = {
-    dataTransfer: {
-      items: [
-        {
-          getAsFile: (): File => file,
-          getAsFileSystemHandle: async (): Promise<typeof handle> => handle,
-          kind: 'file',
-          type: 'text/plain',
-        },
-      ],
+  const id = addItems([
+    {
+      file,
+      fileSystemHandle: Promise.resolve(handle as FileSystemHandle),
+      index: 0,
+      kind: 'file',
+      type: 'text/plain',
     },
-  }
-
-  const ids = getEventListenerArg('event.dataTransfer.files2', event)
-
-  await expect(getFileHandles(ids)).resolves.toEqual([
-    { file, kind: 'file', type: 'text/plain', value: handle },
   ])
-})
 
-test('getEventListenerArg - reads the native file before the drag data store expires', async () => {
-  const file = new File(['content'], 'notes.txt', { type: 'text/plain' })
-  const handle = { kind: 'file', name: 'notes.txt' }
-  let dataStoreExpired = false
-  const event = {
-    dataTransfer: {
-      items: [
-        {
-          getAsFile: (): File | null => (dataStoreExpired ? null : file),
-          getAsFileSystemHandle: async (): Promise<typeof handle> => {
-            await Promise.resolve()
-            dataStoreExpired = true
-            return handle
-          },
-          kind: 'file',
-          type: 'text/plain',
-        },
-      ],
-    },
+  const items = acquire(id)
+  expect(items[0]).toMatchObject({
+    file,
+    index: 0,
+    kind: 'file',
+    type: 'text/plain',
+  })
+  if (items[0].kind !== 'file') {
+    throw new Error('Expected file item')
   }
-
-  const ids = getEventListenerArg('event.dataTransfer.files2', event)
-
-  await expect(getFileHandles(ids)).resolves.toEqual([
-    { file, kind: 'file', type: 'text/plain', value: handle },
-  ])
+  await expect(items[0].fileSystemHandle).resolves.toEqual(handle)
+  expect(() => acquire(id)).toThrow('Drop data not found')
 })
 
 test('getEventListenerArg - event.clipboardData.files returns pasted files array', () => {
