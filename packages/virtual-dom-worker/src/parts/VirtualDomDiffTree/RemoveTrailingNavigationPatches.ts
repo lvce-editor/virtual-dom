@@ -7,7 +7,8 @@ export const removeTrailingNavigationPatches = (patches: Patch[]): Patch[] => {
     if (
       patch.type !== PatchType.NavigateChild &&
       patch.type !== PatchType.NavigateParent &&
-      patch.type !== PatchType.NavigateSibling
+      patch.type !== PatchType.NavigateSibling &&
+      patch.type !== PatchType.MultiNavigation
     ) {
       break
     }

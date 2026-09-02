@@ -182,23 +182,16 @@ test('diffTrees - text node split differently', () => {
   DiffTrees.diffTrees(oldTree, newTree, patches, [])
   expect(patches).toEqual([
     {
-      type: PatchType.NavigateChild,
-      index: 0,
-    },
-    {
-      type: PatchType.NavigateChild,
-      index: 0,
+      navigations: [PatchType.NavigateChild, 0, PatchType.NavigateChild, 0],
+      type: PatchType.MultiNavigation,
     },
     {
       type: PatchType.SetText,
       value: 'Abo',
     },
     {
-      type: PatchType.NavigateParent,
-    },
-    {
-      type: PatchType.NavigateSibling,
-      index: 1,
+      navigations: [PatchType.NavigateParent, 0, PatchType.NavigateSibling, 1],
+      type: PatchType.MultiNavigation,
     },
     {
       type: PatchType.SetText,

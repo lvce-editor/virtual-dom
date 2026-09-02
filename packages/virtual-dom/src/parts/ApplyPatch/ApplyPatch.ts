@@ -12,22 +12,19 @@ interface ApplyState {
 
 const handleNavigateChild = (
   state: ApplyState,
-  patches: readonly Patch[],
-  patchIndex: number,
+  index: number,
+  nextPatchType: number | undefined,
 ): boolean => {
-  const patch = patches[patchIndex] as any
   const $Children = (state.current as HTMLElement).childNodes
-  const $Child = $Children[patch.index]
+  const $Child = $Children[index]
   if ($Child) {
     state.current = $Child
     return true
   }
-  const nextPatch = patches[patchIndex + 1]
   if (
-    nextPatch &&
-    (nextPatch.type === PatchType.Replace ||
-      nextPatch.type === PatchType.SetReferenceNodeUid) &&
-    patch.index === $Children.length
+    (nextPatchType === PatchType.Replace ||
+      nextPatchType === PatchType.SetReferenceNodeUid) &&
+    index === $Children.length
   ) {
     const $Placeholder = document.createComment('virtual-dom-placeholder')
     ;(state.current as HTMLElement).append($Placeholder)
@@ -36,7 +33,7 @@ const handleNavigateChild = (
   }
   console.error('Cannot navigate to child: child not found at index', {
     $Current: state.current,
-    index: patch.index,
+    index,
     childCount: $Children.length,
   })
   return false
@@ -56,7 +53,7 @@ const handleNavigateParent = (state: ApplyState): boolean => {
 
 const handleNavigateSibling = (
   state: ApplyState,
-  patch: any,
+  index: number,
   $Element: Node,
   patchIndex: number,
 ): boolean => {
@@ -67,19 +64,67 @@ const handleNavigateSibling = (
     })
     return false
   }
-  let $Sibling = $Parent.childNodes[patch.index]
+  let $Sibling = $Parent.childNodes[index]
   if (!$Sibling && !state.hasAppliedMutation && state.current !== $Element) {
-    $Sibling = $Element.childNodes[patch.index]
+    $Sibling = $Element.childNodes[index]
   }
   if (!$Sibling) {
     console.error('Cannot navigate to sibling: sibling not found at index', {
       $Parent,
-      index: patch.index,
+      index,
       childCount: $Parent.childNodes.length,
     })
     return false
   }
   state.current = $Sibling
+  return true
+}
+
+const handleSingleNavigation = (
+  state: ApplyState,
+  type: number,
+  index: number,
+  nextPatchType: number | undefined,
+  $Element: Node,
+  patchIndex: number,
+): boolean => {
+  switch (type) {
+    case PatchType.NavigateChild:
+      return handleNavigateChild(state, index, nextPatchType)
+    case PatchType.NavigateParent:
+      return handleNavigateParent(state)
+    case PatchType.NavigateSibling:
+      return handleNavigateSibling(state, index, $Element, patchIndex)
+    default:
+      console.error('Unknown navigation type', { type })
+      return false
+  }
+}
+
+const handleMultiNavigation = (
+  state: ApplyState,
+  navigations: readonly number[],
+  nextPatchType: number | undefined,
+  $Element: Node,
+  patchIndex: number,
+): boolean => {
+  for (let i = 0; i < navigations.length; i += 2) {
+    const type = navigations[i]
+    const index = navigations[i + 1]
+    const nextType = navigations[i + 2] ?? nextPatchType
+    if (
+      !handleSingleNavigation(
+        state,
+        type,
+        index,
+        nextType,
+        $Element,
+        patchIndex,
+      )
+    ) {
+      return false
+    }
+  }
   return true
 }
 
@@ -107,12 +152,24 @@ const handleNavigationPatch = (
   $Element: Node,
 ): boolean => {
   switch (patch.type) {
+    case PatchType.MultiNavigation:
+      return handleMultiNavigation(
+        state,
+        patch.navigations,
+        patches[patchIndex + 1]?.type,
+        $Element,
+        patchIndex,
+      )
     case PatchType.NavigateChild:
-      return handleNavigateChild(state, patches, patchIndex)
+      return handleNavigateChild(
+        state,
+        patch.index,
+        patches[patchIndex + 1]?.type,
+      )
     case PatchType.NavigateParent:
       return handleNavigateParent(state)
     case PatchType.NavigateSibling:
-      return handleNavigateSibling(state, patch, $Element, patchIndex)
+      return handleNavigateSibling(state, patch.index, $Element, patchIndex)
     default:
       return true
   }
