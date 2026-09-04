@@ -62,6 +62,42 @@ const replaceTree = (
   })
 }
 
+const appendPatch = (patches: Patch[], patch: Patch): void => {
+  switch (patch.type) {
+    case PatchType.MultiNavigation:
+      for (let i = 0; i < patch.navigations.length; i += 2) {
+        AppendNavigationPatch.appendNavigationPatch(
+          patches,
+          patch.navigations[i],
+          patch.navigations[i + 1],
+        )
+      }
+      return
+    case PatchType.NavigateChild:
+    case PatchType.NavigateSibling:
+      AppendNavigationPatch.appendNavigationPatch(
+        patches,
+        patch.type,
+        patch.index,
+      )
+      return
+    case PatchType.NavigateParent:
+      AppendNavigationPatch.appendNavigationPatch(patches, patch.type, 0)
+      return
+    default:
+      patches.push(patch)
+  }
+}
+
+const appendPatches = (
+  patches: Patch[],
+  newPatches: readonly Patch[],
+): void => {
+  for (const patch of newPatches) {
+    appendPatch(patches, patch)
+  }
+}
+
 const diffExistingChild = (
   oldNode: VirtualDomTree.VirtualDomTreeNode,
   newNode: VirtualDomTree.VirtualDomTreeNode,
@@ -78,17 +114,17 @@ const diffExistingChild = (
 
   const hasChildrenToCompare =
     oldNode.children.length > 0 || newNode.children.length > 0
-  if (nodePatches.length === 0 && !hasChildrenToCompare) {
+  const childPatches: Patch[] = []
+  if (hasChildrenToCompare) {
+    diffChildren(oldNode.children, newNode.children, childPatches)
+  }
+  if (nodePatches.length === 0 && childPatches.length === 0) {
     return currentChildIndex
   }
 
   const nextChildIndex = navigateToChild(patches, currentChildIndex, index)
-  if (nodePatches.length > 0) {
-    patches.push(...nodePatches)
-  }
-  if (hasChildrenToCompare) {
-    diffChildren(oldNode.children, newNode.children, patches)
-  }
+  patches.push(...nodePatches)
+  appendPatches(patches, childPatches)
   return nextChildIndex
 }
 

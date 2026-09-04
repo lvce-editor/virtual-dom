@@ -54,6 +54,36 @@ test('diffTree - inner text node changed', () => {
   ])
 })
 
+test('diffTree - skips unchanged nested siblings before a changed branch', () => {
+  const oldNodes: readonly VirtualDomNode[] = [
+    { childCount: 2, type: VirtualDomElements.Div },
+    { childCount: 1, type: VirtualDomElements.Div },
+    { childCount: 1, type: VirtualDomElements.Div },
+    text('unchanged'),
+    { childCount: 1, type: VirtualDomElements.Div },
+    text('before'),
+  ]
+  const newNodes: readonly VirtualDomNode[] = [
+    { childCount: 2, type: VirtualDomElements.Div },
+    { childCount: 1, type: VirtualDomElements.Div },
+    { childCount: 1, type: VirtualDomElements.Div },
+    text('unchanged'),
+    { childCount: 1, type: VirtualDomElements.Div },
+    text('after'),
+  ]
+
+  expect(diffTree(oldNodes, newNodes)).toEqual([
+    {
+      navigations: [PatchType.NavigateChild, 1, PatchType.NavigateChild, 0],
+      type: PatchType.MultiNavigation,
+    },
+    {
+      type: PatchType.SetText,
+      value: 'after',
+    },
+  ])
+})
+
 test('diffTree - attribute changed 1', () => {
   const oldNodes = [
     {
@@ -694,10 +724,6 @@ test('diffTree - add child nodes', () => {
   const patches = diffTree(oldNodes, newNodes)
   expect(patches).toEqual([
     {
-      navigations: [PatchType.NavigateChild, 0, PatchType.NavigateParent, 0],
-      type: PatchType.MultiNavigation,
-    },
-    {
       type: PatchType.Add,
       nodes: [
         {
@@ -771,16 +797,7 @@ test('diffTree - data3 editor row adds tokens before navigating to them', () => 
 
   expect(patches).toEqual([
     {
-      navigations: [
-        PatchType.NavigateChild,
-        0,
-        PatchType.NavigateSibling,
-        1,
-        PatchType.NavigateSibling,
-        2,
-        PatchType.NavigateChild,
-        0,
-      ],
+      navigations: [PatchType.NavigateChild, 2, PatchType.NavigateChild, 0],
       type: PatchType.MultiNavigation,
     },
     {
@@ -791,12 +808,6 @@ test('diffTree - data3 editor row adds tokens before navigating to them', () => 
       navigations: [
         PatchType.NavigateParent,
         0,
-        PatchType.NavigateSibling,
-        3,
-        PatchType.NavigateSibling,
-        4,
-        PatchType.NavigateSibling,
-        5,
         PatchType.NavigateSibling,
         6,
         PatchType.NavigateChild,
