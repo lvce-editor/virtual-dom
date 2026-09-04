@@ -58,6 +58,16 @@ void test('addExplorerResetHook upgrades an existing workspace reset', () => {
   assert.equal(addExplorerResetHook(result), result)
 })
 
+void test('addExplorerResetHook accepts the current local file system helpers', () => {
+  const source = `const reset = async () => {
+    await remove('memfs:///workspace');
+    await mkdir('memfs:///workspace');
+    await invoke$3('Layout.resetViewLocations');
+}`
+
+  assert.equal(addExplorerResetHook(source), source)
+})
+
 void test('addExplorerResetHook rejects an unknown test worker bundle', () => {
   assert.throws(
     () => addExplorerResetHook('const value = 1'),

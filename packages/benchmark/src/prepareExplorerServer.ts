@@ -3,7 +3,7 @@ import { join } from 'node:path'
 import { getStaticCommitRoot } from './staticServerPaths.ts'
 
 const resetReplacementRegex =
-  /await invoke(?:\$\w+)?\('FileSystem\.mkdir', 'memfs:\/\/\/workspace'\);/
+  /await (?:invoke(?:\$\w+)?\('FileSystem\.mkdir', 'memfs:\/\/\/workspace'\)|mkdir\('memfs:\/\/\/workspace'\));/
 const resetRemovalOccurrenceRegex =
   /(^[ \t]*)await (invoke(?:\$\w+)?)\('FileSystem\.remove', 'memfs:\/\/\/workspace'\);/m
 const resetOccurrenceRegex =
