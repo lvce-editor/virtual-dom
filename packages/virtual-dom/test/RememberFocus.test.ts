@@ -134,3 +134,74 @@ test('rememberFocus - preserves a focused element inside a referenced subtree', 
   expect($NewWorkbench.contains($OpenSearchEditor)).toBe(true)
   expect(document.activeElement).toBe($OpenSearchEditor)
 })
+
+test('rememberFocus - uses the new value when a readonly input becomes editable', () => {
+  const $Viewlet = document.createElement('div')
+  const $Input = document.createElement('input')
+  $Input.name = 'secret-value'
+  $Input.readOnly = true
+  $Input.value = 'masked'
+  $Viewlet.append($Input)
+
+  const dom = [
+    {
+      childCount: 1,
+      type: VirtualDomElements.Div,
+    },
+    {
+      childCount: 0,
+      inputType: 'password',
+      name: 'secret-value',
+      readOnly: false,
+      type: VirtualDomElements.Input,
+      value: 'plain-text-secret',
+    },
+  ]
+
+  const $NewViewlet = rememberFocus($Viewlet, dom, {}, 1)
+  const $NewInput = (
+    $NewViewlet as HTMLElement
+  ).querySelector<HTMLInputElement>('[name="secret-value"]')
+
+  expect($NewInput?.readOnly).toBe(false)
+  expect($NewInput?.value).toBe('plain-text-secret')
+})
+
+test('rememberFocus - uses the new value when an editable input becomes readonly', () => {
+  Object.defineProperty(globalThis, 'CSS', {
+    configurable: true,
+    value: {
+      escape: (value: string) => value,
+    },
+  })
+  const $Viewlet = document.createElement('div')
+  const $Input = document.createElement('input')
+  $Input.name = 'secret-value'
+  $Input.value = 'plain-text-secret-updated'
+  $Viewlet.append($Input)
+  document.body.append($Viewlet)
+  $Input.focus()
+
+  const dom = [
+    {
+      childCount: 1,
+      type: VirtualDomElements.Div,
+    },
+    {
+      childCount: 0,
+      inputType: 'password',
+      name: 'secret-value',
+      readOnly: true,
+      type: VirtualDomElements.Input,
+      value: 'masked',
+    },
+  ]
+
+  const $NewViewlet = rememberFocus($Viewlet, dom, {}, 1)
+  const $NewInput = (
+    $NewViewlet as HTMLElement
+  ).querySelector<HTMLInputElement>('[name="secret-value"]')
+
+  expect($NewInput?.readOnly).toBe(true)
+  expect($NewInput?.value).toBe('masked')
+})

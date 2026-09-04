@@ -6,6 +6,7 @@
     "url": "git+https://github.com/lvce-editor/virtual-dom.git"
   },
   "license": "MIT",
+  "sideEffects": false,
   "type": "module",
   "main": "src/index.ts",
   "scripts": {
@@ -38,6 +39,6 @@
     }
   },
   "dependencies": {
-    "@lvce-editor/constants": "^5.29.0"
+    "@lvce-editor/constants": "^5.30.0"
   }
 }

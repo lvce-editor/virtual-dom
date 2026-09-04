@@ -137,6 +137,68 @@ test('text change of nested node', () => {
   expect($Child2.textContent).toBe('test')
 })
 
+test('text change with multiple navigations', () => {
+  const patches: readonly Patch[] = [
+    {
+      navigations: [
+        PatchType.NavigateChild,
+        0,
+        PatchType.NavigateChild,
+        0,
+        PatchType.NavigateParent,
+        0,
+        PatchType.NavigateSibling,
+        1,
+      ],
+      type: PatchType.MultiNavigation,
+    },
+    {
+      type: PatchType.SetText,
+      value: 'test',
+    },
+  ]
+  const $Root = document.createElement('div')
+  const $Child1 = document.createElement('div')
+  const $NestedText = document.createTextNode('')
+  const $Child2 = document.createTextNode('')
+  $Child1.append($NestedText)
+  $Root.append($Child1, $Child2)
+
+  ApplyPatch.applyPatch($Root, patches)
+
+  expect($NestedText.textContent).toBe('')
+  expect($Child2.textContent).toBe('test')
+})
+
+test('set reference node after multiple navigations when child does not exist yet', () => {
+  const uid = 'new-nested-editor'
+  const $Root = document.createElement('div')
+  const $Container = document.createElement('div')
+  const $Editor = document.createElement('div')
+  $Editor.className = 'Editor'
+  $Root.append($Container)
+  Instances.set(uid, {
+    state: {
+      $Viewlet: $Editor,
+    },
+  })
+  const patches: readonly Patch[] = [
+    {
+      navigations: [PatchType.NavigateChild, 0, PatchType.NavigateChild, 0],
+      type: PatchType.MultiNavigation,
+    },
+    {
+      type: PatchType.SetReferenceNodeUid,
+      uid,
+    },
+  ]
+
+  ApplyPatch.applyPatch($Root, patches)
+
+  expect($Container.childNodes).toHaveLength(1)
+  expect($Container.firstChild).toBe($Editor)
+})
+
 test('element removeChild', () => {
   const patches: readonly Patch[] = [
     {

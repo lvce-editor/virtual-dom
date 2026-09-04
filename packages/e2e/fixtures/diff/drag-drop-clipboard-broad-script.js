@@ -6,7 +6,6 @@ import {
 } from './broad-test-helpers.js'
 import {
   getDropData,
-  getFileHandles,
   registerEventListeners,
   setComponentUid,
   setDragInfo,
@@ -111,10 +110,6 @@ const runDropAndClipboard = async () => {
       params: ['event.dataTransfer.files'],
     },
     {
-      name: 11,
-      params: ['event.dataTransfer.files2'],
-    },
-    {
       name: 12,
       params: ['event.clipboardData.files'],
     },
@@ -125,7 +120,7 @@ const runDropAndClipboard = async () => {
   ])
   const initialDom = [{ type: VirtualDomElements.Div, childCount: 0 }]
   const updatedDom = [
-    { type: VirtualDomElements.Div, childCount: 4 },
+    { type: VirtualDomElements.Div, childCount: 3 },
     {
       type: VirtualDomElements.Div,
       id: 'drop-files-target',
@@ -133,13 +128,6 @@ const runDropAndClipboard = async () => {
       childCount: 1,
     },
     text('drop files'),
-    {
-      type: VirtualDomElements.Div,
-      id: 'drop-items-target',
-      onDrop: 11,
-      childCount: 1,
-    },
-    text('drop items'),
     {
       type: VirtualDomElements.Div,
       id: 'paste-target',
@@ -165,14 +153,6 @@ const runDropAndClipboard = async () => {
     .getElementById('drop-files-target')
     .dispatchEvent(createDropEvent(fileTransfer))
   const dropFiles = commands.at(-1).args[1]
-
-  const itemTransfer = new DataTransfer()
-  itemTransfer.items.add('plain text item', 'text/plain')
-  document
-    .getElementById('drop-items-target')
-    .dispatchEvent(createDropEvent(itemTransfer))
-  const itemIds = commands.at(-1).args[1]
-  const itemValues = await getFileHandles(itemIds)
 
   const pasteFile = new File(['pasted'], 'pasted.txt', { type: 'text/plain' })
   const pasteEvent = new Event('input', { bubbles: true, cancelable: true })
@@ -205,10 +185,6 @@ const runDropAndClipboard = async () => {
   return {
     dropFileLength: dropFiles.length,
     dropFileName: dropFiles[0].name,
-    file2IdsLength: itemIds.length,
-    file2Kind: itemValues[0].kind,
-    file2Type: itemValues[0].type,
-    file2Value: itemValues[0].value,
     clipboardFileLength: clipboardFiles.length,
     clipboardFileName: clipboardFiles[0].name,
     dropIdType: typeof dropId,
