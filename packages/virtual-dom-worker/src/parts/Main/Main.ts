@@ -1,6 +1,7 @@
 export {
   AriaRoles,
   ClassNames,
+  EventExpression,
   InputEventType,
   KeyCode,
   KeyModifier,
