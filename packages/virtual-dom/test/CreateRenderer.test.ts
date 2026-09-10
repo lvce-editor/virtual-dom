@@ -45,18 +45,16 @@ test('reuses clean nodes and removes listeners when disposing a view', () => {
 test('bounds each cache and ignores repeated disposal', () => {
   const renderer = createRenderer({ cache: { dom: 1, text: 1 } })
   const root = renderer.render([div, text, div, text])
-  const oldElements = Array.from(root.children)
+  const oldElements = [...root.children]
   const oldTexts = oldElements.map((element) => element.firstChild)
   renderer.dispose(root)
   renderer.dispose(root)
   const next = renderer.render([div, text, div, text])
   expect(
-    Array.from(next.children).filter((element) =>
-      oldElements.includes(element),
-    ),
+    [...next.children].filter((element) => oldElements.includes(element)),
   ).toHaveLength(1)
   expect(
-    Array.from(next.children).filter((element) =>
+    [...next.children].filter((element) =>
       oldTexts.includes(element.firstChild),
     ),
   ).toHaveLength(1)

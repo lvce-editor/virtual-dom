@@ -38,7 +38,17 @@ const validateLimit = (limit: number): number => {
 }
 
 /** Experimental: exclusively owns its rendered trees until dispose is called. */
-export const createRenderer = (options: RendererOptions = {}) => {
+export interface Renderer {
+  readonly clearCache: () => void
+  readonly dispose: (root: HTMLElement) => void
+  readonly render: (
+    nodes: readonly VirtualDomNode[],
+    eventMap?: any,
+    newEventMap?: any,
+  ) => HTMLElement
+}
+
+export const createRenderer = (options: RendererOptions = {}): Renderer => {
   const domLimit = validateLimit(options.cache?.dom ?? 0)
   const textLimit = validateLimit(options.cache?.text ?? 0)
   const elements: HTMLElement[] = []
@@ -96,7 +106,7 @@ export const createRenderer = (options: RendererOptions = {}) => {
       return
     }
     owned.delete(node)
-    for (const child of Array.from(node.childNodes)) {
+    for (const child of node.childNodes) {
       collect(child)
     }
     if (node instanceof Text) {
@@ -112,7 +122,7 @@ export const createRenderer = (options: RendererOptions = {}) => {
         recyclable.has(node) &&
         Object.getOwnPropertyNames(node).length === 0
       ) {
-        for (const attribute of Array.from(node.attributes)) {
+        for (const attribute of node.attributes) {
           node.removeAttribute(attribute.name)
         }
         node.scrollTop = 0
@@ -130,7 +140,7 @@ export const createRenderer = (options: RendererOptions = {}) => {
     }
     roots.delete(root)
     root.remove()
-    for (const child of Array.from(root.childNodes)) {
+    for (const child of root.childNodes) {
       collect(child)
     }
     root.replaceChildren()

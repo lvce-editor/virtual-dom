@@ -7,7 +7,7 @@ test('recycles disposed nodes without stale attributes or listeners', async ({
   await expect(page.getByText('New text')).toBeVisible()
   const result = await page.evaluate(() => {
     // @ts-ignore
-    return window.recyclingResult
+    return globalThis.recyclingResult
   })
   expect(result).toEqual({
     reusedElement: true,

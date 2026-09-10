@@ -28,4 +28,7 @@ export { render, renderInto } from '../VirtualDom/VirtualDom.ts'
 export * as VirtualDomElements from '../VirtualDomElements/VirtualDomElements.ts'
 
 export { createRenderer } from '../CreateRenderer/CreateRenderer.ts'
-export type { RendererOptions } from '../CreateRenderer/CreateRenderer.ts'
+export type {
+  Renderer,
+  RendererOptions,
+} from '../CreateRenderer/CreateRenderer.ts'
