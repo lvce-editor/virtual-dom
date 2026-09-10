@@ -6,12 +6,13 @@ export const renderInternal = (
   elements: readonly VirtualDomNode[],
   eventMap: any,
   newEventMap?: any,
+  renderElement = VirtualDomElement.render,
 ): void => {
   const max = elements.length - 1
   let stack: Node[] = []
   for (let i = max; i >= 0; i--) {
     const element = elements[i]
-    const $Element = VirtualDomElement.render(element, eventMap, newEventMap)
+    const $Element = renderElement(element, eventMap, newEventMap)
     if (element.childCount > 0) {
       // @ts-expect-error
       $Element.append(...stack.slice(0, element.childCount))
