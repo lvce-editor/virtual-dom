@@ -122,8 +122,8 @@ export const createRenderer = (options: RendererOptions = {}): Renderer => {
         recyclable.has(node) &&
         Object.getOwnPropertyNames(node).length === 0
       ) {
-        for (const attribute of node.attributes) {
-          node.removeAttribute(attribute.name)
+        for (const name of node.getAttributeNames()) {
+          node.removeAttribute(name)
         }
         node.scrollTop = 0
         node.scrollLeft = 0
