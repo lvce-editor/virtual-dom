@@ -174,6 +174,10 @@ const setHtmlProp = ($Element: HTMLElement, key: string, value: any): void => {
     case 'ariaOwns':
       setOptionalAttribute($Element, 'aria-owns', value)
       return
+    case 'autocorrect':
+      // The DOM property is boolean; assigning the string 'off' enables it.
+      $Element.setAttribute('autocorrect', value)
+      return
   }
 
   if (key === 'height' || key === 'width') {

@@ -196,3 +196,18 @@ test('media event properties attach event listeners', () => {
     undefined,
   )
 })
+
+test.each(['input', 'textarea'])(
+  'autocorrect - sets and removes on/off attributes on %s',
+  (tagName) => {
+    const $Element = document.createElement(tagName)
+    VirtualDomElementProp.setProp($Element, 'autocorrect', 'off', {})
+    expect($Element.getAttribute('autocorrect')).toBe('off')
+
+    VirtualDomElementProp.setProp($Element, 'autocorrect', 'on', {})
+    expect($Element.getAttribute('autocorrect')).toBe('on')
+
+    VirtualDomElementProp.removeProp($Element, 'autocorrect')
+    expect($Element.hasAttribute('autocorrect')).toBe(false)
+  },
+)
