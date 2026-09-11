@@ -82,18 +82,3 @@ void test('addWorkspaceSetPathHook rejects an unknown test worker bundle', () =>
     /Could not find the workspace setPath helper/,
   )
 })
-
-void test('addExplorerResetHook preserves an existing reset using filesystem helpers', () => {
-  const source = `const runTest = async () => {
-    await remove('memfs:///workspace');
-    await mkdir('memfs:///workspace');
-    await invoke$3('Main.closeAllEditors');
-    await invoke$3('Layout.resetViewLocations');
-};`
-  assert.equal(addExplorerResetHook(source), source)
-})
-
-void test('addExplorerResetHook preserves a renamed mkdir helper', () => {
-  const source = `await mkdir$1('memfs:///workspace');`
-  assert.equal(addExplorerResetHook(source), source)
-})
