@@ -304,6 +304,7 @@ export const runDetailedBenchmark = async (
       index: run.index,
       runError: run.runError,
       summary: run.summary,
+      tests: run.tests,
       virtualDomShare: run.virtualDomShare,
     })),
     schemaVersion: 3,
@@ -342,7 +343,7 @@ export const runDetailedBenchmark = async (
         (result) =>
           result.status === 'fail' && !allowedFailures.has(result.name),
       )
-      .map((result) => `run ${run.index}: ${result.name}`),
+      .map((result) => `run ${run.index}: ${result.name}: ${result.error}`),
   )
   if (unexpectedFailures.length > 0) {
     throw new Error(

@@ -205,3 +205,43 @@ test('rememberFocus - uses the new value when an editable input becomes readonly
   expect($NewInput?.readOnly).toBe(true)
   expect($NewInput?.value).toBe('masked')
 })
+
+test('rememberFocus - retains a focused input in a temporarily hidden referenced pane', () => {
+  Object.defineProperty(globalThis, 'CSS', {
+    configurable: true,
+    value: { escape: (value: string) => value },
+  })
+  const workbench = document.createElement('div')
+  const editor = document.createElement('div')
+  const input = document.createElement('textarea')
+  input.name = 'editor'
+  input.value = 'keep this selection'
+  editor.append(input)
+  workbench.append(editor)
+  document.body.append(workbench)
+  input.focus()
+  input.setSelectionRange(2, 7)
+  Instances.set(43, { state: { $Viewlet: editor } })
+
+  const hidden = rememberFocus(
+    workbench,
+    [{ type: VirtualDomElements.Div, childCount: 0 }],
+    {},
+    1,
+  )
+
+  expect(editor.contains(input)).toBe(true)
+  const restored = rememberFocus(
+    hidden,
+    [
+      { type: VirtualDomElements.Div, childCount: 1 },
+      { type: VirtualDomElements.Reference, uid: 43, childCount: 0 },
+    ],
+    {},
+    1,
+  )
+  expect(restored.querySelector('[name="editor"]')).toBe(input)
+  expect(input.value).toBe('keep this selection')
+  expect([input.selectionStart, input.selectionEnd]).toEqual([2, 7])
+  restored.remove()
+})
