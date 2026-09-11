@@ -217,3 +217,15 @@ test('playsInline - clears the property when it is not reflected', () => {
   expect($Element.playsInline).toBe(false)
   expect($Element.hasAttribute('playsinline')).toBe(false)
 })
+
+test('autocapitalize - sets the attribute without native property reflection', () => {
+  const $Element = document.createElement('input')
+  Object.defineProperty($Element, 'autocapitalize', {
+    value: '',
+    writable: true,
+  })
+  VirtualDomElementProp.setProp($Element, 'autocapitalize', 'off', {})
+  expect($Element.getAttribute('autocapitalize')).toBe('off')
+  VirtualDomElementProp.removeProp($Element, 'autocapitalize')
+  expect($Element.hasAttribute('autocapitalize')).toBe(false)
+})
