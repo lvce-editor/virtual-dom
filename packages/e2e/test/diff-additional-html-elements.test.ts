@@ -9,10 +9,11 @@ test('diff - additional html elements and properties', async ({ page }) => {
   })
 
   const root = page.locator('#additional-elements-root')
+  const children = root.locator(':scope > *')
   expect(
-    await root
-      .locator(':scope > *')
-      .evaluateAll((elements) => elements.map((element) => element.tagName)),
+    await children.evaluateAll((elements) =>
+      elements.map((element) => element.tagName),
+    ),
   ).toEqual(['P', 'BLOCKQUOTE', 'CANVAS', 'IFRAME'])
 
   const inlineElements = root.locator('#additional-inline-elements > *')
@@ -21,13 +22,13 @@ test('diff - additional html elements and properties', async ({ page }) => {
       elements.map((element) => element.tagName),
     ),
   ).toEqual(['STRONG', 'EM'])
-  await expect(root.locator('strong')).toHaveText('strong updates')
-  await expect(root.locator('em')).toHaveText('emphasized updates')
-  await expect(root.locator('blockquote')).toHaveAttribute(
-    'cite',
-    '/after-source',
-  )
-  await expect(root.locator('blockquote')).toHaveText('After quotation')
+  const strong = root.locator('strong')
+  await expect(strong).toHaveText('strong updates')
+  const emphasis = root.locator('em')
+  await expect(emphasis).toHaveText('emphasized updates')
+  const quotation = root.locator('blockquote')
+  await expect(quotation).toHaveAttribute('cite', '/after-source')
+  await expect(quotation).toHaveText('After quotation')
 
   const canvas = root.locator('canvas')
   await expect(canvas).toHaveCSS('width', '320px')
@@ -39,7 +40,8 @@ test('diff - additional html elements and properties', async ({ page }) => {
     'srcdoc',
     '<p id="frame-content">after</p>',
   )
-  await expect(
-    page.frameLocator('#additional-iframe').locator('#frame-content'),
-  ).toHaveText('after')
+  const frameContent = page
+    .frameLocator('#additional-iframe')
+    .locator('#frame-content')
+  await expect(frameContent).toHaveText('after')
 })
