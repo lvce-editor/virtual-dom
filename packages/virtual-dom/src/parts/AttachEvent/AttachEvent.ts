@@ -67,3 +67,14 @@ export const detachEvent = ($Node: Element, key: string): void => {
   $Node.removeEventListener(keyLower, previous.listener, previous.options)
   listenersByEvent?.delete(keyLower)
 }
+
+export const detachAll = ($Node: Element): void => {
+  const listeners = attachedListeners.get($Node)
+  if (!listeners) {
+    return
+  }
+  for (const [name, { listener, options }] of listeners) {
+    $Node.removeEventListener(name, listener, options)
+  }
+  attachedListeners.delete($Node)
+}
