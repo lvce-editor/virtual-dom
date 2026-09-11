@@ -9,10 +9,11 @@ test('diff - table sections, columns, and cell spans', async ({ page }) => {
   })
 
   const table = page.locator('#sectioned-table')
+  const sections = table.locator(':scope > *')
   expect(
-    await table
-      .locator(':scope > *')
-      .evaluateAll((elements) => elements.map((element) => element.tagName)),
+    await sections.evaluateAll((elements) =>
+      elements.map((element) => element.tagName),
+    ),
   ).toEqual(['COLGROUP', 'THEAD', 'TBODY', 'TFOOT'])
 
   const columns = table.locator('colgroup > col')
@@ -30,17 +31,15 @@ test('diff - table sections, columns, and cell spans', async ({ page }) => {
       elements.map((element) => element.getAttribute('scope')),
     ),
   ).toEqual(['col', 'col'])
-  await expect(table.locator('tbody > tr')).toHaveCount(3)
-  await expect(table.locator('tbody > tr').nth(0).locator('td')).toHaveText([
-    'virtual-dom',
-    '120',
-  ])
-  await expect(
-    table.locator('tbody > tr').nth(1).locator('td').first(),
-  ).toHaveAttribute('rowspan', '2')
-  await expect(table.locator('tbody > tr').nth(2)).toHaveText(
-    'browser coverage',
-  )
-  await expect(table.locator('tfoot td')).toHaveAttribute('colspan', '2')
-  await expect(table.locator('tfoot td')).toHaveText('Total 205')
+  const rows = table.locator('tbody > tr')
+  await expect(rows).toHaveCount(3)
+  const firstRowCells = rows.nth(0).locator('td')
+  await expect(firstRowCells).toHaveText(['virtual-dom', '120'])
+  const spanningCell = rows.nth(1).locator('td').first()
+  await expect(spanningCell).toHaveAttribute('rowspan', '2')
+  const lastRow = rows.nth(2)
+  await expect(lastRow).toHaveText('browser coverage')
+  const footer = table.locator('tfoot td')
+  await expect(footer).toHaveAttribute('colspan', '2')
+  await expect(footer).toHaveText('Total 205')
 })

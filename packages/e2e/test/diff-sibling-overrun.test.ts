@@ -26,7 +26,8 @@ test('diff - sibling overrun does not navigate out of range while appending chil
   })
 
   const container = page.locator('#diff-container')
-  await expect(container.locator('div').first()).toHaveText('ab')
+  const firstChild = container.locator('div').first()
+  await expect(firstChild).toHaveText('ab')
 
   expect(siblingErrors).toHaveLength(0)
 })

@@ -50,6 +50,13 @@ export default defineConfig([
     },
   },
   {
+    files: ['packages/virtual-dom-worker/src/parts/Text/Text.ts'],
+    rules: {
+      // This is the exported helper implementation, not a consumer.
+      'virtual-dom/no-text-helper': 'off',
+    },
+  },
+  {
     files: ['packages/benchmark/app/app.js'],
     rules: {
       'virtual-dom/valid-child-count': 'off',

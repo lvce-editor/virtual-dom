@@ -9,24 +9,28 @@ test('diff - semantic elements and reflected properties', async ({ page }) => {
   })
 
   const root = page.locator('#semantic-root')
-  await expect(root.locator(':scope > *')).toHaveCount(10)
+  const children = root.locator(':scope > *')
+  await expect(children).toHaveCount(10)
   expect(
-    await root
-      .locator(':scope > *')
-      .evaluateAll((elements) => elements.map((element) => element.tagName)),
+    await children.evaluateAll((elements) =>
+      elements.map((element) => element.tagName),
+    ),
   ).toEqual(['H3', 'H4', 'H5', 'H6', 'FIGURE', 'DL', 'OL', 'P', 'SEARCH', 'HR'])
 
-  await expect(root.locator('h3')).toHaveText('Heading 3 after')
-  await expect(root.locator('h6')).toHaveText('Heading 6 after')
-  await expect(root.locator('figcaption')).toHaveText('Figure caption after')
-  await expect(root.locator('#semantic-image')).toHaveAttribute(
-    'alt',
-    'Diagram after',
-  )
-  await expect(root.locator('#semantic-image')).toHaveAttribute('width', '32')
-  await expect(root.locator('#semantic-image')).toHaveAttribute('height', '24')
-  await expect(root.locator('dd')).toHaveText(['Chromium', 'Ready'])
-  await expect(root.locator('ol > li')).toHaveText(['Render', 'Verify'])
+  const heading3 = root.locator('h3')
+  await expect(heading3).toHaveText('Heading 3 after')
+  const heading6 = root.locator('h6')
+  await expect(heading6).toHaveText('Heading 6 after')
+  const caption = root.locator('figcaption')
+  await expect(caption).toHaveText('Figure caption after')
+  const image = root.locator('#semantic-image')
+  await expect(image).toHaveAttribute('alt', 'Diagram after')
+  await expect(image).toHaveAttribute('width', '32')
+  await expect(image).toHaveAttribute('height', '24')
+  const descriptions = root.locator('dd')
+  await expect(descriptions).toHaveText(['Chromium', 'Ready'])
+  const items = root.locator('ol > li')
+  await expect(items).toHaveText(['Render', 'Verify'])
 
   const inlineElements = root.locator('#semantic-inline-elements > *')
   expect(
@@ -34,15 +38,15 @@ test('diff - semantic elements and reflected properties', async ({ page }) => {
       elements.map((element) => element.tagName),
     ),
   ).toEqual(['CITE', 'CODE', 'DATA', 'DEL', 'I', 'INS', 'KBD', 'TIME', 'BR'])
-  await expect(root.locator('data')).toHaveAttribute('value', '2')
-  await expect(root.locator('del')).toHaveAttribute('datetime', '2026-07-16')
-  await expect(root.locator('ins')).toHaveAttribute('datetime', '2026-07-16')
-  await expect(root.locator('time')).toHaveAttribute('datetime', '10:30')
-  await expect(root.locator('input[name="semantic-query"]')).toHaveValue(
-    'after',
-  )
-  await expect(root.locator('input[name="semantic-query"]')).toHaveAttribute(
-    'placeholder',
-    'Search after',
-  )
+  const data = root.locator('data')
+  await expect(data).toHaveAttribute('value', '2')
+  const deleted = root.locator('del')
+  await expect(deleted).toHaveAttribute('datetime', '2026-07-16')
+  const inserted = root.locator('ins')
+  await expect(inserted).toHaveAttribute('datetime', '2026-07-16')
+  const time = root.locator('time')
+  await expect(time).toHaveAttribute('datetime', '10:30')
+  const query = root.locator('input[name="semantic-query"]')
+  await expect(query).toHaveValue('after')
+  await expect(query).toHaveAttribute('placeholder', 'Search after')
 })

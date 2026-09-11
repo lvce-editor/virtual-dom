@@ -10,6 +10,8 @@ test('diff - quick pick status', async ({ page }) => {
 
   const status = page.locator('.QuickPickStatus')
   await expect(status).toHaveText('No Results')
-  await expect(page.locator('.ListItems > .QuickPickItem')).toHaveCount(1)
-  await expect(page.locator('.QuickPickItemLabel')).toHaveCount(0)
+  const items = page.locator('.ListItems > .QuickPickItem')
+  await expect(items).toHaveCount(1)
+  const labels = page.locator('.QuickPickItemLabel')
+  await expect(labels).toHaveCount(0)
 })
