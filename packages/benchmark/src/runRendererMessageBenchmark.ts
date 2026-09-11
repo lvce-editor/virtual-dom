@@ -188,11 +188,6 @@ const runWorkload = async (
     new URL(`test-results-${workload.id}.json`, outputRoot),
     `${JSON.stringify(results, null, 2)}\n`,
   )
-  for (const result of results) {
-    if (result.status === 'fail') {
-      console.error(`[DEBUG-explorer-race] ${result.name}: ${result.error}`)
-    }
-  }
   const allowedFailures = new Set(options.allowedFailures)
   return {
     browserVersion,
