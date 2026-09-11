@@ -4,31 +4,27 @@ import { setTimeout } from 'node:timers/promises'
 
 export const getDevToolsWebSocketUrl = async (
   browserProfilePath: string,
-  timeout = 5000,
+  timeout = 10_000,
 ): Promise<string> => {
-  const deadline = Date.now() + timeout
+  const filePath = join(browserProfilePath, 'DevToolsActivePort')
+  const deadline = performance.now() + timeout
   while (true) {
     try {
-      const content = await readFile(
-        join(browserProfilePath, 'DevToolsActivePort'),
-        'utf8',
-      )
-      const [port, path] = content.trim().split('\n')
+      const content = await readFile(filePath, 'utf8')
+      const [port, path] = content.trim().split(/\r?\n/)
       if (port && path) {
         return `ws://127.0.0.1:${port}${path}`
       }
     } catch (error) {
-      if (
-        !(error instanceof Error) ||
-        !('code' in error) ||
-        error.code !== 'ENOENT'
-      ) {
+      if ((error as NodeJS.ErrnoException).code !== 'ENOENT') {
         throw error
       }
     }
-    if (Date.now() >= deadline) {
-      throw new Error('Timed out waiting for a valid DevToolsActivePort file')
+    const remaining = deadline - performance.now()
+    if (remaining <= 0) {
+      throw new Error(`Timed out waiting for Chrome to write ${filePath}`)
     }
-    await setTimeout(25)
+    // Playwright's pipe can be ready before Chromium writes its TCP endpoint.
+    await setTimeout(Math.min(50, remaining))
   }
 }
