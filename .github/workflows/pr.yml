@@ -38,6 +38,12 @@ jobs:
         run: npx playwright install --with-deps chromium firefox webkit
         env:
           PLAYWRIGHT_BROWSERS_PATH: 0
+      - name: Diagnose macOS WebKit
+        if: matrix.os == 'macos-14'
+        working-directory: ./packages/e2e
+        run: npm run e2e:headless -- --project=webkit --max-failures=1 --retries=0 attribute-prop-broad
+        env:
+          PLAYWRIGHT_BROWSERS_PATH: 0
       - name: e2e
         working-directory: ./packages/e2e
         run: npm run e2e:headless
