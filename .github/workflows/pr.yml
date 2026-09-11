@@ -18,7 +18,11 @@ jobs:
             windows-2025,
             windows-11-arm,
           ]
-    runs-on: ${{ matrix.os }}
+        include:
+          # Keep the existing required-check name while using supported WebKit.
+          - os: macos-14
+            runner: macos-15
+    runs-on: ${{ matrix.runner || matrix.os }}
     timeout-minutes: 90
     steps:
       - uses: actions/checkout@v7
@@ -47,7 +51,7 @@ jobs:
         run: sudo npx playwright install-deps chromium
       - name: install playwright dependencies
         working-directory: ./packages/e2e
-        run: npx playwright install --with-deps chromium firefox
+        run: npx playwright install --with-deps chromium firefox webkit
         env:
           PLAYWRIGHT_BROWSERS_PATH: 0
       - name: e2e

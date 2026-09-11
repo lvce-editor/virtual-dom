@@ -195,7 +195,7 @@ const setHtmlProp = ($Element: HTMLElement, key: string, value: any): void => {
     return
   }
 
-  if (key === 'autocorrect') {
+  if (key === 'autocorrect' || key === 'autocapitalize') {
     $Element.setAttribute(key, String(value))
     return
   }
