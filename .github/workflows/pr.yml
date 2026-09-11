@@ -115,7 +115,7 @@ jobs:
           if-no-files-found: error
           retention-days: 30
 
-  explorer-race:
+  about-focus:
     strategy:
       fail-fast: false
       matrix:
@@ -156,16 +156,17 @@ jobs:
         run: npx playwright install --with-deps chromium
         env:
           PLAYWRIGHT_BROWSERS_PATH: 0
-      - name: Run renderer message workload
+      - name: Run About focus workload
         working-directory: ./packages/benchmark
-        run: npm run benchmark:renderer-messages
+        run: npm run benchmark:about-view
         env:
-          RENDERER_MESSAGE_BENCHMARK_TIMEOUT_MS: 1200000
+          DETAILED_BENCHMARK_TIMEOUT_MS: 120000
+          DETAILED_BENCHMARK_REPEATS: 1
           PLAYWRIGHT_BROWSERS_PATH: 0
       - name: Upload diagnostics
         if: always()
         uses: actions/upload-artifact@v7
         with:
-          name: explorer-race-${{ matrix.attempt }}
-          path: packages/benchmark/dist/renderer-message-benchmark
+          name: about-focus-${{ matrix.attempt }}
+          path: packages/benchmark/dist/about-view-benchmark
           retention-days: 7
