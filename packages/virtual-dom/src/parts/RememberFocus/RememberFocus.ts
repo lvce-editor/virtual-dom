@@ -85,8 +85,14 @@ const renderWithUid = (
   const newEventMap = RegisterEventListeners.getEventListenerMap(uid)
   const $New = VirtualDom.render(dom, eventMap, newEventMap)
     .firstChild as HTMLElement
+  // A referenced pane can be temporarily absent from the new layout. Leave its
+  // focused input in that pane unless there is a replacement to transfer it to.
+  const hasReplacement =
+    focused && $New.querySelector(`[name="${CSS.escape(focused)}"]`)
   const $Hidden = createHiddenContainer(
-    $New.contains(activeElement || null) ? undefined : activeElement,
+    hasReplacement && !$New.contains(activeElement || null)
+      ? activeElement
+      : undefined,
     focused,
   )
   ComponentUid.setComponentUid($New, uid)
