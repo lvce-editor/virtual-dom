@@ -21,6 +21,7 @@ setIpc(ipc)
 registerEventListeners(99, [
   {
     name: 1,
+    preventDefault: true,
     params: ['event.currentTarget.abc.value'],
   },
   {

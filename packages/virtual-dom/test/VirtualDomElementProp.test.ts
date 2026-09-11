@@ -196,3 +196,36 @@ test('media event properties attach event listeners', () => {
     undefined,
   )
 })
+
+test('autocorrect - preserves the off attribute value', () => {
+  const $Element = document.createElement('input')
+  VirtualDomElementProp.setProp($Element, 'autocorrect', 'off', {})
+  expect($Element.getAttribute('autocorrect')).toBe('off')
+  VirtualDomElementProp.removeProp($Element, 'autocorrect')
+  expect($Element.hasAttribute('autocorrect')).toBe(false)
+})
+
+test('playsInline - clears the property when it is not reflected', () => {
+  const $Element = document.createElement('video')
+  Object.defineProperty($Element, 'playsInline', {
+    value: false,
+    writable: true,
+  })
+  VirtualDomElementProp.setProp($Element, 'playsInline', true, {})
+  expect($Element.playsInline).toBe(true)
+  VirtualDomElementProp.removeProp($Element, 'playsInline')
+  expect($Element.playsInline).toBe(false)
+  expect($Element.hasAttribute('playsinline')).toBe(false)
+})
+
+test('autocapitalize - sets the attribute without native property reflection', () => {
+  const $Element = document.createElement('input')
+  Object.defineProperty($Element, 'autocapitalize', {
+    value: '',
+    writable: true,
+  })
+  VirtualDomElementProp.setProp($Element, 'autocapitalize', 'off', {})
+  expect($Element.getAttribute('autocapitalize')).toBe('off')
+  VirtualDomElementProp.removeProp($Element, 'autocapitalize')
+  expect($Element.hasAttribute('autocapitalize')).toBe(false)
+})

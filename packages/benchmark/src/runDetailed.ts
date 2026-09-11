@@ -1,5 +1,5 @@
 import { execFile } from 'node:child_process'
-import { cp, mkdir, readFile, rm, writeFile } from 'node:fs/promises'
+import { cp, mkdir, rm, writeFile } from 'node:fs/promises'
 import { cpus } from 'node:os'
 import { join } from 'node:path'
 import { fileURLToPath } from 'node:url'
@@ -7,6 +7,7 @@ import { promisify } from 'node:util'
 import { chromium, type BrowserContext } from 'playwright'
 import type { BenchmarkTests } from './benchmarkTests.ts'
 import { startCpuProfile, type CpuProfileCaptureResult } from './cpuProfile.ts'
+import { getDevToolsWebSocketUrl } from './getDevToolsWebSocketUrl.ts'
 import { parseUrl } from './parseUrl.ts'
 import { startDetailedBenchmarkServer } from './serverProcess.ts'
 import { getStatistics } from './statistics.ts'
@@ -74,20 +75,6 @@ const closeBrowser = async (
   if (context) {
     await context.close()
   }
-}
-
-const getDevToolsWebSocketUrl = async (
-  browserProfilePath: string,
-): Promise<string> => {
-  const content = await readFile(
-    join(browserProfilePath, 'DevToolsActivePort'),
-    'utf8',
-  )
-  const [port, path] = content.trim().split('\n')
-  if (!port || !path) {
-    throw new Error('Chrome did not write a valid DevToolsActivePort file')
-  }
-  return `ws://127.0.0.1:${port}${path}`
 }
 
 const runBenchmarkOnce = async ({

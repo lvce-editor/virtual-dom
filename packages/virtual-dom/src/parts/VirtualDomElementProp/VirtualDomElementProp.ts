@@ -136,6 +136,11 @@ export const removeProp = ($Element: VirtualDomElement, key: string): void => {
     return
   }
 
+  if (key === 'playsInline') {
+    // Firefox does not reflect playsInline as an HTMLVideoElement property.
+    $Element[key] = false
+  }
+
   const attributeName = removedAttributeProps.get(key) || key
   $Element.removeAttribute(attributeName)
 }
@@ -187,6 +192,11 @@ const setHtmlProp = ($Element: HTMLElement, key: string, value: any): void => {
     } else {
       $Element.removeAttribute(key)
     }
+    return
+  }
+
+  if (key === 'autocorrect' || key === 'autocapitalize') {
+    $Element.setAttribute(key, String(value))
     return
   }
 
