@@ -196,3 +196,24 @@ test('media event properties attach event listeners', () => {
     undefined,
   )
 })
+
+test('autocorrect - preserves the off attribute value', () => {
+  const $Element = document.createElement('input')
+  VirtualDomElementProp.setProp($Element, 'autocorrect', 'off', {})
+  expect($Element.getAttribute('autocorrect')).toBe('off')
+  VirtualDomElementProp.removeProp($Element, 'autocorrect')
+  expect($Element.hasAttribute('autocorrect')).toBe(false)
+})
+
+test('playsInline - clears the property when it is not reflected', () => {
+  const $Element = document.createElement('video')
+  Object.defineProperty($Element, 'playsInline', {
+    value: false,
+    writable: true,
+  })
+  VirtualDomElementProp.setProp($Element, 'playsInline', true, {})
+  expect($Element.playsInline).toBe(true)
+  VirtualDomElementProp.removeProp($Element, 'playsInline')
+  expect($Element.playsInline).toBe(false)
+  expect($Element.hasAttribute('playsinline')).toBe(false)
+})
