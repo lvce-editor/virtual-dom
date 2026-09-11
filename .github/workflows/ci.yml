@@ -21,7 +21,11 @@ jobs:
     strategy:
       matrix:
         os: [ubuntu-24.04, macos-14, windows-2025]
-    runs-on: ${{ matrix.os }}
+        include:
+          # Keep the existing required-check name while using supported WebKit.
+          - os: macos-14
+            runner: macos-15
+    runs-on: ${{ matrix.runner || matrix.os }}
     timeout-minutes: 90
     steps:
       - uses: actions/checkout@v7
