@@ -92,10 +92,65 @@ jobs:
           RENDERER_MESSAGE_BENCHMARK_TIMEOUT_MS: 3600000
           PLAYWRIGHT_BROWSERS_PATH: 0
       - name: Upload benchmark results
-        if: matrix.os == 'ubuntu-24.04'
+        if: always() && matrix.os == 'ubuntu-24.04'
         uses: actions/upload-artifact@v7
         with:
           name: virtual-dom-benchmark-results
           path: packages/benchmark/dist
           if-no-files-found: error
           retention-days: 30
+
+  explorer-race:
+    strategy:
+      fail-fast: false
+      matrix:
+        attempt:
+          [
+            1,
+            2,
+            3,
+            4,
+            5,
+            6,
+            7,
+            8,
+            9,
+            10,
+            11,
+            12,
+            13,
+            14,
+            15,
+            16,
+            17,
+            18,
+            19,
+            20,
+          ]
+    runs-on: ubuntu-24.04
+    timeout-minutes: 30
+    steps:
+      - uses: actions/checkout@v7
+      - uses: actions/setup-node@v6
+        with:
+          node-version-file: '.nvmrc'
+      - run: npm ci
+      - run: npm run build
+      - name: Install benchmark Chromium
+        working-directory: ./packages/benchmark
+        run: npx playwright install --with-deps chromium
+        env:
+          PLAYWRIGHT_BROWSERS_PATH: 0
+      - name: Run renderer message workload
+        working-directory: ./packages/benchmark
+        run: npm run benchmark:renderer-messages
+        env:
+          RENDERER_MESSAGE_BENCHMARK_TIMEOUT_MS: 1200000
+          PLAYWRIGHT_BROWSERS_PATH: 0
+      - name: Upload diagnostics
+        if: always()
+        uses: actions/upload-artifact@v7
+        with:
+          name: explorer-race-${{ matrix.attempt }}
+          path: packages/benchmark/dist/renderer-message-benchmark
+          retention-days: 7
