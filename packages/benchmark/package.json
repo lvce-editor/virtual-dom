@@ -5,13 +5,13 @@
   "type": "module",
   "license": "MIT",
   "scripts": {
-    "benchmark": "node --experimental-strip-types src/run.ts",
-    "benchmark:about-view": "node --experimental-strip-types src/runAboutView.ts",
-    "benchmark:activity-bar": "node --experimental-strip-types src/runActivityBar.ts",
-    "benchmark:detailed": "node --experimental-strip-types src/runExplorer.ts",
-    "benchmark:renderer-messages": "node --experimental-strip-types src/runRendererMessageBenchmark.ts",
-    "benchmark:title-bar": "node --experimental-strip-types src/runTitleBar.ts",
-    "test": "node --experimental-strip-types --test \"src/*.test.ts\""
+    "benchmark": "node --experimental-strip-types src/parts/Run/Run.ts",
+    "benchmark:about-view": "node --experimental-strip-types src/parts/RunAboutView/RunAboutView.ts",
+    "benchmark:activity-bar": "node --experimental-strip-types src/parts/RunActivityBar/RunActivityBar.ts",
+    "benchmark:detailed": "node --experimental-strip-types src/parts/RunExplorer/RunExplorer.ts",
+    "benchmark:renderer-messages": "node --experimental-strip-types src/parts/RunRendererMessageBenchmark/RunRendererMessageBenchmark.ts",
+    "benchmark:title-bar": "node --experimental-strip-types src/parts/RunTitleBar/RunTitleBar.ts",
+    "test": "node --experimental-strip-types --test \"test/*.test.ts\""
   },
   "devDependencies": {
     "@lvce-editor/server": "0.108.14",
