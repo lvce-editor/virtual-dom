@@ -1,13 +1,13 @@
 import type { VirtualDomNode } from '../VirtualDomNode/VirtualDomNode.ts'
-import * as ApplyPatch from '../ApplyPatch/ApplyPatch.ts'
 import type { ApplyPatchOptions } from '../ApplyPatch/ApplyPatch.ts'
+import * as ApplyPatch from '../ApplyPatch/ApplyPatch.ts'
 import * as AttachEvent from '../AttachEvent/AttachEvent.ts'
 import * as ElementTagMap from '../ElementTagMap/ElementTagMap.ts'
 import * as RenderInternal from '../RenderInternal/RenderInternal.ts'
 import * as VirtualDomElement from '../VirtualDomElement/VirtualDomElement.ts'
 import * as VirtualDomElementProps from '../VirtualDomElementProps/VirtualDomElementProps.ts'
-import * as VirtualDomElements from '../VirtualDomElements/VirtualDomElements.ts'
 import type { Patch } from '../Patch/Patch.ts'
+import * as VirtualDomElements from '../VirtualDomElements/VirtualDomElements.ts'
 
 export interface RendererOptions {
   readonly cache?: { readonly dom?: number; readonly text?: number }
@@ -133,7 +133,7 @@ export const createRenderer = (options: RendererOptions = {}): Renderer => {
     }
     owned.delete(node)
     rootByNode.delete(node)
-    for (const child of [...node.childNodes]) {
+    for (const child of node.childNodes) {
       collect(child)
     }
     if (node instanceof Text) {
@@ -169,7 +169,8 @@ export const createRenderer = (options: RendererOptions = {}): Renderer => {
     const nodes = rootNodes.get(trackedRoot)
     rootNodes.delete(trackedRoot)
     trackedRoot.remove()
-    for (const node of nodes || []) {
+    const nodesToCollect = nodes || []
+    for (const node of nodesToCollect) {
       collect(node)
     }
     trackedRoot.replaceChildren()

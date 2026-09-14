@@ -3,7 +3,7 @@ import * as Instances from '../Instances/Instances.ts'
 import * as PatchFunctions from '../PatchFunctions/PatchFunctions.ts'
 import * as PatchType from '../PatchType/PatchType.ts'
 import { getEventListenerMap } from '../RegisterEventListeners/RegisterEventListeners.ts'
-import * as VirtualDomElement from '../VirtualDomElement/VirtualDomElement.ts'
+import type { render as RenderElement } from '../VirtualDomElement/VirtualDomElement.ts'
 import * as VirtualDomElementProp from '../VirtualDomElementProp/VirtualDomElementProp.ts'
 
 interface ApplyState {
@@ -13,7 +13,7 @@ interface ApplyState {
 
 export interface ApplyPatchOptions {
   readonly onRemove?: (node: Node) => void
-  readonly renderElement?: typeof VirtualDomElement.render
+  readonly renderElement?: typeof RenderElement
 }
 
 const handleNavigateChild = (

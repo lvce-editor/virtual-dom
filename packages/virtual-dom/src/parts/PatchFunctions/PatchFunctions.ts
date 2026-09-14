@@ -1,5 +1,5 @@
-import type { VirtualDomNode } from '../VirtualDomNode/VirtualDomNode.ts'
 import type { render as RenderElement } from '../VirtualDomElement/VirtualDomElement.ts'
+import type { VirtualDomNode } from '../VirtualDomNode/VirtualDomNode.ts'
 import * as RenderInternal from '../RenderInternal/RenderInternal.ts'
 
 // Map of property names to attribute names for cases where they differ
