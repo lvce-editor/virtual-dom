@@ -3,11 +3,17 @@ import * as Instances from '../Instances/Instances.ts'
 import * as PatchFunctions from '../PatchFunctions/PatchFunctions.ts'
 import * as PatchType from '../PatchType/PatchType.ts'
 import { getEventListenerMap } from '../RegisterEventListeners/RegisterEventListeners.ts'
+import * as VirtualDomElement from '../VirtualDomElement/VirtualDomElement.ts'
 import * as VirtualDomElementProp from '../VirtualDomElementProp/VirtualDomElementProp.ts'
 
 interface ApplyState {
   current: Node
   hasAppliedMutation: boolean
+}
+
+export interface ApplyPatchOptions {
+  readonly onRemove?: (node: Node) => void
+  readonly renderElement?: typeof VirtualDomElement.render
 }
 
 const handleNavigateChild = (
@@ -128,7 +134,11 @@ const handleMultiNavigation = (
   return true
 }
 
-const handleSetReferenceNodeUid = (state: ApplyState, patch: any): boolean => {
+const handleSetReferenceNodeUid = (
+  state: ApplyState,
+  patch: any,
+  options: ApplyPatchOptions,
+): boolean => {
   const instance = Instances.get(patch.uid)
   if (!instance || !instance.state) {
     console.error('Cannot set reference node uid: instance not found', {
@@ -137,6 +147,7 @@ const handleSetReferenceNodeUid = (state: ApplyState, patch: any): boolean => {
     return false
   }
   const $NewNode = instance.state.$Viewlet
+  options.onRemove?.(state.current)
   // @ts-ignore
   state.current.replaceWith($NewNode)
   state.current = $NewNode
@@ -179,10 +190,16 @@ const applyMutationPatch = (
   state: ApplyState,
   patch: Patch,
   events: Record<string, any>,
+  options: ApplyPatchOptions,
 ): void => {
   switch (patch.type) {
     case PatchType.Add:
-      PatchFunctions.add(state.current as HTMLElement, patch.nodes, events)
+      PatchFunctions.add(
+        state.current as HTMLElement,
+        patch.nodes,
+        events,
+        options.renderElement,
+      )
       state.hasAppliedMutation = true
       break
     case PatchType.RemoveAttribute:
@@ -190,14 +207,17 @@ const applyMutationPatch = (
       state.hasAppliedMutation = true
       break
     case PatchType.RemoveChild:
+      options.onRemove?.((state.current as HTMLElement).childNodes[patch.index])
       PatchFunctions.removeChild(state.current as HTMLElement, patch.index)
       state.hasAppliedMutation = true
       break
     case PatchType.Replace:
+      options.onRemove?.(state.current)
       state.current = PatchFunctions.replace(
         state.current as HTMLElement,
         patch.nodes,
         events,
+        options.renderElement,
       )
       state.hasAppliedMutation = true
       break
@@ -224,6 +244,7 @@ export const applyPatch = (
   patches: readonly Patch[],
   eventMap: Record<string, any> = {},
   id: any = 0,
+  options: ApplyPatchOptions = {},
 ): void => {
   const events = getEventListenerMap(id) || eventMap
   const state: ApplyState = {
@@ -237,12 +258,12 @@ export const applyPatch = (
         return
       }
       if (patch.type === PatchType.SetReferenceNodeUid) {
-        if (!handleSetReferenceNodeUid(state, patch)) {
+        if (!handleSetReferenceNodeUid(state, patch, options)) {
           return
         }
         continue
       }
-      applyMutationPatch(state, patch, events)
+      applyMutationPatch(state, patch, events, options)
     } catch (error) {
       console.error('Error applying patch at index ' + patchIndex, patch, error)
       throw error
