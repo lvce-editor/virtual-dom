@@ -1,9 +1,9 @@
 import type { Patch } from '../Patch/Patch.ts'
+import type { render as RenderElement } from '../VirtualDomElement/VirtualDomElement.ts'
 import * as Instances from '../Instances/Instances.ts'
 import * as PatchFunctions from '../PatchFunctions/PatchFunctions.ts'
 import * as PatchType from '../PatchType/PatchType.ts'
 import { getEventListenerMap } from '../RegisterEventListeners/RegisterEventListeners.ts'
-import type { render as RenderElement } from '../VirtualDomElement/VirtualDomElement.ts'
 import * as VirtualDomElementProp from '../VirtualDomElementProp/VirtualDomElementProp.ts'
 
 interface ApplyState {
