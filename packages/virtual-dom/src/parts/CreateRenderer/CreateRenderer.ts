@@ -1,4 +1,7 @@
+import type { ApplyPatchOptions } from '../ApplyPatch/ApplyPatch.ts'
+import type { Patch } from '../Patch/Patch.ts'
 import type { VirtualDomNode } from '../VirtualDomNode/VirtualDomNode.ts'
+import * as ApplyPatch from '../ApplyPatch/ApplyPatch.ts'
 import * as AttachEvent from '../AttachEvent/AttachEvent.ts'
 import * as ElementTagMap from '../ElementTagMap/ElementTagMap.ts'
 import * as RenderInternal from '../RenderInternal/RenderInternal.ts'
@@ -39,6 +42,12 @@ const validateLimit = (limit: number): number => {
 
 /** Experimental: exclusively owns its rendered trees until dispose is called. */
 export interface Renderer {
+  readonly applyPatch: (
+    element: Node,
+    patches: readonly Patch[],
+    eventMap?: Record<string, any>,
+    id?: any,
+  ) => void
   readonly clearCache: () => void
   readonly dispose: (root: HTMLElement) => void
   readonly render: (
@@ -46,6 +55,12 @@ export interface Renderer {
     eventMap?: any,
     newEventMap?: any,
   ) => HTMLElement
+  readonly renderInto: (
+    parent: HTMLElement,
+    nodes: readonly VirtualDomNode[],
+    eventMap?: any,
+    newEventMap?: any,
+  ) => void
 }
 
 export const createRenderer = (options: RendererOptions = {}): Renderer => {
@@ -55,7 +70,18 @@ export const createRenderer = (options: RendererOptions = {}): Renderer => {
   const texts: Text[] = []
   const owned = new WeakSet<Node>()
   const recyclable = new WeakSet<Node>()
-  const roots = new WeakSet<HTMLElement>()
+  const rootNodes = new Map<HTMLElement, Set<Node>>()
+  const rootByNode = new WeakMap<Node, HTMLElement>()
+  const parentRoots = new WeakMap<HTMLElement, HTMLElement>()
+  let activeRoot: HTMLElement | undefined
+
+  const rememberNode = (node: Node): void => {
+    owned.add(node)
+    if (activeRoot) {
+      rootNodes.get(activeRoot)?.add(node)
+      rootByNode.set(node, activeRoot)
+    }
+  }
 
   const renderElement = (
     node: VirtualDomNode,
@@ -97,15 +123,16 @@ export const createRenderer = (options: RendererOptions = {}): Renderer => {
         recyclable.add(result)
       }
     }
-    owned.add(result)
+    rememberNode(result)
     return result
   }
 
-  const collect = (node: Node): void => {
-    if (!owned.has(node)) {
+  const collect = (node: Node | undefined): void => {
+    if (!node || !owned.has(node)) {
       return
     }
     owned.delete(node)
+    rootByNode.delete(node)
     for (const child of node.childNodes) {
       collect(child)
     }
@@ -135,15 +162,18 @@ export const createRenderer = (options: RendererOptions = {}): Renderer => {
   }
 
   const dispose = (root: HTMLElement): void => {
-    if (!roots.has(root)) {
+    const trackedRoot = rootNodes.has(root) ? root : parentRoots.get(root)
+    if (!trackedRoot) {
       return
     }
-    roots.delete(root)
-    root.remove()
-    for (const child of root.childNodes) {
-      collect(child)
+    const nodes = rootNodes.get(trackedRoot)
+    rootNodes.delete(trackedRoot)
+    trackedRoot.remove()
+    const nodesToCollect = nodes || []
+    for (const node of nodesToCollect) {
+      collect(node)
     }
-    root.replaceChildren()
+    trackedRoot.replaceChildren()
   }
 
   const render = (
@@ -152,15 +182,63 @@ export const createRenderer = (options: RendererOptions = {}): Renderer => {
     newEventMap = {},
   ): HTMLElement => {
     const root = document.createElement('div')
-    RenderInternal.renderInternal(
-      root,
-      nodes,
-      eventMap,
-      newEventMap,
-      renderElement,
-    )
-    roots.add(root)
+    rootNodes.set(root, new Set())
+    activeRoot = root
+    try {
+      RenderInternal.renderInternal(
+        root,
+        nodes,
+        eventMap,
+        newEventMap,
+        renderElement,
+      )
+    } finally {
+      activeRoot = undefined
+    }
     return root
+  }
+
+  const renderInto = (
+    parent: HTMLElement,
+    nodes: readonly VirtualDomNode[],
+    eventMap = {},
+    newEventMap = {},
+  ): void => {
+    dispose(parent)
+    const root = render(nodes, eventMap, newEventMap)
+    parent.replaceChildren(...root.childNodes)
+    parentRoots.set(parent, root)
+  }
+
+  const getRoot = (node: Node): HTMLElement | undefined => {
+    let current: Node | null = node
+    while (current) {
+      const root = rootByNode.get(current)
+      if (root) {
+        return root
+      }
+      current = current.parentNode
+    }
+    return undefined
+  }
+
+  const applyPatch = (
+    element: Node,
+    patches: readonly Patch[],
+    eventMap = {},
+    id: any = 0,
+  ): void => {
+    const root = getRoot(element)
+    activeRoot = root
+    try {
+      const options: ApplyPatchOptions = {
+        onRemove: collect,
+        renderElement,
+      }
+      ApplyPatch.applyPatch(element, patches, eventMap, id, options)
+    } finally {
+      activeRoot = undefined
+    }
   }
 
   const clearCache = (): void => {
@@ -168,5 +246,5 @@ export const createRenderer = (options: RendererOptions = {}): Renderer => {
     texts.length = 0
   }
 
-  return { render, dispose, clearCache }
+  return { applyPatch, render, renderInto, dispose, clearCache }
 }

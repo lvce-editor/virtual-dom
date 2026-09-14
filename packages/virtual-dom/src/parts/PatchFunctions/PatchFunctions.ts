@@ -1,3 +1,4 @@
+import type { render as RenderElement } from '../VirtualDomElement/VirtualDomElement.ts'
 import type { VirtualDomNode } from '../VirtualDomNode/VirtualDomNode.ts'
 import * as RenderInternal from '../RenderInternal/RenderInternal.ts'
 
@@ -52,18 +53,26 @@ export const add = (
   $Element: HTMLElement,
   nodes: readonly VirtualDomNode[],
   eventMap: Record<string, any> = {},
+  renderElement?: typeof RenderElement,
 ): void => {
-  RenderInternal.renderInternal($Element, nodes, eventMap, eventMap)
+  RenderInternal.renderInternal(
+    $Element,
+    nodes,
+    eventMap,
+    eventMap,
+    renderElement,
+  )
 }
 
 export const replace = (
   $Element: HTMLElement | Text,
   nodes: readonly VirtualDomNode[],
   eventMap: Record<string, any> = {},
+  renderElement?: typeof RenderElement,
 ): Node => {
   // Create a temporary container to render the new nodes
   const $Temp = document.createElement('div')
-  RenderInternal.renderInternal($Temp, nodes, eventMap, eventMap)
+  RenderInternal.renderInternal($Temp, nodes, eventMap, eventMap, renderElement)
   // Replace the current element with the new node(s)
   const $NewNode = $Temp.firstChild
 

@@ -110,6 +110,32 @@ test('reference subtrees remain intact and are never cached', () => {
   )
 })
 
+test('renderInto disposes the previous tree before rendering the next tree', () => {
+  const renderer = createRenderer({ cache: { dom: 1, text: 1 } })
+  const parent = document.createElement('div')
+  renderer.renderInto(parent, [div, text])
+  const oldElement = parent.firstChild
+  const oldText = oldElement?.firstChild
+
+  renderer.renderInto(parent, [div, { ...text, text: 'new' }])
+
+  expect(parent.firstChild).toBe(oldElement)
+  expect(parent.firstChild?.firstChild).toBe(oldText)
+  expect(parent.textContent).toBe('new')
+})
+
+test('applyPatch recycles removed nodes', () => {
+  const renderer = createRenderer({ cache: { dom: 1, text: 1 } })
+  const root = renderer.render([div, text])
+  const element = root.firstChild as HTMLElement
+  const oldText = element.firstChild
+
+  renderer.applyPatch(element, [{ index: 0, type: 9 }])
+
+  expect(element.textContent).toBe('')
+  expect(renderer.render([text]).firstChild).toBe(oldText)
+})
+
 test.each([-1, 0.5, Infinity, NaN])('rejects invalid capacity %s', (limit) => {
   expect(() => createRenderer({ cache: { dom: limit } })).toThrow(RangeError)
   expect(() => createRenderer({ cache: { text: limit } })).toThrow(RangeError)
