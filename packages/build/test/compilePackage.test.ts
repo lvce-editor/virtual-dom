@@ -2,7 +2,7 @@ import { expect, test } from '@jest/globals'
 import {
   getPackageBuildTsConfig,
   getPackageBuildTsConfigPath,
-} from '../src/compilePackage.js'
+} from '../src/compilePackage.ts'
 
 test('getPackageBuildTsConfigPath returns temporary project path', () => {
   expect(getPackageBuildTsConfigPath({ packageName: 'virtual-dom' })).toBe(
