@@ -114,3 +114,96 @@ jobs:
           path: packages/benchmark/dist
           if-no-files-found: error
           retention-days: 30
+
+  reproduce:
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [ubuntu-24.04, windows-2025]
+        attempt:
+          [
+            1,
+            2,
+            3,
+            4,
+            5,
+            6,
+            7,
+            8,
+            9,
+            10,
+            11,
+            12,
+            13,
+            14,
+            15,
+            16,
+            17,
+            18,
+            19,
+            20,
+          ]
+    runs-on: ${{ matrix.os }}
+    timeout-minutes: 90
+    steps:
+      - uses: actions/checkout@v7
+      - uses: actions/setup-node@v6
+        with:
+          node-version-file: '.nvmrc'
+      - name: Compute node modules cache key
+        id: nodeModulesCacheKey
+        run: echo "value=$(node packages/build/src/computeNodeModulesCacheKey.js)" >> $GITHUB_OUTPUT
+        shell: bash
+      - uses: actions/cache@v6
+        id: npm-cache
+        with:
+          path: '**/node_modules'
+          key: ${{ runner.os }}-${{ runner.arch }}-cacheNodeModules-${{ steps.nodeModulesCacheKey.outputs.value }}
+      - name: npm ci
+        run: npm ci
+        if: steps.npm-cache.outputs.cache-hit != 'true'
+      - run: npm run build
+      - name: install playwright system dependencies
+        working-directory: ./packages/e2e
+        if: runner.os == 'Linux'
+        run: sudo npx playwright install-deps chromium
+      - name: install playwright dependencies
+        working-directory: ./packages/e2e
+        run: npx playwright install --with-deps chromium firefox webkit
+        env:
+          PLAYWRIGHT_BROWSERS_PATH: 0
+      - name: e2e
+        working-directory: ./packages/e2e
+        run: npm run e2e:headless
+        env:
+          PLAYWRIGHT_BROWSERS_PATH: 0
+      - name: Install benchmark Chromium
+        if: matrix.os == 'ubuntu-24.04' && steps.npm-cache.outputs.cache-hit != 'true'
+        working-directory: ./packages/benchmark
+        run: npx playwright install chromium
+        env:
+          PLAYWRIGHT_BROWSERS_PATH: 0
+      - name: Run detailed explorer benchmark
+        if: matrix.os == 'ubuntu-24.04'
+        working-directory: ./packages/benchmark
+        run: npm run benchmark:detailed
+        env:
+          DETAILED_BENCHMARK_REPEATS: 1
+          DETAILED_BENCHMARK_TIMEOUT_MS: 3600000
+          PLAYWRIGHT_BROWSERS_PATH: 0
+      - name: Upload benchmark results
+        if: always() && matrix.os == 'ubuntu-24.04'
+        uses: actions/upload-artifact@v7
+        with:
+          name: explorer-reproduction-${{ matrix.attempt }}
+          path: packages/benchmark/dist
+          if-no-files-found: error
+          retention-days: 30
+      - name: Upload e2e results
+        if: always()
+        uses: actions/upload-artifact@v7
+        with:
+          name: e2e-reproduction-${{ matrix.os }}-${{ matrix.attempt }}
+          path: packages/e2e/test-results
+          if-no-files-found: warn
+          retention-days: 30
