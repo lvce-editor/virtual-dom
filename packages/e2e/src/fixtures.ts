@@ -3,7 +3,7 @@ import { test as base } from '@playwright/test'
 export const test = base.extend({
   // Browser lifecycle work has its own budget; DOM checks keep the five-second test budget.
   context: [
-    async ({ browser }, use) => {
+    async ({ browser }, use): Promise<void> => {
       const context = await browser.newContext()
       try {
         await use(context)
@@ -11,10 +11,10 @@ export const test = base.extend({
         await context.close()
       }
     },
-    { timeout: 15_000 },
+    { scope: 'test', timeout: 15_000 },
   ],
   page: [
-    async ({ context }, use) => {
+    async ({ context }, use): Promise<void> => {
       const page = await context.newPage()
       // Capture console messages
       page.on('console', (msg) => {
@@ -31,7 +31,7 @@ export const test = base.extend({
 
       await use(page)
     },
-    { timeout: 15_000 },
+    { scope: 'test', timeout: 15_000 },
   ],
 })
 
