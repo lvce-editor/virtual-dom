@@ -32,11 +32,9 @@ export const runSequence = async (
   page: Page,
   sequence: Sequence,
 ): Promise<unknown> => {
+  // The synchronous module fixture is evaluated before navigation's load event.
   await page.goto('/diff/edge-case-sequences.html')
-  await page.waitForFunction(() => {
-    // @ts-ignore
-    return typeof globalThis.runEdgeCaseSequence === 'function'
-  })
+
   return page.evaluate((scenario) => {
     // @ts-ignore
     return globalThis.runEdgeCaseSequence(scenario)

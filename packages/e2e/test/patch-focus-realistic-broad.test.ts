@@ -3,11 +3,6 @@ import { test, expect } from '../src/fixtures.ts'
 test('broad patch focus and realistic flow e2e coverage', async ({ page }) => {
   await page.goto('/diff/patch-focus-realistic-broad.html')
 
-  await page.waitForFunction(() => {
-    // @ts-ignore
-    return globalThis.__virtualDomDiffTestComplete === true
-  })
-
   const result = await page.evaluate(() => {
     // @ts-ignore
     return globalThis.__virtualDomBroadPatchFocusRealisticResult
