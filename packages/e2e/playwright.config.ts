@@ -1,5 +1,6 @@
 import { defineConfig, devices } from '@playwright/test'
 import { fileURLToPath } from 'node:url'
+import { chromiumLaunchArgs } from './src/chromiumLaunchArgs.ts'
 
 const __dirname = fileURLToPath(new URL('.', import.meta.url))
 
@@ -18,7 +19,10 @@ export default defineConfig({
   projects: [
     {
       name: 'chromium',
-      use: { ...devices['Desktop Chrome'] },
+      use: {
+        ...devices['Desktop Chrome'],
+        launchOptions: { args: chromiumLaunchArgs() },
+      },
     },
     {
       name: 'firefox',
