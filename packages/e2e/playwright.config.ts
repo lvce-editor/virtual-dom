@@ -13,9 +13,7 @@ export default defineConfig({
   reporter: 'list',
   use: {
     baseURL: 'http://localhost:3000',
-    trace: process.env.E2E_CAPTURE_FAILURES
-      ? 'retain-on-failure'
-      : 'on-first-retry',
+    trace: 'on-first-retry',
   },
   projects: [
     {
