@@ -143,48 +143,50 @@ const runBenchmarkOnce = async ({
         )
       }
       const lastCss = new Map<number, string>()
-      const original = MessagePort.prototype.addEventListener
-      const traced = new WeakSet<MessagePort>()
-      MessagePort.prototype.addEventListener = function (
-        this: MessagePort,
-        type: any,
-        listener: any,
-        options: any,
-      ) {
-        if (type === 'message' && !traced.has(this)) {
-          traced.add(this)
-          original.call(this, 'message', (event: Event) => {
-            try {
-              const { data } = event as MessageEvent
-              if (data?.method === 'Viewlet.queueCommands') {
-                const [uid, commands] = data.params
-                const changes = commands.filter((command: any[]): boolean => {
-                  if (
-                    command[0] === 'Viewlet.setPatches' &&
-                    command[2].length === 0
+      for (const prototype of [MessagePort.prototype, Worker.prototype]) {
+        const original = prototype.addEventListener
+        const traced = new WeakSet<MessagePort | Worker>()
+        prototype.addEventListener = function (
+          this: MessagePort | Worker,
+          type: any,
+          listener: any,
+          options: any,
+        ) {
+          if (type === 'message' && !traced.has(this)) {
+            traced.add(this)
+            original.call(this, 'message', (event: Event) => {
+              try {
+                const { data } = event as MessageEvent
+                if (data?.method === 'Viewlet.queueCommands') {
+                  const [uid, commands] = data.params
+                  const changes = commands.filter((command: any[]): boolean => {
+                    if (
+                      command[0] === 'Viewlet.setPatches' &&
+                      command[2].length === 0
+                    )
+                      return false
+                    if (command[0] === 'Viewlet.setCss') {
+                      if (lastCss.get(uid) === command[2]) return false
+                      lastCss.set(uid, command[2])
+                    }
+                    return true
+                  })
+                  if (changes.length === 0) return
+                  record(
+                    'message',
+                    structuredClone({ ...data, params: [uid, changes] }),
                   )
-                    return false
-                  if (command[0] === 'Viewlet.setCss') {
-                    if (lastCss.get(uid) === command[2]) return false
-                    lastCss.set(uid, command[2])
-                  }
-                  return true
-                })
-                if (changes.length === 0) return
-                record(
-                  'message',
-                  structuredClone({ ...data, params: [uid, changes] }),
-                )
-              } else {
-                record('message', structuredClone(data))
+                } else {
+                  record('message', structuredClone(data))
+                }
+              } catch {
+                /* Ignore non-cloneable diagnostic payloads. */
               }
-            } catch {
-              /* Ignore non-cloneable diagnostic payloads. */
-            }
-          })
-        }
-        return original.call(this, type, listener, options)
-      } as any
+            })
+          }
+          return original.call(this, type, listener, options)
+        } as any
+      }
       const observer = new MutationObserver((mutations) => {
         for (const mutation of mutations) {
           for (const node of mutation.addedNodes)
