@@ -121,7 +121,7 @@ const runBenchmarkOnce = async ({
     browserVersion = context.browser()?.version() ?? 'unknown'
     const page = context.pages()[0] ?? (await context.newPage())
     // Diagnostic-only observer; this draft is not mergeable.
-    /* eslint-disable unicorn/no-global-object-property-assignment, unicorn/no-this-outside-of-class, unicorn/consistent-function-scoping */
+    /* eslint-disable unicorn/no-global-object-property-assignment, unicorn/no-this-outside-of-class, unicorn/consistent-function-scoping, sonarjs/no-nested-functions */
     await page.addInitScript(() => {
       const entries: unknown[] = []
       ;(globalThis as any).__explorerTrace = entries
@@ -142,6 +142,7 @@ const runBenchmarkOnce = async ({
           { capture: true },
         )
       }
+      const lastCss = new Map<number, string>()
       const original = MessagePort.prototype.addEventListener
       const traced = new WeakSet<MessagePort>()
       MessagePort.prototype.addEventListener = function (
@@ -154,7 +155,29 @@ const runBenchmarkOnce = async ({
           traced.add(this)
           original.call(this, 'message', (event: Event) => {
             try {
-              record('message', structuredClone((event as MessageEvent).data))
+              const { data } = event as MessageEvent
+              if (data?.method === 'Viewlet.queueCommands') {
+                const [uid, commands] = data.params
+                const changes = commands.filter((command: any[]): boolean => {
+                  if (
+                    command[0] === 'Viewlet.setPatches' &&
+                    command[2].length === 0
+                  )
+                    return false
+                  if (command[0] === 'Viewlet.setCss') {
+                    if (lastCss.get(uid) === command[2]) return false
+                    lastCss.set(uid, command[2])
+                  }
+                  return true
+                })
+                if (changes.length === 0) return
+                record(
+                  'message',
+                  structuredClone({ ...data, params: [uid, changes] }),
+                )
+              } else {
+                record('message', structuredClone(data))
+              }
             } catch {
               /* Ignore non-cloneable diagnostic payloads. */
             }
@@ -180,7 +203,7 @@ const runBenchmarkOnce = async ({
       })
       observer.observe(document, { childList: true, subtree: true })
     })
-    /* eslint-enable unicorn/no-global-object-property-assignment, unicorn/no-this-outside-of-class, unicorn/consistent-function-scoping */
+    /* eslint-enable unicorn/no-global-object-property-assignment, unicorn/no-this-outside-of-class, unicorn/consistent-function-scoping, sonarjs/no-nested-functions */
     page.on('console', (message) => {
       if (message.type() === 'error') {
         console.error(`[browser] ${message.text()}`)
