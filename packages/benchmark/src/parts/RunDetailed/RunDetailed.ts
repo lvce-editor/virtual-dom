@@ -120,6 +120,61 @@ const runBenchmarkOnce = async ({
     })
     browserVersion = context.browser()?.version() ?? 'unknown'
     const page = context.pages()[0] ?? (await context.newPage())
+    await page.addInitScript(() => {
+      const entries: unknown[] = []
+      ;(globalThis as any).__explorerTrace = entries
+      const record = (kind: string, data: unknown) => {
+        if (entries.length >= 20000) entries.shift()
+        entries.push({ time: performance.now(), kind, data })
+      }
+      const describe = (node: any) =>
+        node?.outerHTML?.slice(0, 1000) || String(node)
+      for (const type of ['focus', 'blur', 'focusin', 'focusout']) {
+        document.addEventListener(
+          type,
+          (event) =>
+            record(type, {
+              target: describe(event.target),
+              related: describe((event as FocusEvent).relatedTarget),
+            }),
+          true,
+        )
+      }
+      const original = MessagePort.prototype.addEventListener
+      const traced = new WeakSet<MessagePort>()
+      MessagePort.prototype.addEventListener = function (
+        type: any,
+        listener: any,
+        options: any,
+      ) {
+        if (type === 'message' && !traced.has(this)) {
+          traced.add(this)
+          original.call(this, 'message', (event: MessageEvent) => {
+            try {
+              record('message', JSON.parse(JSON.stringify(event.data)))
+            } catch {}
+          })
+        }
+        return original.call(this, type, listener, options)
+      } as any
+      const observer = new MutationObserver((mutations) => {
+        for (const mutation of mutations) {
+          for (const node of mutation.addedNodes)
+            if (
+              (node as Element).matches?.('input') ||
+              (node as Element).querySelector?.('input')
+            )
+              record('added', describe(node))
+          for (const node of mutation.removedNodes)
+            if (
+              (node as Element).matches?.('input') ||
+              (node as Element).querySelector?.('input')
+            )
+              record('removed', describe(node))
+        }
+      })
+      observer.observe(document, { childList: true, subtree: true })
+    })
     page.on('console', (message) => {
       if (message.type() === 'error') {
         console.error(`[browser] ${message.text()}`)
@@ -157,6 +212,21 @@ const runBenchmarkOnce = async ({
       process.stdout.write(
         `Run ${index}: stopping and downloading CPU profile...\n`,
       )
+      try {
+        await writeFile(
+          join(outputPath, 'explorer-events.json'),
+          JSON.stringify(
+            await page.evaluate(
+              () => (globalThis as any).__explorerTrace ?? [],
+            ),
+            null,
+            2,
+          ),
+        )
+        await page.screenshot({ path: join(outputPath, 'final.png') })
+      } catch (error) {
+        console.error(error)
+      }
       captureResult = await capture.stop()
     }
   } finally {
