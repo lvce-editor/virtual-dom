@@ -160,8 +160,7 @@ jobs:
         working-directory: packages/benchmark
         run: npm run benchmark:detailed
         env:
-          DETAILED_BENCHMARK_FILTER: viewlet.explorer-race-new-file-switch-folders
-          DETAILED_BENCHMARK_REPEATS: 10
+          DETAILED_BENCHMARK_REPEATS: 1
           PLAYWRIGHT_BROWSERS_PATH: 0
       - uses: actions/upload-artifact@v7
         if: always()
@@ -169,5 +168,5 @@ jobs:
           name: explorer-race-${{ matrix.attempt }}
           path: |
             packages/benchmark/dist/detailed-benchmark
-            packages/benchmark/.tmp/detailed-benchmark
+            packages/benchmark/dist/explorer-traces
           retention-days: 30

@@ -120,14 +120,16 @@ const runBenchmarkOnce = async ({
     })
     browserVersion = context.browser()?.version() ?? 'unknown'
     const page = context.pages()[0] ?? (await context.newPage())
+    // Diagnostic-only observer; this draft is not mergeable.
+    /* eslint-disable unicorn/no-global-object-property-assignment, unicorn/no-this-outside-of-class, unicorn/consistent-function-scoping */
     await page.addInitScript(() => {
       const entries: unknown[] = []
       ;(globalThis as any).__explorerTrace = entries
-      const record = (kind: string, data: unknown) => {
-        if (entries.length >= 20000) entries.shift()
+      const record = (kind: string, data: unknown): void => {
+        if (entries.length >= 200_000) entries.shift()
         entries.push({ time: performance.now(), kind, data })
       }
-      const describe = (node: any) =>
+      const describe = (node: any): string =>
         node?.outerHTML?.slice(0, 1000) || String(node)
       for (const type of ['focus', 'blur', 'focusin', 'focusout']) {
         document.addEventListener(
@@ -137,7 +139,7 @@ const runBenchmarkOnce = async ({
               target: describe(event.target),
               related: describe((event as FocusEvent).relatedTarget),
             }),
-          true,
+          { capture: true },
         )
       }
       const original = MessagePort.prototype.addEventListener
@@ -152,11 +154,10 @@ const runBenchmarkOnce = async ({
           traced.add(this)
           original.call(this, 'message', (event: Event) => {
             try {
-              record(
-                'message',
-                JSON.parse(JSON.stringify((event as MessageEvent).data)),
-              )
-            } catch {}
+              record('message', structuredClone((event as MessageEvent).data))
+            } catch {
+              /* Ignore non-cloneable diagnostic payloads. */
+            }
           })
         }
         return original.call(this, type, listener, options)
@@ -179,6 +180,7 @@ const runBenchmarkOnce = async ({
       })
       observer.observe(document, { childList: true, subtree: true })
     })
+    /* eslint-enable unicorn/no-global-object-property-assignment, unicorn/no-this-outside-of-class, unicorn/consistent-function-scoping */
     page.on('console', (message) => {
       if (message.type() === 'error') {
         console.error(`[browser] ${message.text()}`)
@@ -217,16 +219,15 @@ const runBenchmarkOnce = async ({
         `Run ${index}: stopping and downloading CPU profile...\n`,
       )
       try {
-        await writeFile(
-          join(outputPath, 'explorer-events.json'),
-          JSON.stringify(
-            await page.evaluate(
-              () => (globalThis as any).__explorerTrace ?? [],
-            ),
-            null,
-            2,
-          ),
+        const trace = JSON.stringify(
+          await page.evaluate(() => (globalThis as any).__explorerTrace ?? []),
+          null,
+          2,
         )
+        const traceRoot = parseUrl('dist/explorer-traces/', packageRoot.href)
+        await mkdir(traceRoot, { recursive: true })
+        await writeFile(parseUrl(`run-${index}.json`, traceRoot.href), trace)
+        await writeFile(join(outputPath, 'explorer-events.json'), trace)
         await page.screenshot({ path: join(outputPath, 'final.png') })
       } catch (error) {
         console.error(error)
