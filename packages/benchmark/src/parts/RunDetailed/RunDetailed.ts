@@ -143,15 +143,19 @@ const runBenchmarkOnce = async ({
       const original = MessagePort.prototype.addEventListener
       const traced = new WeakSet<MessagePort>()
       MessagePort.prototype.addEventListener = function (
+        this: MessagePort,
         type: any,
         listener: any,
         options: any,
       ) {
         if (type === 'message' && !traced.has(this)) {
           traced.add(this)
-          original.call(this, 'message', (event: MessageEvent) => {
+          original.call(this, 'message', (event: Event) => {
             try {
-              record('message', JSON.parse(JSON.stringify(event.data)))
+              record(
+                'message',
+                JSON.parse(JSON.stringify((event as MessageEvent).data)),
+              )
             } catch {}
           })
         }
