@@ -3,11 +3,6 @@ import { test, expect } from '../src/fixtures.ts'
 test('broad attribute and prop e2e coverage', async ({ page }) => {
   await page.goto('/diff/attribute-prop-broad.html')
 
-  await page.waitForFunction(() => {
-    // @ts-ignore
-    return globalThis.__virtualDomDiffTestComplete === true
-  })
-
   const result = await page.evaluate(() => {
     // @ts-ignore
     return globalThis.__virtualDomBroadAttributePropResult

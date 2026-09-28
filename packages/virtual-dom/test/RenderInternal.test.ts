@@ -92,3 +92,37 @@ test('renderInternal - renders multiple nested elements', () => {
   const $Child2 = $ParentDiv?.children[1]
   expect($Child2?.className).toBe('child2')
 })
+
+test('renderInternal - preserves root and nested sibling order', () => {
+  const $Parent = document.createElement('div')
+  const elements = [
+    { type: VirtualDomElements.Text, childCount: 0, text: 'before' },
+    { type: VirtualDomElements.Div, childCount: 2 },
+    { type: VirtualDomElements.Text, childCount: 0, text: 'first' },
+    { type: VirtualDomElements.Span, childCount: 1 },
+    { type: VirtualDomElements.Text, childCount: 0, text: 'second' },
+    { type: VirtualDomElements.Text, childCount: 0, text: 'after' },
+  ]
+  renderInternal($Parent, elements, {})
+  expect($Parent.innerHTML).toBe(
+    'before<div>first<span>second</span></div>after',
+  )
+})
+
+test('renderInternal - renders a wide tree without spreading children as arguments', () => {
+  const $Parent = document.createElement('div')
+  const count = 150_000
+  const elements = [
+    { type: VirtualDomElements.Div, childCount: count },
+    ...Array.from({ length: count }, (_, index) => ({
+      type: VirtualDomElements.Text,
+      childCount: 0,
+      text: String(index),
+    })),
+  ]
+  renderInternal($Parent, elements, {})
+  const $Root = $Parent.firstElementChild!
+  expect($Root.childNodes).toHaveLength(count)
+  expect($Root.firstChild?.textContent).toBe('0')
+  expect($Root.lastChild?.textContent).toBe(String(count - 1))
+})
