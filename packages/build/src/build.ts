@@ -1,21 +1,23 @@
 import { execa } from 'execa'
 import { cp, mkdir, readFile, rm, writeFile } from 'node:fs/promises'
 import { join } from 'node:path'
-import { buildPackage } from './compilePackage.js'
-import { root } from './root.js'
+import { buildPackage } from './compilePackage.ts'
+import { root } from './root.ts'
+
+type PackageJson = Record<string, any>
 
 const dist = join(root, 'dist')
 
-const readJson = async (path) => {
+const readJson = async (path: string): Promise<PackageJson> => {
   const content = await readFile(path, 'utf8')
   return JSON.parse(content)
 }
 
-const writeJson = async (path, json) => {
+const writeJson = async (path: string, json: PackageJson): Promise<void> => {
   await writeFile(path, JSON.stringify(json, null, 2) + '\n')
 }
 
-const getGitTagFromGit = async () => {
+const getGitTagFromGit = async (): Promise<string> => {
   const { stdout, stderr, exitCode } = await execa(
     'git',
     ['describe', '--exact-match', '--tags'],
@@ -38,7 +40,7 @@ const getGitTagFromGit = async () => {
   return stdout
 }
 
-const getVersion = async () => {
+const getVersion = async (): Promise<string> => {
   const { env } = process
   const { RG_VERSION, GIT_TAG } = env
   if (RG_VERSION) {
@@ -64,7 +66,7 @@ await mkdir(join(dist, 'virtual-dom-worker'), { recursive: true })
 
 const version = await getVersion()
 
-for (const packageName of ['virtual-dom', 'virtual-dom-worker']) {
+for (const packageName of ['virtual-dom', 'virtual-dom-worker'] as const) {
   const packageJson = await readJson(
     join(root, 'packages', packageName, 'package.json'),
   )
