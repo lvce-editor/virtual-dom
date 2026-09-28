@@ -9,16 +9,18 @@ export const renderInternal = (
   renderElement = VirtualDomElement.render,
 ): void => {
   const max = elements.length - 1
-  let stack: Node[] = []
+  const stack: Node[] = []
   for (let i = max; i >= 0; i--) {
     const element = elements[i]
     const $Element = renderElement(element, eventMap, newEventMap)
     if (element.childCount > 0) {
-      // @ts-expect-error
-      $Element.append(...stack.slice(0, element.childCount))
-      stack = stack.slice(element.childCount)
+      for (let child = 0; child < element.childCount; child++) {
+        ;($Element as ParentNode).append(stack.pop()!)
+      }
     }
-    stack.unshift($Element)
+    stack.push($Element)
   }
-  $Parent.append(...stack)
+  while (stack.length > 0) {
+    $Parent.append(stack.pop()!)
+  }
 }
