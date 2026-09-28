@@ -1,13 +1,37 @@
 import { execa } from 'execa'
 import { mkdir, rm, writeFile } from 'node:fs/promises'
 import { join, posix } from 'node:path'
-import { root } from './root.js'
+import { root } from './root.ts'
 
-export const getPackageBuildTsConfigPath = ({ packageName }) => {
+type PackageName = 'virtual-dom' | 'virtual-dom-worker'
+
+type PackageBuildTsConfig = {
+  extends: string
+  compilerOptions: {
+    composite: boolean
+    noEmit: boolean
+    emitDeclarationOnly: boolean
+    declaration: boolean
+    outDir: string
+    rootDir: string
+    rewriteRelativeImportExtensions: boolean
+  }
+  include: string[]
+}
+
+export const getPackageBuildTsConfigPath = ({
+  packageName,
+}: {
+  packageName: PackageName
+}): string => {
   return posix.join('.tmp', `build-${packageName}.tsconfig.json`)
 }
 
-export const getPackageBuildTsConfig = ({ packageName }) => {
+export const getPackageBuildTsConfig = ({
+  packageName,
+}: {
+  packageName: PackageName
+}): PackageBuildTsConfig => {
   return {
     extends: `../packages/${packageName}/tsconfig.json`,
     compilerOptions: {
@@ -23,7 +47,11 @@ export const getPackageBuildTsConfig = ({ packageName }) => {
   }
 }
 
-export const buildPackage = async ({ packageName }) => {
+export const buildPackage = async ({
+  packageName,
+}: {
+  packageName: PackageName
+}): Promise<void> => {
   await mkdir(join(root, 'dist', packageName, 'dist'), { recursive: true })
   await mkdir(join(root, '.tmp'), { recursive: true })
 
