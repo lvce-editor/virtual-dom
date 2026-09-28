@@ -14,8 +14,8 @@
     "test": "node --experimental-strip-types --test \"test/*.test.ts\""
   },
   "devDependencies": {
-    "@lvce-editor/server": "0.108.14",
-    "@types/node": "^26.3.0",
-    "playwright": "1.62.1"
+    "@lvce-editor/server": "0.118.17",
+    "@types/node": "^26.6.3",
+    "playwright": "1.63.0"
   }
 }
