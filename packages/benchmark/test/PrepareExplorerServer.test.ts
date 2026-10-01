@@ -1,9 +1,12 @@
 import assert from 'node:assert/strict'
+import { readFile } from 'node:fs/promises'
+import { join } from 'node:path'
 import { test } from 'node:test'
 import {
   addExplorerResetHook,
   addWorkspaceSetPathHook,
 } from '../src/parts/PrepareExplorerServer/PrepareExplorerServer.ts'
+import { getStaticCommitRoot } from '../src/parts/StaticServerPaths/StaticServerPaths.ts'
 
 void test('addExplorerResetHook instruments the test worker reset', () => {
   const source = `const reset = async () => {
@@ -81,4 +84,29 @@ void test('addWorkspaceSetPathHook rejects an unknown test worker bundle', () =>
     () => addWorkspaceSetPathHook('const value = 1'),
     /Could not find the workspace setPath helper/,
   )
+})
+
+void test('addExplorerResetHook preserves the native workspace reset', () => {
+  const source = `const executeAllTest = async (importedTest, globals) => {
+    await remove('memfs:///workspace');
+    await mkdir('memfs:///workspace');
+    await invoke$3('Main.closeAllEditors');
+    await invoke$3('Layout.resetViewLocations');
+}`
+
+  assert.equal(addExplorerResetHook(source), source)
+})
+
+void test('Explorer hooks support the installed server bundle', async () => {
+  const root = await getStaticCommitRoot()
+  const source = await readFile(
+    join(root, 'packages', 'test-worker', 'dist', 'testWorkerMain.js'),
+    'utf8',
+  )
+  const withReset = addExplorerResetHook(source)
+  const result = addWorkspaceSetPathHook(withReset)
+
+  assert.match(result, /await invoke(?:\$\w+)?\('FileSystem\.mkdir', path\)/)
+  assert.equal(addExplorerResetHook(result), result)
+  assert.equal(addWorkspaceSetPathHook(result), result)
 })
