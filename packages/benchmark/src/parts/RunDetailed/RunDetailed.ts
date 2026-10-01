@@ -120,6 +120,92 @@ const runBenchmarkOnce = async ({
     })
     browserVersion = context.browser()?.version() ?? 'unknown'
     const page = context.pages()[0] ?? (await context.newPage())
+    // Diagnostic-only observer; this draft is not mergeable.
+    /* eslint-disable unicorn/no-global-object-property-assignment, unicorn/no-this-outside-of-class, unicorn/consistent-function-scoping, sonarjs/no-nested-functions */
+    await page.addInitScript(() => {
+      const entries: unknown[] = []
+      ;(globalThis as any).__explorerTrace = entries
+      const record = (kind: string, data: unknown): void => {
+        if (entries.length >= 200_000) entries.shift()
+        entries.push({ time: performance.now(), kind, data })
+      }
+      const describe = (node: any): string =>
+        node?.outerHTML?.slice(0, 1000) || String(node)
+      for (const type of ['focus', 'blur', 'focusin', 'focusout']) {
+        document.addEventListener(
+          type,
+          (event) =>
+            record(type, {
+              target: describe(event.target),
+              related: describe((event as FocusEvent).relatedTarget),
+            }),
+          { capture: true },
+        )
+      }
+      const lastCss = new Map<number, string>()
+      for (const prototype of [MessagePort.prototype, Worker.prototype]) {
+        const original = prototype.addEventListener
+        const traced = new WeakSet<MessagePort | Worker>()
+        prototype.addEventListener = function (
+          this: MessagePort | Worker,
+          type: any,
+          listener: any,
+          options: any,
+        ) {
+          if (type === 'message' && !traced.has(this)) {
+            traced.add(this)
+            original.call(this, 'message', (event: Event) => {
+              try {
+                const { data } = event as MessageEvent
+                if (data?.method === 'Viewlet.queueCommands') {
+                  const [uid, commands] = data.params
+                  const changes = commands.filter((command: any[]): boolean => {
+                    if (
+                      command[0] === 'Viewlet.setPatches' &&
+                      command[2].length === 0
+                    )
+                      return false
+                    if (command[0] === 'Viewlet.setCss') {
+                      if (lastCss.get(uid) === command[2]) return false
+                      lastCss.set(uid, command[2])
+                    }
+                    return true
+                  })
+                  if (changes.length === 0) return
+                  record(
+                    'message',
+                    structuredClone({ ...data, params: [uid, changes] }),
+                  )
+                } else {
+                  record('message', structuredClone(data))
+                }
+              } catch {
+                /* Ignore non-cloneable diagnostic payloads. */
+              }
+            })
+          }
+          return original.call(this, type, listener, options)
+        } as any
+      }
+      const observer = new MutationObserver((mutations) => {
+        for (const mutation of mutations) {
+          for (const node of mutation.addedNodes)
+            if (
+              (node as Element).matches?.('input') ||
+              (node as Element).querySelector?.('input')
+            )
+              record('added', describe(node))
+          for (const node of mutation.removedNodes)
+            if (
+              (node as Element).matches?.('input') ||
+              (node as Element).querySelector?.('input')
+            )
+              record('removed', describe(node))
+        }
+      })
+      observer.observe(document, { childList: true, subtree: true })
+    })
+    /* eslint-enable unicorn/no-global-object-property-assignment, unicorn/no-this-outside-of-class, unicorn/consistent-function-scoping, sonarjs/no-nested-functions */
     page.on('console', (message) => {
       if (message.type() === 'error') {
         console.error(`[browser] ${message.text()}`)
@@ -157,6 +243,20 @@ const runBenchmarkOnce = async ({
       process.stdout.write(
         `Run ${index}: stopping and downloading CPU profile...\n`,
       )
+      try {
+        const trace = JSON.stringify(
+          await page.evaluate(() => (globalThis as any).__explorerTrace ?? []),
+          null,
+          2,
+        )
+        const traceRoot = parseUrl('dist/explorer-traces/', packageRoot.href)
+        await mkdir(traceRoot, { recursive: true })
+        await writeFile(parseUrl(`run-${index}.json`, traceRoot.href), trace)
+        await writeFile(join(outputPath, 'explorer-events.json'), trace)
+        await page.screenshot({ path: join(outputPath, 'final.png') })
+      } catch (error) {
+        console.error(error)
+      }
       captureResult = await capture.stop()
     }
   } finally {
