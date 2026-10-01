@@ -2,6 +2,8 @@ import { readFile, writeFile } from 'node:fs/promises'
 import { join } from 'node:path'
 import { getStaticCommitRoot } from '../StaticServerPaths/StaticServerPaths.ts'
 
+const nativeWorkspaceResetRegex =
+  /await remove(?:\$\w+)?\('memfs:\/\/\/workspace'\);\s+await mkdir(?:\$\w+)?\('memfs:\/\/\/workspace'\);/
 const resetReplacementRegex =
   /await invoke(?:\$\w+)?\('FileSystem\.mkdir', 'memfs:\/\/\/workspace'\);/
 const resetRemovalOccurrenceRegex =
@@ -14,7 +16,10 @@ const workspaceSetPathOccurrenceRegex =
   /(^[ \t]*const setPath = async path => \{\n)([ \t]*)await (invoke(?:\$\w+)?)\('Workspace\.setPath', path\);/m
 
 export const addExplorerResetHook = (content: string): string => {
-  if (resetReplacementRegex.test(content)) {
+  if (
+    resetReplacementRegex.test(content) ||
+    nativeWorkspaceResetRegex.test(content)
+  ) {
     return content
   }
   const removalMatch = resetRemovalOccurrenceRegex.exec(content)
