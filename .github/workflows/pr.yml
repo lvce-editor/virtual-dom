@@ -114,3 +114,59 @@ jobs:
           path: packages/benchmark/dist
           if-no-files-found: error
           retention-days: 30
+
+  explorer-race:
+    strategy:
+      fail-fast: false
+      matrix:
+        attempt:
+          [
+            1,
+            2,
+            3,
+            4,
+            5,
+            6,
+            7,
+            8,
+            9,
+            10,
+            11,
+            12,
+            13,
+            14,
+            15,
+            16,
+            17,
+            18,
+            19,
+            20,
+          ]
+    runs-on: ubuntu-24.04
+    timeout-minutes: 60
+    steps:
+      - uses: actions/checkout@v7
+      - uses: actions/setup-node@v6
+        with:
+          node-version-file: '.nvmrc'
+      - run: npm ci
+      - run: npm run build
+      - name: Install benchmark Chromium
+        working-directory: packages/benchmark
+        run: npx playwright install --with-deps chromium
+        env:
+          PLAYWRIGHT_BROWSERS_PATH: 0
+      - name: Capture pinned Explorer race
+        working-directory: packages/benchmark
+        run: npm run benchmark:detailed
+        env:
+          DETAILED_BENCHMARK_REPEATS: 5
+          PLAYWRIGHT_BROWSERS_PATH: 0
+      - uses: actions/upload-artifact@v7
+        if: always()
+        with:
+          name: explorer-race-${{ matrix.attempt }}
+          path: |
+            packages/benchmark/dist/detailed-benchmark
+            packages/benchmark/dist/explorer-traces
+          retention-days: 30
