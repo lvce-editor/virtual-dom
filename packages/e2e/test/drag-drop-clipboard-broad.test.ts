@@ -23,6 +23,8 @@ test('broad drag drop and clipboard e2e coverage', async ({ page }) => {
     dropFileName: 'hello.txt',
     clipboardFileLength: 1,
     clipboardFileName: 'pasted.txt',
+    pasteTextArgs: ['pasted text'],
+    pasteDefaultPrevented: true,
     dropIdType: 'number',
     dropSessionFileName: 'session.txt',
     dropSessionItemCount: 2,
