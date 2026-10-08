@@ -6,6 +6,10 @@ const resetReplacementRegex =
   /await invoke(?:\$\w+)?\('FileSystem\.mkdir', 'memfs:\/\/\/workspace'\);/
 const completedResetRegex =
   /await remove\('memfs:\/\/\/workspace'\);\s+await mkdir\('memfs:\/\/\/workspace'\);\s+await invoke(?:\$\w+)?\('Main\.closeAllEditors'\);\s+await invoke(?:\$\w+)?\('Layout\.resetViewLocations'\);/
+const resetViewLocationsRegex =
+  /(^[ \t]*)await (invoke(?:\$\w+)?)\('Layout\.resetViewLocations'\);/m
+const sideBarResetRegex =
+  /await invoke(?:\$\w+)?\('Layout\.hideSideBar'\);\s+await invoke(?:\$\w+)?\('Layout\.showSideBar'\);/
 const resetRemovalOccurrenceRegex =
   /(^[ \t]*)await (invoke(?:\$\w+)?)\('FileSystem\.remove', 'memfs:\/\/\/workspace'\);/m
 const resetOccurrenceRegex =
@@ -16,11 +20,19 @@ const workspaceSetPathOccurrenceRegex =
   /(^[ \t]*const setPath = async path => \{\n)([ \t]*)await (invoke(?:\$\w+)?)\('Workspace\.setPath', path\);/m
 
 export const addExplorerResetHook = (content: string): string => {
-  if (
-    resetReplacementRegex.test(content) ||
-    completedResetRegex.test(content)
-  ) {
+  if (resetReplacementRegex.test(content)) {
     return content
+  }
+  if (completedResetRegex.test(content)) {
+    if (sideBarResetRegex.test(content)) {
+      return content
+    }
+    return content.replace(
+      resetViewLocationsRegex,
+      (line, indent: string, invoke: string) => `${line}
+${indent}await ${invoke}('Layout.hideSideBar');
+${indent}await ${invoke}('Layout.showSideBar');`,
+    )
   }
   const removalMatch = resetRemovalOccurrenceRegex.exec(content)
   const removalIndent = removalMatch?.[1]
@@ -59,7 +71,9 @@ export const addWorkspaceSetPathHook = (content: string): string => {
   if (!match || header === undefined || indent === undefined || !invoke) {
     throw new Error('Could not find the workspace setPath helper')
   }
-  const replacement = `${header}${indent}await ${invoke}('FileSystem.mkdir', path);
+  const replacement = `${header}${indent}if (path.startsWith('memfs://')) {
+${indent}  await ${invoke}('FileSystem.mkdir', path);
+${indent}}
 ${indent}await ${invoke}('Workspace.setPath', path);`
   return content.replace(match[0], () => replacement)
 }
