@@ -114,13 +114,18 @@ const runDropAndClipboard = async () => {
       params: ['event.clipboardData.files'],
     },
     {
+      name: 14,
+      params: ['event.clipboardData.text'],
+      preventDefault: true,
+    },
+    {
       name: 13,
       params: ['event.dropId'],
     },
   ])
   const initialDom = [{ type: VirtualDomElements.Div, childCount: 0 }]
   const updatedDom = [
-    { type: VirtualDomElements.Div, childCount: 3 },
+    { type: VirtualDomElements.Div, childCount: 4 },
     {
       type: VirtualDomElements.Div,
       id: 'drop-files-target',
@@ -135,6 +140,13 @@ const runDropAndClipboard = async () => {
       childCount: 1,
     },
     text('paste'),
+    {
+      type: VirtualDomElements.Div,
+      id: 'paste-text-target',
+      onPaste: 14,
+      childCount: 1,
+    },
+    text('paste text'),
     {
       type: VirtualDomElements.Div,
       id: 'drop-session-target',
@@ -171,6 +183,19 @@ const runDropAndClipboard = async () => {
   document.getElementById('paste-target').dispatchEvent(pasteEvent)
   const clipboardFiles = commands.at(-1).args[1]
 
+  const pasteTextEvent = new Event('paste', { bubbles: true, cancelable: true })
+  Object.defineProperty(pasteTextEvent, 'clipboardData', {
+    value: {
+      getData(type) {
+        return type === 'text/plain' ? 'pasted text' : ''
+      },
+    },
+  })
+  const pasteDefaultPrevented = !document
+    .getElementById('paste-text-target')
+    .dispatchEvent(pasteTextEvent)
+  const pasteTextArgs = commands.at(-1).args.slice(1)
+
   const sessionTransfer = new DataTransfer()
   sessionTransfer.items.add('drop session text', 'text/plain')
   sessionTransfer.items.add(
@@ -187,6 +212,8 @@ const runDropAndClipboard = async () => {
     dropFileName: dropFiles[0].name,
     clipboardFileLength: clipboardFiles.length,
     clipboardFileName: clipboardFiles[0].name,
+    pasteTextArgs,
+    pasteDefaultPrevented,
     dropIdType: typeof dropId,
     dropSessionFileName: dropItems[1].file.name,
     dropSessionItemCount: dropItems.length,

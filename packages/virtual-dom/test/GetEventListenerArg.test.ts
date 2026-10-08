@@ -167,6 +167,23 @@ test('getEventListenerArg - clipboard data ids are empty without clipboard data'
   expect(getEventListenerArg('event.clipboardData.files2', {})).toEqual([])
 })
 
+test('getEventListenerArg - clipboard text returns plain text', () => {
+  const event = {
+    clipboardData: {
+      getData: (type: string): string =>
+        type === 'text/plain' ? 'pasted text' : '',
+    },
+  }
+
+  expect(getEventListenerArg('event.clipboardData.text', event)).toBe(
+    'pasted text',
+  )
+})
+
+test('getEventListenerArg - clipboard text is empty without clipboard data', () => {
+  expect(getEventListenerArg('event.clipboardData.text', {})).toBe('')
+})
+
 test('getEventListenerArg - event.target.name returns the target name', () => {
   const button = document.createElement('button')
   button.name = 'refresh'
