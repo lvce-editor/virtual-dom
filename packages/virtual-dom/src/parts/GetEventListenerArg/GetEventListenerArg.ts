@@ -116,6 +116,9 @@ export const getEventListenerArg = (param: string, event: any): any => {
   if (param === 'event.clipboardData.files2') {
     return handleClipboardDataFiles2(event)
   }
+  if (param === 'event.clipboardData.text') {
+    return event.clipboardData?.getData('text/plain') || ''
+  }
   switch (param) {
     case 'event.altKey':
       return event.altKey

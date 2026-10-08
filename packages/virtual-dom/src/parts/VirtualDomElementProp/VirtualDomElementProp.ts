@@ -51,6 +51,7 @@ const eventProps = new Set([
   'onMouseOut',
   'onMouseOver',
   'onMouseUp',
+  'onPaste',
   'onPointerDown',
   'onPointerMove',
   'onPointerOut',

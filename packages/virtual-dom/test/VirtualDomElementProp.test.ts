@@ -197,6 +197,22 @@ test('media event properties attach event listeners', () => {
   )
 })
 
+test('paste event property attaches a paste listener', () => {
+  const $Element = document.createElement('textarea')
+  const eventMap = {
+    handlePaste: (): void => {},
+  }
+  jest.spyOn($Element, 'addEventListener')
+
+  VirtualDomElementProp.setProp($Element, 'onPaste', 'handlePaste', eventMap)
+
+  expect($Element.addEventListener).toHaveBeenCalledWith(
+    'paste',
+    expect.any(Function),
+    undefined,
+  )
+})
+
 test.each(['input', 'textarea'])(
   'autocorrect - sets and removes on/off attributes on %s',
   (tagName) => {
