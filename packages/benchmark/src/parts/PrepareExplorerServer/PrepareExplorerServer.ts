@@ -4,6 +4,8 @@ import { getStaticCommitRoot } from '../StaticServerPaths/StaticServerPaths.ts'
 
 const resetReplacementRegex =
   /await invoke(?:\$\w+)?\('FileSystem\.mkdir', 'memfs:\/\/\/workspace'\);/
+const completedResetRegex =
+  /await remove\('memfs:\/\/\/workspace'\);\s+await mkdir\('memfs:\/\/\/workspace'\);\s+await invoke(?:\$\w+)?\('Main\.closeAllEditors'\);\s+await invoke(?:\$\w+)?\('Layout\.resetViewLocations'\);/
 const resetRemovalOccurrenceRegex =
   /(^[ \t]*)await (invoke(?:\$\w+)?)\('FileSystem\.remove', 'memfs:\/\/\/workspace'\);/m
 const resetOccurrenceRegex =
@@ -14,7 +16,10 @@ const workspaceSetPathOccurrenceRegex =
   /(^[ \t]*const setPath = async path => \{\n)([ \t]*)await (invoke(?:\$\w+)?)\('Workspace\.setPath', path\);/m
 
 export const addExplorerResetHook = (content: string): string => {
-  if (resetReplacementRegex.test(content)) {
+  if (
+    resetReplacementRegex.test(content) ||
+    completedResetRegex.test(content)
+  ) {
     return content
   }
   const removalMatch = resetRemovalOccurrenceRegex.exec(content)

@@ -65,6 +65,22 @@ void test('addExplorerResetHook rejects an unknown test worker bundle', () => {
   )
 })
 
+void test('addExplorerResetHook preserves the current completed reset', () => {
+  const source = `await remove('memfs:///workspace');
+    await mkdir('memfs:///workspace');
+    await invoke$3('Main.closeAllEditors');
+    await invoke$3('Layout.resetViewLocations');`
+
+  assert.equal(addExplorerResetHook(source), source)
+  assert.throws(
+    () =>
+      addExplorerResetHook(
+        source.replace("await mkdir('memfs:///workspace');", ''),
+      ),
+    /Could not find the Explorer test reset hook/,
+  )
+})
+
 void test('addWorkspaceSetPathHook creates the workspace folder', () => {
   const source = `const setPath = async path => {
   await invoke$3('Workspace.setPath', path);
