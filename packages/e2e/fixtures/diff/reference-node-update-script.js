@@ -29,6 +29,9 @@ const initialDom = [
   {
     type: VirtualDomElements.Reference,
     uid: refUid1,
+    id: 'preview-scene',
+    className: 'scene',
+    'aria-label': 'Live scene',
     childCount: 0,
   },
 ]
@@ -45,6 +48,9 @@ const updatedDom = [
   {
     type: VirtualDomElements.Reference,
     uid: refUid2,
+    id: 'preview-scene',
+    className: 'scene',
+    'aria-label': 'Live scene',
     childCount: 0,
   },
 ]

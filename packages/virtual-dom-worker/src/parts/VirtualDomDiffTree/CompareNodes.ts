@@ -16,11 +16,11 @@ export const compareNodes = (
 
   const patches: Patch[] = []
 
-  // Handle reference nodes - special handling for uid changes
-  if (
-    oldNode.type === VirtualDomElements.Reference &&
-    oldNode.uid !== newNode.uid
-  ) {
+  // A different reference owns a different DOM element, so its props must
+  // be applied even when they match the previous reference's props.
+  const referenceChanged =
+    oldNode.type === VirtualDomElements.Reference && oldNode.uid !== newNode.uid
+  if (referenceChanged) {
     patches.push({
       type: PatchType.SetReferenceNodeUid,
       uid: newNode.uid,
@@ -51,7 +51,7 @@ export const compareNodes = (
 
   // Check for attribute changes
   for (const key of newKeys) {
-    if (oldNode[key] !== newNode[key]) {
+    if (referenceChanged || oldNode[key] !== newNode[key]) {
       patches.push({
         type: PatchType.SetAttribute,
         key,
