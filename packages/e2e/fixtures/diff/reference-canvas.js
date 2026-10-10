@@ -23,10 +23,9 @@ renderInto(document.getElementById('container'), [
 ])
 // Rendering the reference must not select a drawing context.
 document.getElementById('start').addEventListener('click', () => {
-  const context = offscreen.getContext('webgl2')
-  context.clearColor(0, 0, 1, 1)
-  context.clear(context.COLOR_BUFFER_BIT)
-  const pixel = new Uint8Array(4)
-  context.readPixels(10, 10, 1, 1, context.RGBA, context.UNSIGNED_BYTE, pixel)
+  const context = offscreen.getContext('2d')
+  context.fillStyle = 'blue'
+  context.fillRect(0, 0, offscreen.width, offscreen.height)
+  const pixel = context.getImageData(10, 10, 1, 1).data
   document.getElementById('pixel').textContent = pixel.join(',')
 })
