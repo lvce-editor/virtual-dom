@@ -15,4 +15,7 @@ test('diff - reference node update', async ({ page }) => {
   const refNode = container.locator('span')
   await expect(refNode).toBeVisible()
   await expect(refNode).toContainText('Component 2')
+  await expect(refNode).toHaveAttribute('id', 'preview-scene')
+  await expect(refNode).toHaveClass('scene')
+  await expect(refNode).toHaveAttribute('aria-label', 'Live scene')
 })
