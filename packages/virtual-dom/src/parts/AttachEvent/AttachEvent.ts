@@ -7,9 +7,9 @@ const attachedListeners = new WeakMap<
 >()
 
 const getOptions = (fn: any): any => {
-  if (fn.passive) {
+  if (fn.passive === true || fn.passive === false) {
     return {
-      passive: true,
+      passive: fn.passive,
     }
   }
   if (fn.capture) {
@@ -47,7 +47,7 @@ export const attachEvent = (
     console.warn('listener not found', value)
     return
   }
-  const options = GetEventListenerOptions.getEventListenerOptions(key, value)
+  const options = GetEventListenerOptions.getEventListenerOptions(key, listener)
   const wrapped = GetWrappedListener.getWrappedListener(
     listener,
     eventMap.returnValue,

@@ -8,6 +8,13 @@ test('getEventListenerOptions - returns passive true for wheel event', () => {
   })
 })
 
+test('getEventListenerOptions - preserves passive false for wheel event', () => {
+  const value = { passive: false }
+  expect(getEventListenerOptions('wheel', value)).toEqual({
+    passive: false,
+  })
+})
+
 test('getEventListenerOptions - returns undefined for click event', () => {
   const value = {}
   expect(getEventListenerOptions('click', value)).toBeUndefined()
