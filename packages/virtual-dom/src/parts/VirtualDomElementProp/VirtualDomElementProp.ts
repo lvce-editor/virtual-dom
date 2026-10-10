@@ -86,6 +86,14 @@ const setDimension = (
     $Element[key] = value
     return
   }
+  if ($Element instanceof HTMLCanvasElement) {
+    const attributeValue = String(value)
+    if ($Element.getAttribute(key) !== attributeValue) {
+      // IDL dimension setters throw after transferControlToOffscreen().
+      // Attributes still reflect dimensions without selecting a context.
+      $Element.setAttribute(key, attributeValue)
+    }
+  }
   $Element.style[key] = typeof value === 'number' ? `${value}px` : value
 }
 

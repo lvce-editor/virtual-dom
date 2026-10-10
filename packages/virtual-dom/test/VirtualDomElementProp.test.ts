@@ -252,3 +252,16 @@ test('autocapitalize - sets the attribute without native property reflection', (
   VirtualDomElementProp.removeProp($Element, 'autocapitalize')
   expect($Element.hasAttribute('autocapitalize')).toBe(false)
 })
+
+test('canvas dimensions update attributes without using the transferred canvas IDL setters', () => {
+  const canvas = document.createElement('canvas')
+  Object.defineProperty(canvas, 'width', {
+    set: () => {
+      throw new Error('Canvas control was transferred')
+    },
+  })
+  VirtualDomElementProp.setProp(canvas, 'width', 400, {})
+  VirtualDomElementProp.setProp(canvas, 'height', 300, {})
+  expect(canvas.getAttribute('width')).toBe('400')
+  expect(canvas.getAttribute('height')).toBe('300')
+})
