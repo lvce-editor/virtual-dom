@@ -1,7 +1,7 @@
 export const getEventListenerOptions = (eventName: string, value: any): any => {
-  if (value.passive) {
+  if (value.passive === true || value.passive === false) {
     return {
-      passive: true,
+      passive: value.passive,
     }
   }
   if (value.capture) {

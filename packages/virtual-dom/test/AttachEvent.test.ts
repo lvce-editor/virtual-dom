@@ -85,10 +85,27 @@ test('attachEvent - uses event options from GetEventListenerOptions', () => {
 
   expect(
     mockGetEventListenerOptions.getEventListenerOptions,
-  ).toHaveBeenCalledWith('wheel', 'test-handler')
+  ).toHaveBeenCalledWith('wheel', mockListener)
   expect($Element.addEventListener).toHaveBeenCalledWith(
     'wheel',
     mockWrappedListener,
     mockOptions,
+  )
+})
+
+test('attachEvent - preserves passive false for registered wheel listeners', () => {
+  const $Element = document.createElement('div')
+  const mockListener = jest.fn()
+  Object.assign(mockListener, { passive: false })
+  jest.spyOn($Element, 'addEventListener')
+
+  attachEvent($Element, {}, 'wheel', 'test-handler', {
+    'test-handler': mockListener,
+  })
+
+  expect($Element.addEventListener).toHaveBeenCalledWith(
+    'wheel',
+    mockListener,
+    { passive: false },
   )
 })
