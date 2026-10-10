@@ -7,9 +7,13 @@ import {
 const canvas = document.createElement('canvas')
 canvas.width = 200
 canvas.height = 150
-const offscreen = canvas.transferControlToOffscreen()
-offscreen.width = 400
-offscreen.height = 300
+// Windows WebKit does not expose transferred canvases. It still exercises the
+// native canvas attribute update, while supporting browsers cover transfer too.
+const offscreen = canvas.transferControlToOffscreen?.() || canvas
+if (offscreen !== canvas) {
+  offscreen.width = 400
+  offscreen.height = 300
+}
 setViewletInstance('scene', { state: { $Viewlet: canvas } })
 renderInto(document.getElementById('container'), [
   {
