@@ -38,6 +38,6 @@
     }
   },
   "devDependencies": {
-    "@lvce-editor/constants": "^5.30.0"
+    "@lvce-editor/constants": "^5.31.0"
   }
 }
