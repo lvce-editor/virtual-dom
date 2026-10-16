@@ -65,6 +65,7 @@ const downloadTests = async (
   options: BenchmarkTestsOptions,
 ): Promise<BenchmarkTests> => {
   const ref = options.ref || options.defaultRef
+  const isCommitRef = /^[a-f\d]{40}$/.test(ref)
   await rm(options.downloadRoot, { force: true, recursive: true })
   await mkdir(options.temporaryRoot, { recursive: true })
   process.stdout.write(`Downloading ${options.id} e2e tests (${ref})...\n`)
@@ -74,11 +75,28 @@ const downloadTests = async (
     '1',
     '--filter=blob:none',
     '--sparse',
-    '--branch',
-    ref,
+    ...(isCommitRef ? ['--no-checkout'] : ['--branch', ref]),
     options.repositoryUrl,
     options.downloadRoot,
   ])
+  if (isCommitRef) {
+    await execFileAsync('git', [
+      '-C',
+      options.downloadRoot,
+      'fetch',
+      '--depth',
+      '1',
+      'origin',
+      ref,
+    ])
+    await execFileAsync('git', [
+      '-C',
+      options.downloadRoot,
+      'checkout',
+      '--detach',
+      'FETCH_HEAD',
+    ])
+  }
   await execFileAsync('git', [
     '-C',
     options.downloadRoot,
