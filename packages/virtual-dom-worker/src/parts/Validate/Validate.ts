@@ -1,7 +1,7 @@
 import { VirtualDomElements } from '@lvce-editor/constants'
 
-const validVirtualDomElementTypes = new Set<number>(
-  Object.values(VirtualDomElements),
+const validVirtualDomElementTypes = /* @__PURE__ */ new Set<number>(
+  /* @__PURE__ */ Object.values(VirtualDomElements),
 )
 
 const isObject = (value: unknown): value is Record<string, unknown> => {
