@@ -65,13 +65,34 @@ void test('addExplorerResetHook rejects an unknown test worker bundle', () => {
   )
 })
 
-void test('addWorkspaceSetPathHook creates the workspace folder', () => {
+void test('addExplorerResetHook adds sidebar cleanup to the current reset', () => {
+  const source = `await remove('memfs:///workspace');
+    await mkdir('memfs:///workspace');
+    await invoke$3('Main.closeAllEditors');
+    await invoke$3('Layout.resetViewLocations');`
+
+  const result = addExplorerResetHook(source)
+  assert.ok(result.startsWith(source))
+  assert.match(result, /await invoke\$3\('Layout\.hideSideBar'\)/)
+  assert.match(result, /await invoke\$3\('Layout\.showSideBar'\)/)
+  assert.equal(addExplorerResetHook(result), result)
+  assert.throws(
+    () =>
+      addExplorerResetHook(
+        source.replace("await mkdir('memfs:///workspace');", ''),
+      ),
+    /Could not find the Explorer test reset hook/,
+  )
+})
+
+void test('addWorkspaceSetPathHook creates only memory workspace folders', () => {
   const source = `const setPath = async path => {
   await invoke$3('Workspace.setPath', path);
 };`
   const result = addWorkspaceSetPathHook(source)
 
   assert.match(result, /await invoke\$3\('FileSystem\.mkdir', path\)/)
+  assert.match(result, /if \(path\.startsWith\('memfs:\/\/'\)\) \{/)
   assert.match(result, /await invoke\$3\('Workspace\.setPath', path\)/)
   assert.equal(addWorkspaceSetPathHook(result), result)
 })
