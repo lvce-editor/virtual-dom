@@ -38,8 +38,8 @@ class FlatTreeDiff {
   ) {}
 
   private skipUnchangedSubtree(): boolean {
-    let oldIndex = this.oldIndex
-    let newIndex = this.newIndex
+    let { oldIndex } = this
+    let { newIndex } = this
     let remaining = 1
     while (remaining > 0) {
       const oldNode = this.oldNodes[oldIndex]
