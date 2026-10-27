@@ -56,7 +56,11 @@ test('flat traversal preserves patch order across nested forests, replacements, 
             if (node.type === VirtualDomElements.Text) {
               return { ...node, text: `changed-${next() % 5}` }
             }
-            const changed = { ...node, title: `title-${next() % 5}` }
+            const changed: { className?: string; title: string; type: number } =
+              {
+                ...node,
+                title: `title-${next() % 5}`,
+              }
             delete changed.className
             return changed
           })
