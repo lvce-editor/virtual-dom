@@ -5,7 +5,7 @@ import * as PatchType from '../PatchType/PatchType.ts'
 import * as CompareNodes from './CompareNodes.ts'
 import * as TreeToArray from './TreeToArray.ts'
 
-const navigateToChild = (
+export const navigateToChild = (
   patches: Patch[],
   currentChildIndex: number,
   index: number,
@@ -28,7 +28,7 @@ const navigateToChild = (
   return index
 }
 
-const navigateToParent = (
+export const navigateToParent = (
   patches: Patch[],
   currentChildIndex: number,
 ): number => {
@@ -89,7 +89,7 @@ const appendPatch = (patches: Patch[], patch: Patch): void => {
   }
 }
 
-const appendPatches = (
+export const appendPatches = (
   patches: Patch[],
   newPatches: readonly Patch[],
 ): void => {
