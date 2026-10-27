@@ -1,8 +1,50 @@
 import { VirtualDomElements } from '@lvce-editor/constants'
 import type { Patch } from '../Patch/Patch.ts'
 import type { VirtualDomNode } from '../VirtualDomNode/VirtualDomNode.ts'
-import * as GetKeys from '../GetKeys/GetKeys.ts'
+import * as IsKey from '../IsKey/IsKey.ts'
 import * as PatchType from '../PatchType/PatchType.ts'
+
+const isAttribute = (node: VirtualDomNode, key: string): boolean => {
+  return (
+    Object.hasOwn(node, key) &&
+    IsKey.isKey(key) &&
+    (node.type !== VirtualDomElements.Reference || key !== 'uid')
+  )
+}
+
+const compareAttributes = (
+  oldNode: VirtualDomNode,
+  newNode: VirtualDomNode,
+  referenceChanged: boolean,
+  patches: Patch[],
+): void => {
+  // Check for attribute changes
+  for (const key in newNode) {
+    if (!isAttribute(newNode, key)) {
+      continue
+    }
+    if (referenceChanged || oldNode[key] !== newNode[key]) {
+      patches.push({
+        type: PatchType.SetAttribute,
+        key,
+        value: newNode[key],
+      })
+    }
+  }
+
+  // Check for removed attributes
+  for (const key in oldNode) {
+    if (!isAttribute(oldNode, key)) {
+      continue
+    }
+    if (!Object.hasOwn(newNode, key)) {
+      patches.push({
+        type: PatchType.RemoveAttribute,
+        key,
+      })
+    }
+  }
+}
 
 export const compareNodes = (
   oldNode: VirtualDomNode,
@@ -41,34 +83,7 @@ export const compareNodes = (
     return patches
   }
 
-  // Compare attributes
-  const oldKeys = GetKeys.getKeys(oldNode).filter(
-    (key) => oldNode.type !== VirtualDomElements.Reference || key !== 'uid',
-  )
-  const newKeys = GetKeys.getKeys(newNode).filter(
-    (key) => newNode.type !== VirtualDomElements.Reference || key !== 'uid',
-  )
-
-  // Check for attribute changes
-  for (const key of newKeys) {
-    if (referenceChanged || oldNode[key] !== newNode[key]) {
-      patches.push({
-        type: PatchType.SetAttribute,
-        key,
-        value: newNode[key],
-      })
-    }
-  }
-
-  // Check for removed attributes
-  for (const key of oldKeys) {
-    if (!Object.hasOwn(newNode, key)) {
-      patches.push({
-        type: PatchType.RemoveAttribute,
-        key,
-      })
-    }
-  }
+  compareAttributes(oldNode, newNode, referenceChanged, patches)
 
   return patches
 }
