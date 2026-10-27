@@ -37,6 +37,24 @@ class FlatTreeDiff {
     private readonly newNodes: readonly VirtualDomNode[],
   ) {}
 
+  private skipUnchangedSubtree(): boolean {
+    let oldIndex = this.oldIndex
+    let newIndex = this.newIndex
+    let remaining = 1
+    while (remaining > 0) {
+      const oldNode = this.oldNodes[oldIndex]
+      if (!oldNode || oldNode !== this.newNodes[newIndex]) {
+        return false
+      }
+      remaining += Math.max(0, Math.ceil(oldNode.childCount || 0)) - 1
+      oldIndex++
+      newIndex++
+    }
+    this.oldIndex = oldIndex
+    this.newIndex = newIndex
+    return true
+  }
+
   private takeNewSubtree(): readonly VirtualDomNode[] {
     const start = this.newIndex
     this.newIndex = subtreeEnd(this.newNodes, start)
@@ -48,6 +66,9 @@ class FlatTreeDiff {
     currentChildIndex: number,
     index: number,
   ): number {
+    if (this.skipUnchangedSubtree()) {
+      return currentChildIndex
+    }
     const oldNode = this.oldNodes[this.oldIndex]
     const newNode = this.newNodes[this.newIndex]
     const nodePatches = compareNodes(oldNode, newNode)
@@ -113,6 +134,9 @@ class FlatTreeDiff {
   }
 
   private diffRoot(patches: Patch[]): void {
+    if (this.skipUnchangedSubtree()) {
+      return
+    }
     const oldNode = this.oldNodes[0]
     const newNode = this.newNodes[0]
     const nodePatches = compareNodes(oldNode, newNode)

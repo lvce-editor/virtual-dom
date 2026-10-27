@@ -71,3 +71,33 @@ test('flat traversal preserves patch order across nested forests, replacements, 
     )
   }
 })
+
+test('shared parent nodes do not hide changed descendants or shift sibling patches', () => {
+  const root = { type: VirtualDomElements.Div, childCount: 3 }
+  const row = { type: VirtualDomElements.Div, childCount: 1 }
+  const unchanged = { type: VirtualDomElements.Text, text: 'unchanged' }
+  const oldNodes = [
+    root,
+    row,
+    unchanged,
+    row,
+    { type: VirtualDomElements.Text, text: 'old' },
+    row,
+    unchanged,
+  ]
+  const newNodes = [
+    root,
+    row,
+    unchanged,
+    row,
+    { type: VirtualDomElements.Text, text: 'new' },
+    row,
+    unchanged,
+  ]
+  const expected: Patch[] = []
+  diffTrees(arrayToTree(oldNodes), arrayToTree(newNodes), expected, [])
+  expect(diffTree(oldNodes, newNodes)).toEqual(
+    removeTrailingNavigationPatches(expected),
+  )
+  expect(diffTree(oldNodes, [...oldNodes])).toEqual([])
+})
