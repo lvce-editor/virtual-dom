@@ -265,3 +265,27 @@ test('canvas dimensions update attributes without using the transferred canvas I
   expect(canvas.getAttribute('width')).toBe('400')
   expect(canvas.getAttribute('height')).toBe('300')
 })
+
+test.each(['compositionstart', 'compositionupdate', 'compositionend'])(
+  '%s attaches, replaces and removes composition listeners',
+  (type) => {
+    const element = document.createElement('textarea')
+    const first: string[] = []
+    const second: string[] = []
+    const key = `onComposition${type.slice('composition'.length).replace(/^./, (letter) => letter.toUpperCase())}`
+    const eventMap = {
+      first: (event: CompositionEvent) => first.push(event.data),
+      second: (event: CompositionEvent) => second.push(event.data),
+    }
+    VirtualDomElementProp.setProp(element, key, 'first', eventMap)
+    element.dispatchEvent(new CompositionEvent(type, { data: '字' }))
+    expect(first).toEqual(['字'])
+    VirtualDomElementProp.setProp(element, key, 'second', eventMap)
+    element.dispatchEvent(new CompositionEvent(type, { data: '語' }))
+    expect(first).toEqual(['字'])
+    expect(second).toEqual(['語'])
+    VirtualDomElementProp.removeProp(element, key)
+    element.dispatchEvent(new CompositionEvent(type, { data: '文' }))
+    expect(second).toEqual(['語'])
+  },
+)
