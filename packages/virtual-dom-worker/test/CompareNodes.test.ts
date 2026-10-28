@@ -5,6 +5,24 @@ import * as PatchType from '../src/parts/PatchType/PatchType.ts'
 import { text } from '../src/parts/Text/Text.ts'
 import * as CompareNodes from '../src/parts/VirtualDomDiffTree/CompareNodes.ts'
 
+test('compareNodes - inherited attributes do not become DOM attributes', () => {
+  const oldNode: VirtualDomNode = {
+    type: VirtualDomElements.Div,
+    childCount: 0,
+    className: 'old',
+    title: 'old title',
+  }
+  const newNode: VirtualDomNode = Object.assign(
+    Object.create({ className: 'inherited', ariaLabel: 'inherited label' }),
+    { type: VirtualDomElements.Div, childCount: 1, title: 'new title' },
+  )
+
+  expect(CompareNodes.compareNodes(oldNode, newNode)).toEqual([
+    { type: PatchType.SetAttribute, key: 'title', value: 'new title' },
+    { type: PatchType.RemoveAttribute, key: 'className' },
+  ])
+})
+
 test('compareNodes - identical nodes', () => {
   const oldNode: VirtualDomNode = {
     type: VirtualDomElements.Div,
