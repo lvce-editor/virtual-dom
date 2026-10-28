@@ -274,8 +274,12 @@ test.each(['compositionstart', 'compositionupdate', 'compositionend'])(
     const second: string[] = []
     const key = `onComposition${type.slice('composition'.length).replace(/^./, (letter) => letter.toUpperCase())}`
     const eventMap = {
-      first: (event: CompositionEvent) => first.push(event.data),
-      second: (event: CompositionEvent) => second.push(event.data),
+      first: (event: CompositionEvent): void => {
+        first.push(event.data)
+      },
+      second: (event: CompositionEvent): void => {
+        second.push(event.data)
+      },
     }
     VirtualDomElementProp.setProp(element, key, 'first', eventMap)
     element.dispatchEvent(new CompositionEvent(type, { data: '字' }))
