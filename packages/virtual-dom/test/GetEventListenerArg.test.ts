@@ -163,6 +163,29 @@ test('getEventListenerArg - clipboard data ids retain native files', async () =>
   ])
 })
 
+test('getEventListenerArg - clipboard files fall back when file system handle is unavailable', async (): Promise<void> => {
+  const file = new File(['image'], 'image.png', { type: 'image/png' })
+  const event = {
+    clipboardData: {
+      items: [
+        {
+          getAsFile: (): File => file,
+          getAsFileSystemHandle: async (): Promise<FileSystemHandle | null> =>
+            null,
+          kind: 'file',
+          type: 'image/png',
+        },
+      ],
+    },
+  }
+
+  const ids = getEventListenerArg('event.clipboardData.files2', event)
+
+  await expect(getFileHandles(ids)).resolves.toEqual([
+    { kind: 'file-legacy', type: 'image/png', value: file },
+  ])
+})
+
 test('getEventListenerArg - clipboard data ids are empty without clipboard data', () => {
   expect(getEventListenerArg('event.clipboardData.files2', {})).toEqual([])
 })
